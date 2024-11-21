@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "esnext", // Use "esnext" or "commonjs" for Node
+    "moduleResolution": "node", // Resolves modules like Node.js
+    "baseUrl": "./", // Set to project root
+    "outDir": "./dist",
+    "rootDir": "./src", // Compiled files output folder
+    "esModuleInterop": true, // Ensures compatibility with CommonJS
+    "skipLibCheck": true, // Skips type checks for libraries
+    "allowJs": true
+  },
+  "include": [
+    "src/**/*" // Include all TypeScript files in the "hippo" folder
+  ],
+  "exclude": [
+    "node_modules",
+    "dist" // Excludes build output folder
+  ]
+}
