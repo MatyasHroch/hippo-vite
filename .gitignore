@@ -1,0 +1,21 @@
+# Dependency directories
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Production build output
+dist/
+
+# Environment variables
+.env
+.env.*.local
+
+# IDE files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
