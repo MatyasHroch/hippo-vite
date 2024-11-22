@@ -1,8 +1,11 @@
 import appTemplate from "./app.html"
 
 export async function app(context){
+    const {variables} = context;
+
     // if we want the template
-    context.templateString = appTemplate
+    context.setTemplate(appTemplate)
+    console.log(typeof appTemplate)
 
     // we add variables one by one like this:
     context.addVariable("name", "Felix")
@@ -10,5 +13,6 @@ export async function app(context){
 
     // we can access the variables via context
     console.log("in my component.ts 2 which is js the variables are: ", context.variables)
-    console.log({appTemplate})
+    console.log(context)
+
 }
