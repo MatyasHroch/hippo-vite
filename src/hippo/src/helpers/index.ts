@@ -1,12 +1,13 @@
-export const parseTemplate = (template: Element) => {
-    // Najdi elementy s atributy začínajícími na "bind:" nebo "model:"
+// TODO - use this
+export function parseTemplate (template: Element) {
+    // Finds all elements with attributes starting with "bind:" or "model:"
     const elementsWithBindings = template.querySelectorAll("[bind\\:], [model\\:]");
 
-    elementsWithBindings.forEach((element) => {
+    for (const element of elementsWithBindings) {
         for (const attr of element.attributes) {
             if (attr.name.startsWith("bind:") || attr.name.startsWith("model:")) {
                 console.log(`Element: ${element.tagName}, Binding: ${attr.name}, Value: ${attr.value}`);
             }
         }
-    });
-};
+    }
+}

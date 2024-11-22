@@ -1,6 +1,7 @@
 import {createContext} from "./context";
 import {Context} from "../../types";
 
+// TODO - should be renamed as process context
 export function createComponent(component: Function, parentContext: Context = null, elementToMount: Element = null){
     const newComponent:any = {}
 
@@ -9,7 +10,7 @@ export function createComponent(component: Function, parentContext: Context = nu
 
     newComponent.context = newContext
 
-    if (elementToMount) elementToMount.innerHTML = newComponent.template
+    if (elementToMount && newContext.template) elementToMount.appendChild(newContext.template)
 
     return newComponent
 }
