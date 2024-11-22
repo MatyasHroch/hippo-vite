@@ -7,6 +7,6 @@ export async function createApp(rootComponent: Function, elementToMountId:string
 
     const elementToMount = document.getElementById(elementToMountId)
 
-    createComponent(rootComponent, elementToMount);
+    await createComponent(rootComponent, null, elementToMount);
     return rootComponent;
 }

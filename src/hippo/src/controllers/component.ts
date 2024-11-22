@@ -1,20 +1,15 @@
 import {createContext} from "./context";
-import {render} from "./template";
+import {Context} from "../../types";
 
-export async function createComponent(component: Function, elementToMount: Element = null){
+export function createComponent(component: Function, parentContext: Context = null, elementToMount: Element = null){
     const newComponent:any = {}
-    const newContext = await createContext()
+
+    const newContext = createContext(parentContext)
     component(newContext)
 
     newComponent.context = newContext
 
-    if(newContext.templatePath){
-        newComponent.template = await render(newContext)
-    }
-
-    if (elementToMount){
-        elementToMount.innerHTML = newComponent.template
-    }
+    if (elementToMount) elementToMount.innerHTML = newComponent.template
 
     return newComponent
 }

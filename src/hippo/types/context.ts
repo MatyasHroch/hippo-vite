@@ -1,7 +1,15 @@
 export type Context = {
-    addVariable: Function;
-    addVariablesTyped: Function;
-    variables: Record<string, any>;
-    parent: Context | null;
-    templatePath?: string;
-}
+  // values
+  id: number,
+  variables: Record<string, any>;
+  parent: Context | null;
+
+  // template
+  template?: Element;
+  templateString?: string;
+
+  // methods
+  addVariable: Function;
+  addWatcher: Function;
+  setTemplate: Function;
+};
