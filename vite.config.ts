@@ -13,5 +13,8 @@ export default defineConfig({
     resolve: {
         extensions: ['.ts', '.js'], // Podpora TS a JS
     },
-    plugins: [string({ include: '**/*.html' })],
+    plugins: [string({
+        include: '**/*.html',
+        exclude: ['./index.html']
+    })],
 });
