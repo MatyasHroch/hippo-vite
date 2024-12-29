@@ -3,7 +3,6 @@ import {Variable} from "../../types/variable";
 function createVariable<T>(value: T): Variable<T> {
   const handler: ProxyHandler<Variable<any>> = {
     get(target, prop) {
-      const
 
       if (prop === "value") {
 
