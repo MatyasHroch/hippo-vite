@@ -2,7 +2,8 @@
 import appTemplate from "./main.html"
 import {createApp, createContext, createOriginVariable, createPartialVariable} from "../hippo";
 import { app } from "./components/app";
-//
+createApp(app)
+
 // const newVar = createOriginVariable<string>("name", "Albert");
 //
 // const nonReactiveName = newVar.value;
@@ -42,4 +43,3 @@ import { app } from "./components/app";
 // console.log(address);
 // console.log(reactiveAddress.value);
 
-createApp(app);

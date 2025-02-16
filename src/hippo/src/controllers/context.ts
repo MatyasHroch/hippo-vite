@@ -1,15 +1,15 @@
 import { Context } from "../../types";
 import { createOriginVariable, createPartialVariable } from "./variable";
-import { stringToHtml } from "./template";
 import {Variable} from "../../types/variable";
-import {getId} from "./ids";
+import {getNewId} from "./ids";
 import {createWatcher} from "./watchers";
+import {stringToHtml} from "./template/template_getters";
 
 export function createContext(parentContext: Context = null): Context {
   const newContext: any = {};
 
   // initial values
-  newContext.id = getId()
+  newContext.id = getNewId()
   newContext.variables = {};
   newContext.parent = parentContext;
 
