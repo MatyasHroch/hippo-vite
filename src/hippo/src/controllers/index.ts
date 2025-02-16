@@ -1,2 +1,2 @@
 export * from "./context"
-export * from "./variables"
+export * from "./variable"
