@@ -46,8 +46,8 @@ export async function processComponent(component: Function, parentContext: Conte
     const childComponents = renderTemplateResult.childComponents;
 
     // MOUNT THE TEMPLATE
-    // TODO 1) add my nodesToSlot to the template
-    debugger
+    // TODO 1) add my nodesToSlot to the template !!! Attention - the append method is moving the node- DONE
+    // TODO speed it up, return it in the render template, dont look it up by the query selector
     const slot = renderedTemplate.querySelector(Keywords.slot);
     if (slot){
         for (const node of nodesToSlot){
@@ -58,10 +58,10 @@ export async function processComponent(component: Function, parentContext: Conte
     }
     // slot.remove();
 
-    // TODO  2) remove all my html, that will be placed to the child process
+    // TODO  2) remove all my html, that will be placed to the child process so this is DONE
+    //  because of the append method behavior
 
 
-    // TODO 3) speed it up, return it in the render template in the first place
 
     elementToMount.appendChild(context.template)
 
