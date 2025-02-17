@@ -10,6 +10,9 @@ export function processNodes(node: Element, context: Context) {
         toModel: []
     };
 
+    // all components that should be rendered after all the bindings
+    const childComponent = {};
+
     if (node.childNodes.length > 0) {
         for (const childNode of node.childNodes) {
             // check if we can cast the Node to the Element
@@ -23,6 +26,7 @@ export function processNodes(node: Element, context: Context) {
         }
     } else {
         if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== "") {
+            // TODO - really render the text node, for now just add for the post processing
             textNodes.push(node);
         }
 
@@ -34,7 +38,6 @@ export function processNodes(node: Element, context: Context) {
                     // TODO really bind them
                     bindAttribute(context, attr);
                 }
-                // TODO find and push attributes to model
                 if(isAttributeToModel(attr)){
                     attributeNodes.toModel.push(node)
                     // TODO model bind them
@@ -42,7 +45,6 @@ export function processNodes(node: Element, context: Context) {
                 }
             }
         }
-
     }
 
     return {

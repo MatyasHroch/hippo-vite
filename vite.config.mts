@@ -1,4 +1,4 @@
-// vite.config.ts
+// vite.config.mts
 import { defineConfig } from "vite";
 import string from 'vite-plugin-string';
 

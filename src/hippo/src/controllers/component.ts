@@ -2,37 +2,42 @@ import {createContext} from "./context";
 import {Context} from "../../types";
 import {renderTemplate} from "./template/template_main";
 
-type Component = {
+type ComponentStruct = {
     template?: Element | Node;
     context?: Context;
 }
 
 // TODO - should be renamed as process context
 export async function processComponent(component: Function, parentContext: Context = null, elementToMount: Element = null){
-    const newComponent = {
-        context: createContext(parentContext),
+    const context = createContext(parentContext);
+    const newComponent : ComponentStruct = {
+        context: context,
     };
 
-    const {context} = newComponent;
-
     // USER FUNCTION COMPONENT, !!! warning, can be async
+    // TODO - what could the component function return?
     await component(context)
 
     // PROCESS THE TEMPLATE
-    if (context.template) {
-        // RENDER THE TEMPLATE
-        const renderedTemplate = renderTemplate(context.template, context);
-        if (renderedTemplate && elementToMount) {
-            // MOUNT THE TEMPLATE
-            elementToMount.appendChild(context.template)
-        }
-        else {
-            console.warn("No element to mount this component:" + component.name);
-        }
-    }
-    else {
+
+    // Check if there is any
+    if (!context.template){
         console.warn("This component has no Template:" + component.name);
+        return newComponent;
     }
 
+    // Render the template
+    const renderedTemplate = renderTemplate(context.template, context);
+    if (renderedTemplate){
+        console.warn("Template was not rendered properly in the component" + component.name);
+        return newComponent;
+    }
+    if (elementToMount) {
+        console.warn("No element to mount this component:" + component.name);
+        return newComponent;
+    }
+
+    // MOUNT THE TEMPLATE
+    elementToMount.appendChild(context.template)
     return newComponent
 }
