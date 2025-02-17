@@ -3,6 +3,7 @@
 import appTemplate from "./app.html"
 import {Context} from "../../hippo";
 import {myArticle} from "./my-article/myArticle";
+import {list} from "./list/list";
 
 export async function app(context: Context){
     const {variables} = context;

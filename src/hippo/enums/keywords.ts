@@ -4,6 +4,7 @@ export enum Keywords{
     "for" = "h-for",
     "bind" = "h-bind",
     "model" = "h-model",
-    "app" = "app"
+    "app" = "app",
+    "slot" = "h-slot",
 }
 

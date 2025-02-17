@@ -6,5 +6,9 @@ export function myArticle(context:Context){
     context.addVariable("heading", "My Awesome Heading");
     context.addVariable("paragraph", "My Paragraph content");
 
+    context.addChildren({
+      myArticle,
+    })
+
     context.setTemplate(template)
 }
