@@ -10,6 +10,7 @@ export async function app(context: Context){
     // if we want the template
     context.setTemplate(appTemplate)
 
+
     // if we want to set child components
     // TODO - load these so we could
     context.addChildren({

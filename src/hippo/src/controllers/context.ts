@@ -5,6 +5,7 @@ import {getNewId} from "./ids";
 import {createWatcher} from "./watchers";
 import {stringToHtml} from "./template/template_getters";
 import {Component} from "../../types/component";
+import {keysToUpper} from "../helpers/objects";
 
 export function createContext(parentContext: Context = null): Context {
   const newContext: any = {};
@@ -52,9 +53,12 @@ function addWatcher(context: Context, variable: Variable<any>, onUpdate: Functio
 function addChildren(context: Context, children: Record<string,Component>){
   // TODO - prepare the components for render (later set the this to the context)
   // TODO - check that there are no children of the same name
+
+  const upperCaseChildren = keysToUpper(children)
+
   context.childComponents = {
     ...context.childComponents,
-    ...children
+    ...upperCaseChildren
   };
   return children;
 }

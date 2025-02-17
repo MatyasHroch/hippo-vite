@@ -1,17 +1,22 @@
-import {Keywords} from "../../../enums/keywords";
 import {Context} from "../../../types";
 import {bindTextNodes} from "./template_text_nodes";
-import {bindAttribute, modelAttribute} from "./template_attributes";
 import {processNodes} from "./template_getters";
+import {processComponent} from "../component";
 
 
-export function renderTemplate(template:Element, context: Context) {
+export async function renderTemplate(template:Element, context: Context) {
     // const clonedTemplate = template.cloneNode(true) as Element; // first we will clone it so we will not change the original template
     const clonedTemplate = template
 
     // TODO - optimize this -> bind the text nodes and attributes while getting them
     // for now, first get the nodes and attributes and then bind and model them
-    const {textNodes, attributeNodes} = processNodes(clonedTemplate, context);
+    const {textNodes, attributeNodes, childComponents} = processNodes(clonedTemplate, context);
+
+
+    // console.log("from the process nodes we have:")
+    // console.log({textNodes})
+    // console.log({attributeNodes})
+    // console.log({childComponents})
 
     // TODO bind and model all attributes
     // bindAttributes(context, attributeNodes.toBind);
@@ -24,7 +29,7 @@ export function renderTemplate(template:Element, context: Context) {
     // const classNodes = getClassNodes(clonedTemplate);
     // renderClasses(classNodes, variables)
 
-    return clonedTemplate;
+    return {clonedTemplate, childComponents};
 }
 
 

@@ -16,11 +16,13 @@ export function isAttributeToModel(attribute : Attr){
 
 export function bindAttribute (context: Context, attribute: Attr) {
     // TODO - bind and model the attribute to its Variable, if there is non, dont do anything
+    console.log("todo - Bind variable to this attribute", attribute);
     return true;
 }
 
 // TODO - complete and use this
 export function modelAttribute (context: Context, attribute: Attr) {
     // TODO - bind and model the attribute to its Variable, if there is non, dont do anything
+    console.log("todo - Model variable to this attribute", attribute);
     return true;
 }
