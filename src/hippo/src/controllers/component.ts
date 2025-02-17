@@ -45,12 +45,16 @@ export async function processComponent(component: Function, parentContext: Conte
 
     const childComponents = renderTemplateResult.childComponents;
 
-
     // MOUNT THE TEMPLATE
     // TODO 1) add my nodesToSlot to the template
+    debugger
     const slot = renderedTemplate.querySelector(Keywords.slot);
     if (slot){
-        slot.append(...nodesToSlot);
+        for (const node of nodesToSlot){
+            if (node.nodeName !== Keywords.slot.toUpperCase()){
+                slot.appendChild(node)
+            }
+        }
     }
     // slot.remove();
 
@@ -73,6 +77,3 @@ export async function processComponent(component: Function, parentContext: Conte
     return newComponent
 }
 
-function addSlots(component: ComponentStruct, htmlSlots: Array<Node>) {
-    component.template
-}

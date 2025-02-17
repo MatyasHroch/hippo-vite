@@ -16,6 +16,7 @@ export async function app(context: Context){
     // TODO - load these so we could
     context.addChildren({
         MyArticle: myArticle,
+        list
     })
 
     // we add variables one by one like this:
