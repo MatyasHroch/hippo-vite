@@ -1,20 +1,22 @@
 import string from "vite-plugin-string";
-import {Context} from "../../types";
-import {Variable} from "../../types/variable";
+import {Context} from "../../../types";
+import {Variable} from "../../../types/variable";
+import {getGlobalContext} from "../globals";
+import {rerenderTextNodes, setVariable} from "./variable_set";
 
 
 export function createPartialVariable<T>(
   originVariable: Variable<any>,
   objectPath: string,
-  contextId?: number,
+  context?: Context,
   name?: string
 ) {
   // TODO - does it make sense?
   // contextId = originVariable.contextId;
 
-  contextId ??= 0;
+  context ??= getGlobalContext();
+  const contextId = context.id;
   name ??= objectPath.split(".").pop();
-
 
   const path = objectPath.split("value.")[1];
   const keys = path.split(".");
@@ -28,23 +30,25 @@ export function createPartialVariable<T>(
     currentValue = currentValue[key];
   }
 
-  const partialVariable = createOriginVariable<T>(name, currentValue, contextId);
+  const partialVariable = createOriginVariable<T>(name, currentValue, );
   originVariable.partialVariables[path] = partialVariable;
 
   return partialVariable;
 }
 
-export function createOriginVariable<T = any>(name: string, value: T, contextId?: number) {
+export function createOriginVariable<T = any>(name: string, value: T, context?: Context) {
   // when no context id provided, we give it to the global context, which is 0
-  contextId ??= 0;
+  context ??= getGlobalContext();
+  const contextId = context.id;
 
   const originalVariable: Variable<T> = {
     name,
     contextId,
+    context: context,
     fullName: name + `-${contextId}`,
     value: value,
     previousValue: null,
-    onUpdates: [],
+    watchers: [],
     inputNodes: [],
     textNodes: [],
     attributes: [],
@@ -54,6 +58,26 @@ export function createOriginVariable<T = any>(name: string, value: T, contextId?
     originVariable: null,
     partialVariables: {},
     updating: false,
+
+    // @ts-ignore
+    set: () => {
+      console.log("Setter not initialized yet")
+    }
   };
+
+  originalVariable.set = function <T>(value:T){
+    // TODO - ts ignore
+    // @ts-ignore
+    return setVariable<T>(context, originalVariable, value);
+  }
+
+  context.addWatcher(originalVariable, rerenderTextNodes)
+
   return originalVariable;
 }
+
+
+function deleteVariable<T>(context: Context, variable: T){
+  return
+}
+

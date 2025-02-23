@@ -4,25 +4,30 @@ import {Context} from "../../../types";
 import {findVariables, variableNameFromCurlyBraces} from "./template_getters";
 import {Variable} from "../../../types/variable";
 
-export function bindTextNodes( context:Context, textNodes: Array<Node>,) {
-    const {variables} = context;
-    for (const node of textNodes) {
-        const foundVariables = findVariables(node);
+// export function bindTextNodes( context:Context, textNodes: Array<Node>,) {
+//     const {variables} = context;
+//     for (const node of textNodes) {
+//         bindTextNode(context, node);
+//     }
+// }
 
-        if (foundVariables) {
-            const nodeText = node.nodeValue;
-            const splitText = splitNodeText(nodeText);
-            const parent = node.parentNode;
-            parent.removeChild(node);
+export function bindTextNode(context:Context, node: Node){
+    const foundVariables = findVariables(node);
 
-            composeTextNodes(splitText, variables, parent);
-        }
+    if (foundVariables) {
+        const nodeText = node.nodeValue;
+        const splitText = splitNodeText(nodeText);
+        const parent = node.parentNode;
+        parent.removeChild(node);
+
+        composeTextNodes(splitText, context.variables, parent);
     }
 }
 
 function renderVariable(nodeText: string, variables :Record<string, Variable<any>>) {
     if (nodeText.startsWith("{{") && nodeText.endsWith("}}")) {
         const variableName = variableNameFromCurlyBraces(nodeText);
+
         const variable = variables[variableName];
 
         if (!variable) {

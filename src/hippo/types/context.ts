@@ -1,6 +1,6 @@
 import {Variable} from "./variable";
-import {createWatcher} from "../src/controllers/watchers";
 import {Component} from "./component";
+import {Handler} from "./handler";
 
 export type Context = {
   // values
@@ -15,8 +15,8 @@ export type Context = {
 
   // methods
   // TODO - describe the methods more
-  addVariable: Function;
+  addVariable: <T>(name : string, value: T) => Variable<T>;
   setTemplate: Function;
-  addWatcher: (variable: Variable<any>, onUpdate: Function) => Function;
+  addWatcher: (variable: Variable<any>, onUpdate: Handler) => Function;
   addChildren: (children: Record<string,Component>) => Record<string,Component>;
 };

@@ -61,16 +61,14 @@ export async function processComponent(component: Function, parentContext: Conte
     // TODO  2) remove all my html, that will be placed to the child process so this is DONE
     //  because of the append method behavior
 
-
-
     elementToMount.appendChild(context.template)
 
     // PROCESS ALL THE CHILDREN
     // now process the child components, after the attributes and the one way and two way bindings
 
     for(const child of childComponents) {
-    console.log("childComponent " + child.name);
-    console.log("it has this slots: " + child.nodesToSLot);
+    // console.log("childComponent " + child.name);
+    // console.log("it has this slots: " + child.nodesToSLot);
         await processComponent(child.component, context, child.tag, child.nodesToSLot);
     }
 

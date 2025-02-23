@@ -1,8 +1,12 @@
+import {Context} from "./context";
+import {Handler} from "./handler";
+
 export type Variable<T> = {
   // identifiers
   name: string;
   fullName: string;
   contextId: number;
+  context: Context;
 
   // TODO does it make sense?
   // context: Context
@@ -11,7 +15,7 @@ export type Variable<T> = {
   value: T;
   previousValue: T | undefined;
 
-  onUpdates: Array<Function>; // functions that activates when the variable is changed
+  watchers: Array<Handler>; // functions that activates when the variable is changed
 
   inputNodes: Array<HTMLInputElement>; // two-way binding - input, select and textarea
   textNodes: Array<Text>; // one-way binding - variables rendered as a string
@@ -27,6 +31,9 @@ export type Variable<T> = {
   // only when it has a partial variables
   partialVariables: Record<string, Variable<any>>;
 
+  set: <T>(value: T) => Variable<T>;
+
   //
   updating: boolean;
 };
+
