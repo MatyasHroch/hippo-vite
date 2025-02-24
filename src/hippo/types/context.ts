@@ -5,7 +5,7 @@ import {Handler} from "./handler";
 export type Context = {
   // values
   id: number,
-  variables: Record<string, any>;
+  variables: Record<string, Variable<any>>;
   parent: Context | null;
   childComponents:  Record<string, Component>;
 

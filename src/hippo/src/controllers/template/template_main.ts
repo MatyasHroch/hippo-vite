@@ -11,7 +11,6 @@ export async function renderTemplate(template:Element, context: Context) {
     // TODO bind and model all attributes
     // TODO render all text nodes (vars or props) inside the process
     const {textNodes, attributeNodes, childComponents} = processNodes(clonedTemplate, context);
-    console.log(textNodes);
 
     // console.log("from the process nodes we have:")
     // console.log({textNodes})

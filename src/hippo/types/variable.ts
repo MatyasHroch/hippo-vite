@@ -19,7 +19,7 @@ export type Variable<T> = {
 
   inputNodes: Array<HTMLInputElement>; // two-way binding - input, select and textarea
   textNodes: Array<Text>; // one-way binding - variables rendered as a string
-  attributes: Array<Attr>; // one-way binding - variables as attributes
+  attributes: Array<{node: Element, attribute: Attr}>; // one-way binding - variables as attributes
 
   ifNodes: Array<HTMLElement>; // nodes that will be removed if the variable is not truly
   showNodes: Array<HTMLElement>; // nodes that will be given display none if the value is not truly

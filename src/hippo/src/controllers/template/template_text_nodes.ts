@@ -3,13 +3,7 @@
 import {Context} from "../../../types";
 import {findVariables, variableNameFromCurlyBraces} from "./template_getters";
 import {Variable} from "../../../types/variable";
-
-// export function bindTextNodes( context:Context, textNodes: Array<Node>,) {
-//     const {variables} = context;
-//     for (const node of textNodes) {
-//         bindTextNode(context, node);
-//     }
-// }
+import {variablePattern} from "./constants";
 
 export function bindTextNode(context:Context, node: Node){
     const foundVariables = findVariables(node);
@@ -20,6 +14,7 @@ export function bindTextNode(context:Context, node: Node){
         const parent = node.parentNode;
         parent.removeChild(node);
 
+        debugger
         composeTextNodes(splitText, context.variables, parent);
     }
 }
@@ -27,7 +22,6 @@ export function bindTextNode(context:Context, node: Node){
 function renderVariable(nodeText: string, variables :Record<string, Variable<any>>) {
     if (nodeText.startsWith("{{") && nodeText.endsWith("}}")) {
         const variableName = variableNameFromCurlyBraces(nodeText);
-
         const variable = variables[variableName];
 
         if (!variable) {
@@ -74,11 +68,8 @@ function composeTextNodes(splitText: Array<string>, variables: Record<string, Va
 }
 
 function splitNodeText(nodeText :string) {
-    // Define the pattern for matching text and placeholders
-    const pattern = /({{[^{}]*}})/;
-
     // Split the text using the pattern
-    const textParts = nodeText.split(pattern);
+    const textParts = nodeText.split(variablePattern);
 
     return textParts.filter((textPart) => textPart !== "");
 }

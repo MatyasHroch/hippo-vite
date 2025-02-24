@@ -2,7 +2,7 @@ import string from "vite-plugin-string";
 import {Context} from "../../../types";
 import {Variable} from "../../../types/variable";
 import {getGlobalContext} from "../globals";
-import {rerenderTextNodes, setVariable} from "./variable_set";
+import {rerenderAttributes, rerenderTextNodes, setVariable} from "./variable_set";
 
 
 export function createPartialVariable<T>(
@@ -72,6 +72,7 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
   }
 
   context.addWatcher(originalVariable, rerenderTextNodes)
+  context.addWatcher(originalVariable, rerenderAttributes);
 
   return originalVariable;
 }

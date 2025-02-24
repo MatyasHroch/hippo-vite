@@ -48,7 +48,7 @@ export function processNodes(node: Element, context: Context) {
             if (isAttributeToBind(attr)){
                 attributeNodes.toBind.push(node)
                 // TODO really bind them
-                bindAttribute(context, attr);
+                bindAttribute(context, attr, node);
             }
             if(isAttributeToModel(attr)){
                 attributeNodes.toModel.push(node)
@@ -64,7 +64,7 @@ export function processNodes(node: Element, context: Context) {
             // // check if we can cast the Node to the Element
             // if (childNode.nodeType !== Node.ELEMENT_NODE) continue;
 
-            // TODO - find out if this is ok "childNode as Element"
+            // TODO - find out if this is ok: "childNode as Element"
             // recursively add all the textNodes and attributes to bind
             const result = processNodes(childNode as Element, context);
             textNodes.push(...result.textNodes);
