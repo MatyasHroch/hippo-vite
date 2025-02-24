@@ -3,7 +3,7 @@
 import {Context} from "../../../types";
 import {findVariables, variableNameFromCurlyBraces} from "./template_getters";
 import {Variable} from "../../../types/variable";
-import {variablePattern} from "./constants";
+import {textNodePattern} from "./constants";
 
 export function bindTextNode(context:Context, node: Node){
     const foundVariables = findVariables(node);
@@ -14,7 +14,6 @@ export function bindTextNode(context:Context, node: Node){
         const parent = node.parentNode;
         parent.removeChild(node);
 
-        debugger
         composeTextNodes(splitText, context.variables, parent);
     }
 }
@@ -69,7 +68,7 @@ function composeTextNodes(splitText: Array<string>, variables: Record<string, Va
 
 function splitNodeText(nodeText :string) {
     // Split the text using the pattern
-    const textParts = nodeText.split(variablePattern);
+    const textParts = nodeText.split(textNodePattern);
 
     return textParts.filter((textPart) => textPart !== "");
 }

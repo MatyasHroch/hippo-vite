@@ -2,7 +2,7 @@
 // TODO - complete and use this
 import {Context} from "../../../types";
 import {Keywords} from "../../../enums/keywords";
-import {variablePattern} from "./constants";
+import {attributePattern} from "./constants";
 // we get the keywords without the ":" separator
 const bindKey = Keywords.bind;
 const modelKey = Keywords.model;
@@ -15,7 +15,7 @@ export function attributeNameToVariableName(attribute : Attr){
 
     // later we will parse the variables identifier and so on
     // TODO - here we will bind the new created Partial as well
-    const match = attribute.value.trim().match(variablePattern);
+    const match = attribute.value.trim().match(attributePattern);
     return match ? match[1] : null;
 }
 
@@ -23,7 +23,7 @@ export function isAttributeToModel(attribute : Attr){
     return attribute.name.startsWith(`${modelKey}:`);
 }
 
-export function bindAttribute(context: Context, attribute: Attr, node: Node) {
+export function bindAttribute(context: Context, attribute: Attr, node: Element) {
     // TODO - bind and model the attribute to its Variable, if there is non, dont do anything
     console.log("todo - Bind variable to this attribute", attribute);
     const {variables} = context;

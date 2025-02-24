@@ -1,2 +1,3 @@
-export const variablePattern = /{{\s*(\w+)\s*}}/
-;
+export const attributePattern :RegExp = /{{\s*(\w+)\s*}}/
+export const textNodePattern :RegExp = /(\{\{.*?}})/
+
