@@ -14,7 +14,7 @@ export type Context = {
   templateString?: string;
 
   // methods
-  // TODO - describe the methods more
+  // TODO - describe the methods more, and do addVariables
   addVariable: <T>(name : string, value: T) => Variable<T>;
   setTemplate: Function;
   addWatcher: (variable: Variable<any>, onUpdate: Handler) => Function;

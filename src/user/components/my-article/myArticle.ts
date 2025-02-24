@@ -8,7 +8,6 @@ export function myArticle(context:Context){
     const paragraph = context.addVariable("paragraph", "My Paragraph content");
     const isCheckBoxEnabled = context.addVariable("isCheckBoxEnabled", true);
     const isButtonDisabled = context.addVariable("isButtonDisabled", !isCheckBoxEnabled.value);
-
     const newParagraph = context.addVariable("newParagraph", "");
 
     newParagraph.watchers.push((c,v ,value) => {
@@ -26,7 +25,6 @@ export function myArticle(context:Context){
         isButtonDisabled.set(!isOk);
     }
     checkButton()
-
 
     context.addChildren({
       list,

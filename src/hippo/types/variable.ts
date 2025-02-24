@@ -15,6 +15,7 @@ export type Variable<T> = {
   value: T;
   previousValue: T | undefined;
 
+  // TODO - create addWatcher method, and the typing should be better
   watchers: Array<Handler>; // functions that activates when the variable is changed
 
   inputNodes: Array<HTMLInputElement>; // two-way binding - input, select and textarea
