@@ -5,7 +5,14 @@
 
     <h-slot>
     </h-slot>
-    <p title="{{paragraph}}">
-        {{paragraph}} - above me should be some button
-    </p>
+    <div class="border p-2 m-2">
+        <input value="[[newParagraph]]">
+        <p>
+            {{newParagraph}}
+        </p>
+    </div>
+    <div class="border p-2 m-2">
+        <input type="checkbox" checked="[[isCheckBoxEnabled]]">
+        <button disabled="{{isButtonDisabled}}"> Jsem button ovládaný checkboxem nade mnou </button>
+    </div>
 </article>

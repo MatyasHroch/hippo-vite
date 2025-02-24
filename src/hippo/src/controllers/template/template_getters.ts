@@ -53,7 +53,7 @@ export function processNodes(node: Element, context: Context) {
             if(isAttributeToModel(attr)){
                 attributeNodes.toModel.push(node)
                 // TODO model bind them
-                modelAttribute(context, attr);
+                modelAttribute(context, attr, node);
             }
         }
     }

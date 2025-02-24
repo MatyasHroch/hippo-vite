@@ -1,16 +1,20 @@
 import {Context} from "../../../types";
 import {Variable} from "../../../types/variable";
 import string from "vite-plugin-string";
+import {ViteRuntimeImportMeta} from "vite/dist/node/runtime";
 
 // this function actually sets the value
-export function setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
+export function _setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
     variable.previousValue = variable.value;
     variable.value = value;
 }
 
 export function setVariable<T>(context: Context, variable: Variable<T>, value: T){
     // here we set the variable value
-    setVariableValue(context, variable, value);
+    if (value === variable.value){
+        return
+    }
+    _setVariableValue(context, variable, value);
 
     // here it just triggers all the watchers
     for (const watcher of variable.watchers) {
@@ -31,19 +35,23 @@ export function rerenderTextNodes<T>(context: Context, variable: Variable<T>, va
 export function rerenderAttributes<T>(context: Context, variable: Variable<T>, value: T){
     // TODO - handle bolean attributes somehow
     for (const attributeNode of variable.attributes) {
-        // we set the attribute to the value
-        attributeNode.attribute.value = value as string;
-
-        // if it is a bolean attribute, we add it or remove it from the
-        if (isBooleanAttribute(attributeNode.attribute)) {
-            if (value){
-                attributeNode.node.attributes.setNamedItem(attributeNode.attribute)
-            } else {
-                attributeNode.node.removeAttribute(attributeNode.attribute.name)
-            }
-        }
+        renderAttribute(attributeNode, value)
     }
     return variable;
+}
+
+export function renderAttribute(attributeNode: {node: Element, attribute: Attr}, value: any){
+    // we set the attribute to the value
+    attributeNode.attribute.value = value as string;
+
+    // if it is a bolean attribute, we add it or remove it from the
+    if (isBooleanAttribute(attributeNode.attribute)) {
+        if (value){
+            attributeNode.node.attributes.setNamedItem(attributeNode.attribute)
+        } else {
+            attributeNode.node.removeAttribute(attributeNode.attribute.name)
+        }
+    }
 }
 
 export function rerenderDependencies<T>(variable: Variable<T>){
