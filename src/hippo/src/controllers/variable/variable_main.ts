@@ -2,9 +2,13 @@ import string from "vite-plugin-string";
 import {Context} from "../../../types";
 import {Variable} from "../../../types/variable";
 import {getGlobalContext} from "../globals";
-import {rerenderAttributes, rerenderTextNodes, setVariable} from "./variable_set";
-
-
+import {
+  rerenderAttributes,
+  rerenderDependencies,
+  rerenderPartials,
+  rerenderTextNodes,
+  setVariable
+} from "./variable_set";
 
 
 export function createOriginVariable<T = any>(name: string, value: T, context?: Context) {
@@ -44,6 +48,8 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
 
   context.addWatcher(originalVariable, rerenderTextNodes)
   context.addWatcher(originalVariable, rerenderAttributes);
+  context.addWatcher(originalVariable, rerenderDependencies);
+  context.addWatcher(originalVariable, rerenderPartials)
 
   return originalVariable;
 }

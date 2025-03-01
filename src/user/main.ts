@@ -1,6 +1,6 @@
 // @ts-ignore
 import appTemplate from "./main.html"
-import {createApp, createContext, createOriginVariable, createPartialVariable} from "../hippo";
+import {createApp, createContext, createOriginVariable} from "../hippo";
 import { app } from "./components/app";
 createApp(app)
 

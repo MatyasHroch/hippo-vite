@@ -11,7 +11,8 @@ export function _setVariableValue<T>(context: Context, variable: Variable<T>, va
 
 export function setVariable<T>(context: Context, variable: Variable<T>, value: T){
     // here we set the variable value
-    if (value === variable.value){
+    const isNotObject = !Object.keys(value);
+    if (isNotObject && value === variable.value){
         return
     }
     _setVariableValue(context, variable, value);
@@ -54,9 +55,25 @@ export function renderAttribute(attributeNode: {node: Element, attribute: Attr},
     }
 }
 
-export function rerenderDependencies<T>(variable: Variable<T>){
+export function rerenderDependencies<T>(context: Context, variable: Variable<T>, value: T){
     // TODO - rerender the Dependencies
     console.log("// TODO - rerender the Dependencies")
+    return variable;
+}
+
+export function rerenderPartials<T>(context: Context, variable: Variable<T>, value: T){
+    for (const partialName in variable.partialVariables){
+        const partialVariable = variable.partialVariables[partialName];
+
+        let currentValue = value;
+        for (const key of partialName.split(".")) {
+            // if I get to some point where the key does not exist, the objectPath is invalid
+            if (currentValue[key] === undefined) new Error(`Invalid path in partial variable: ${partialName}`);
+            currentValue = currentValue[key];
+        }
+        partialVariable.set(currentValue);
+    }
+    return variable;
 }
 
 const booleanAttributes = new Set([

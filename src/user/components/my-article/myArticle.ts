@@ -11,7 +11,7 @@ export function myArticle(context:Context){
     const isButtonDisabled = context.addVariable("isButtonDisabled", !isCheckBoxEnabled.value);
     const newParagraph = context.addVariable("newParagraph", "");
 
-    const partialUser = context.addVariable("user", {
+    const userWithPartial = context.addVariable("user", {
         name: "Albert",
         surname: "Einstein",
         address: {
@@ -31,10 +31,14 @@ export function myArticle(context:Context){
     })
 
     setTimeout(() =>{
+
         heading.set("Changed heading in Article");
-        const myUser = partialUser.value;
+
+        const myUser = userWithPartial.value;
         myUser.address.city = "Olomouc";
-        partialUser.set(myUser);
+        debugger
+
+        userWithPartial.set(myUser);
     }, 2 * 1000)
 
     function checkButton(){

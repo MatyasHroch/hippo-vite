@@ -34,6 +34,7 @@ export function createPartialVariable<T>(
 
     const partialVariable = createOriginVariable<T>(name, currentValue);
     originVariable.partialVariables[path] = partialVariable;
+    context.variables[partialVariable.name] = partialVariable;
 
     return partialVariable;
 }
@@ -46,10 +47,10 @@ export function createPartialFromTemplateString(context: Context, fullObjectStri
     const variable = context.variables[variableName];
     if (!variable) return null;
 
-    return variable;
+    return createPartialVariable(variable, fullObjectString, context)
 
 
-    // TODO - from "user.value.address" or "user.address" create a new Partial
+    // TODO - from "user.value.address" or "user.address" create a new Partial - DONE somehow
         // TODO - 1) get the original variable name and get the variable
         // TODO - 2) get the object string ["value", "address",  ...] or just ["address"] according to the origin
         // TODO - 3) create the partial variable using the createPartialVariable (it also signs it to the original)
