@@ -74,7 +74,6 @@ export function processNodes(node: Element, context: Context) {
         }
     } else if (!isComponent && node.nodeType == Node.TEXT_NODE  && node.textContent !== "") {
             // when the node is a leaf so we can inspect the text nodes
-            // TODO - really render the text node, for now just add for the post processing
             bindTextNode(context, node)
             textNodes.push(node);
         }

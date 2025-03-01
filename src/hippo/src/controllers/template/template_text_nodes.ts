@@ -8,6 +8,8 @@ import {textNodePattern} from "./constants";
 export function bindTextNode(context:Context, node: Node){
     const foundVariables = findVariables(node);
 
+    // TODO - add a function that would create a partial variable if it is possible
+
     if (foundVariables) {
         const nodeText = node.nodeValue;
         const splitText = splitNodeText(nodeText);
@@ -18,7 +20,7 @@ export function bindTextNode(context:Context, node: Node){
     }
 }
 
-function renderVariable(nodeText: string, variables :Record<string, Variable<any>>) {
+function renderTextNode(nodeText: string, variables :Record<string, Variable<any>>) {
     if (nodeText.startsWith("{{") && nodeText.endsWith("}}")) {
         const variableName = variableNameFromCurlyBraces(nodeText);
         const variable = variables[variableName];
@@ -43,7 +45,6 @@ function renderVariable(nodeText: string, variables :Record<string, Variable<any
                 //     return element;
                 // }
             }
-
             console.error(`Variable ${variableName} not found.`);
             return document.createTextNode("");
         }
@@ -60,7 +61,8 @@ function renderVariable(nodeText: string, variables :Record<string, Variable<any
 
 function composeTextNodes(splitText: Array<string>, variables: Record<string, Variable<any>>, parent: Node) {
     for (const text of splitText) {
-        const textNode = renderVariable(text, variables);
+        // TODO here add the creation of a Partial Variable
+        const textNode = renderTextNode(text, variables);
         parent.appendChild(textNode);
     }
     return parent;
@@ -69,6 +71,5 @@ function composeTextNodes(splitText: Array<string>, variables: Record<string, Va
 function splitNodeText(nodeText :string) {
     // Split the text using the pattern
     const textParts = nodeText.split(textNodePattern);
-
     return textParts.filter((textPart) => textPart !== "");
 }

@@ -5,8 +5,14 @@
 
     <h-slot>
     </h-slot>
-    <div class="border p-2 m-2">
-        <input value="[[newParagraph]]">
+    <div h-for="item in coll.." class="border p-2 m-2">
+        <div>
+            <h4 class="p-2 m-2">
+                Here we have the partial input value
+            </h4>
+            <input value="[[user.value.address.city]]">
+        </div>
+        <input value="[[ newParagraph ]]">
         <p>
             {{newParagraph}}
         </p>

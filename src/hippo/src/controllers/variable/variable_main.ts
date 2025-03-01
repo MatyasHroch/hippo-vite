@@ -5,36 +5,7 @@ import {getGlobalContext} from "../globals";
 import {rerenderAttributes, rerenderTextNodes, setVariable} from "./variable_set";
 
 
-export function createPartialVariable<T>(
-  originVariable: Variable<any>,
-  objectPath: string,
-  context?: Context,
-  name?: string
-) {
-  // TODO - does it make sense?
-  // contextId = originVariable.contextId;
 
-  context ??= getGlobalContext();
-  const contextId = context.id;
-  name ??= objectPath.split(".").pop();
-
-  const path = objectPath.split("value.")[1];
-  const keys = path.split(".");
-
-  let currentValue = originVariable.value;
-  if (!currentValue) return;
-
-  for (const key of keys) {
-    // if I get to some point where the key does not exist, the objectPath is invalid
-    if (currentValue[key] === undefined) new Error(`Invalid path: ${path}`);
-    currentValue = currentValue[key];
-  }
-
-  const partialVariable = createOriginVariable<T>(name, currentValue, );
-  originVariable.partialVariables[path] = partialVariable;
-
-  return partialVariable;
-}
 
 export function createOriginVariable<T = any>(name: string, value: T, context?: Context) {
   // when no context id provided, we give it to the global context, which is 0
