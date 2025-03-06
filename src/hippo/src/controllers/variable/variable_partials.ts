@@ -32,23 +32,24 @@ export function createPartialVariable<T>(
     }
 
     // TODO - find out if there is already the same partial, if it does, just return it instead of creating a new one
-    const alreadyExistingPartial = originVariable.partialVariables[path];
+    let partialVariable = originVariable.partialVariables[path];
+    if (!partialVariable) {
+        partialVariable = createOriginVariable<T>(name, currentValue);
+        // setting up the slots
+        partialVariable.pathFromOrigin = path
+        partialVariable.originVariable = originVariable;
+        originVariable.partialVariables[path] = partialVariable;
+    }
 
-    const partialVariable = alreadyExistingPartial
-        ? alreadyExistingPartial
-        : createOriginVariable<T>(name, currentValue);
-
-    originVariable.partialVariables[path] = partialVariable;
     context.variables[partialVariable.name] = partialVariable;
-
     return partialVariable;
 }
 
 export function createPartialFromTemplateString(context: Context, fullObjectString:string, readOnly = false){
-    const splittedObjectString = fullObjectString.split(".");
-    if (splittedObjectString.length < 1) return;
-
-    const variableName = splittedObjectString[0];
+    const splitObjectString = fullObjectString.split(".");
+    if (splitObjectString.length < 1) return;
+;
+    const variableName = splitObjectString[0];
     const variable = context.variables[variableName];
     if (!variable) return null;
 

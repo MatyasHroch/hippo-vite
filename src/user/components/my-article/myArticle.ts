@@ -31,8 +31,7 @@ export function myArticle(context:Context){
     })
 
     setTimeout(() =>{
-
-        heading.set("Changed heading in Article");
+        heading.set("Changed-Heading");
 
         const myUser = userWithPartial.value;
         myUser.address.city = "Olomouc";
@@ -42,6 +41,7 @@ export function myArticle(context:Context){
 
     function checkButton(){
         const isOk = newParagraph.value.length > 10 && isCheckBoxEnabled.value;
+        if (isButtonDisabled.value !== isOk) return;
         isButtonDisabled.set(!isOk);
     }
     checkButton()
