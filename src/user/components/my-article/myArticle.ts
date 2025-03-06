@@ -36,7 +36,6 @@ export function myArticle(context:Context){
 
         const myUser = userWithPartial.value;
         myUser.address.city = "Olomouc";
-        debugger
 
         userWithPartial.set(myUser);
     }, 2 * 1000)

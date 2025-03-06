@@ -2,6 +2,7 @@ import {Context} from "../../../types";
 import {bindAttribute, isAttributeToBind, isAttributeToModel, modelAttribute} from "./template_attributes";
 import {Component} from "../../../types/component";
 import {bindTextNode} from "./template_text_nodes";
+import {createPartialFromTemplateString} from "../variable/variable_partials";
 
 type ChildrenArray = Array<{
     tag: Node,
@@ -95,6 +96,13 @@ export function findVariables(node: Node) {
     return node.textContent.match(/{{\s*[\w.]+\s*}}/g);
 }
 
-export function variableNameFromCurlyBraces(text: string) {
-    return text.slice(2, -2).trim();
+export function variableNameFromTextWithBraces(context: Context, text: string, createNewPartial = true) {
+    const slicedText =text.slice(2, -2).trim();
+
+    if (slicedText && createNewPartial && slicedText.includes(".")){
+        const partialVariable = createPartialFromTemplateString(context, slicedText);
+        return partialVariable.name;
+    }
+
+    return slicedText;
 }

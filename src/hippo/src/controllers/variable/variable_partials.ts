@@ -16,8 +16,7 @@ export function createPartialVariable<T>(
     // contextId = originVariable.contextId;
 
     context ??= getGlobalContext();
-    const contextId = context.id;
-    name ??= objectPath.split(".").pop();
+    name ??= objectPath
 
     // TODO - make sure it works even with the value and also without it
     const path = objectPath.split("value.")[1];
@@ -32,7 +31,13 @@ export function createPartialVariable<T>(
         currentValue = currentValue[key];
     }
 
-    const partialVariable = createOriginVariable<T>(name, currentValue);
+    // TODO - find out if there is already the same partial, if it does, just return it instead of creating a new one
+    const alreadyExistingPartial = originVariable.partialVariables[path];
+
+    const partialVariable = alreadyExistingPartial
+        ? alreadyExistingPartial
+        : createOriginVariable<T>(name, currentValue);
+
     originVariable.partialVariables[path] = partialVariable;
     context.variables[partialVariable.name] = partialVariable;
 
@@ -48,11 +53,4 @@ export function createPartialFromTemplateString(context: Context, fullObjectStri
     if (!variable) return null;
 
     return createPartialVariable(variable, fullObjectString, context)
-
-
-    // TODO - from "user.value.address" or "user.address" create a new Partial - DONE somehow
-        // TODO - 1) get the original variable name and get the variable
-        // TODO - 2) get the object string ["value", "address",  ...] or just ["address"] according to the origin
-        // TODO - 3) create the partial variable using the createPartialVariable (it also signs it to the original)
-        // TODO - 4)
 }

@@ -1,15 +1,19 @@
 <article class="border shadow p-2">
     <h3>
-        {{heading}} - and again - {{heading}}
+        {{heading}} - and some city -  {{user.value.address.city}}
     </h3>
 
     <h-slot>
     </h-slot>
+
     <div h-for="item in coll.." class="border p-2 m-2">
         <div>
             <h4 class="p-2 m-2">
                 Here we have the partial input value
             </h4>
+            <p>
+                {{user.value.address.city}}
+            </p>
             <input value="[[user.value.address.city]]">
         </div>
         <input value="[[ newParagraph ]]">

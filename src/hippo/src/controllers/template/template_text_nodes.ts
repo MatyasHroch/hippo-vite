@@ -1,7 +1,7 @@
 
 // TODO - complete and use this
 import {Context} from "../../../types";
-import {findVariables, variableNameFromCurlyBraces} from "./template_getters";
+import {findVariables, variableNameFromTextWithBraces} from "./template_getters";
 import {Variable} from "../../../types/variable";
 import {textNodePattern} from "./constants";
 
@@ -16,19 +16,19 @@ export function bindTextNode(context:Context, node: Node){
         const parent = node.parentNode;
         parent.removeChild(node);
 
-        composeTextNodes(splitText, context.variables, parent);
+        composeTextNodes(context, splitText, context.variables, parent);
     }
 }
 
-function renderTextNode(nodeText: string, variables :Record<string, Variable<any>>) {
+function renderTextNode(context:Context, nodeText: string, variables :Record<string, Variable<any>>) {
     if (nodeText.startsWith("{{") && nodeText.endsWith("}}")) {
-        const variableName = variableNameFromCurlyBraces(nodeText);
+        // TODO - create Partial and then bind it inside the variable name getter 'variableNameFromTextWithBraces'
+        const variableName = variableNameFromTextWithBraces(context, nodeText);
         const variable = variables[variableName];
 
         if (!variable) {
             const varAndKeys = variableName.split(".");
             if (varAndKeys.length >= 1) {
-                // TODO - create Partial and then bind it
                 // const composedVariable = variables[varAndKeys[0]];
                 // let keys = varAndKeys.slice(1);
                 // const expression = () => {
@@ -59,10 +59,10 @@ function renderTextNode(nodeText: string, variables :Record<string, Variable<any
     return document.createTextNode(nodeText);
 }
 
-function composeTextNodes(splitText: Array<string>, variables: Record<string, Variable<any>>, parent: Node) {
+function composeTextNodes(context:Context, splitText: Array<string>, variables: Record<string, Variable<any>>, parent: Node) {
     for (const text of splitText) {
         // TODO here add the creation of a Partial Variable
-        const textNode = renderTextNode(text, variables);
+        const textNode = renderTextNode(context, text, variables);
         parent.appendChild(textNode);
     }
     return parent;

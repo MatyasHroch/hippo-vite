@@ -3,7 +3,7 @@ import {Variable} from "../../../types/variable";
 import string from "vite-plugin-string";
 import {ViteRuntimeImportMeta} from "vite/dist/node/runtime";
 
-// this function actually sets the value
+// this function actually sets the variable's value
 export function _setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
     variable.previousValue = variable.value;
     variable.value = value;
@@ -34,7 +34,6 @@ export function rerenderTextNodes<T>(context: Context, variable: Variable<T>, va
 }
 
 export function rerenderAttributes<T>(context: Context, variable: Variable<T>, value: T){
-    // TODO - handle bolean attributes somehow
     for (const attributeNode of variable.attributes) {
         renderAttribute(attributeNode, value)
     }
