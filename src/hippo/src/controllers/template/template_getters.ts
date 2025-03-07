@@ -4,8 +4,7 @@ import {Component} from "../../../types/component";
 import {bindTextNode} from "./template_text_nodes";
 import {createPartialFromTemplateString} from "../variable/variable_partials";
 import {Keywords} from "../../../enums/keywords";
-import {getIfPlaceholderTag} from "../variable/variable_if_nodes";
-import {generateDerenderIf, generateRenderIf} from "./template_if_nodes";
+import {generateDerenderIf, generateRenderIf, getIfPlaceholderTag} from "./template_if_nodes";
 
 type ChildrenArray = Array<{
     tag: Node,
@@ -44,18 +43,18 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
 
         variable.ifNodes.push({
             placeholderNode: node,
-            processTemplateFunction: renderIf
+            renderIf,
+            derenderIf
         })
 
-
         // when the variable is truly, we
-        if (!variable.value){
+        if (variable.value){
             console.log("Here we have a truly if node")
-            const result = await renderIf()
+            await renderIf()
         }
         else {
+            await derenderIf();
             console.log("Here we have a falsy if node")
-            // await derenderIf();
         }
 
         // TODO - node and context to a function, which will process the node and then removes the father node

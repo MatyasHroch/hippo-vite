@@ -4,7 +4,7 @@ import {Variable} from "../../../types/variable";
 import {getGlobalContext} from "../globals";
 import {
   rerenderAttributes,
-  rerenderDependencies,
+  rerenderDependencies, rerenderIfNodes,
   rerenderPartials,
   rerenderTextNodes,
   setVariable
@@ -46,6 +46,7 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
     return setVariable<T>(context, originalVariable, value);
   }
 
+  context.addWatcher(originalVariable, rerenderIfNodes)
   context.addWatcher(originalVariable, rerenderTextNodes)
   context.addWatcher(originalVariable, rerenderAttributes);
   context.addWatcher(originalVariable, rerenderDependencies);

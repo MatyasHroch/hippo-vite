@@ -3,7 +3,8 @@ import {Handler} from "./handler";
 
 export type ifStructure = {
   placeholderNode: Node,
-  processTemplateFunction: Function,
+  renderIf: Function,
+  derenderIf: Function,
 }
 
 export type Variable<T> = {
