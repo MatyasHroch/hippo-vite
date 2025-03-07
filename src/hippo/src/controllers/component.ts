@@ -4,8 +4,9 @@ import {renderTemplate} from "./template/template_main";
 import {Keywords} from "../../enums/keywords";
 
 type ComponentStruct = {
-    template?: Element | Node;
+    template?: Element;
     context?: Context;
+    name: string;
 }
 
 // TODO - should be renamed as process context
@@ -13,6 +14,7 @@ export async function processComponent(component: Function, parentContext: Conte
     const context = createContext(parentContext);
     const newComponent : ComponentStruct = {
         context: context,
+        name: component.name,
     };
 
     // USER FUNCTION COMPONENT, !!! warning, can be async
@@ -20,26 +22,37 @@ export async function processComponent(component: Function, parentContext: Conte
     await component(context)
 
     // PROCESS THE TEMPLATE
-
     // Check if there is any
     if (!context.template){
         console.warn("This component has no Template:" + component.name);
         return newComponent;
     }
 
-    // Render the template
-    const renderTemplateResult = await renderTemplate(context.template, context);
-    const renderedTemplate = renderTemplateResult.clonedTemplate;
-    if (!renderedTemplate){
-        console.warn("Template was not rendered properly in the component" + component.name);
+    newComponent.template = context.template;
+    return processTemplate(newComponent, elementToMount, nodesToSlot)
+}
+
+export async function processTemplate(newComponent: ComponentStruct, elementToMount: Node = null, nodesToSlot: Array<Node> = null){
+    const context = newComponent.context;
+
+    // Check if there is any
+    if (!newComponent.template){
+        console.warn("This component has no Template:" + newComponent.name);
         return newComponent;
     }
-    newComponent.template
+
+    // Render the template
+    const renderTemplateResult = await renderTemplate(newComponent.template, context);
+    const renderedTemplate = renderTemplateResult.clonedTemplate;
+    if (!renderedTemplate){
+        console.warn("Template was not rendered properly in the component" + newComponent.name);
+        return newComponent;
+    }
+    newComponent.template = renderedTemplate
     context.template = renderedTemplate
 
-
     if (!elementToMount) {
-        console.warn("No element to mount this component:" + component.name);
+        console.warn("No element to mount this component:" + newComponent.name);
         return newComponent;
     }
 
@@ -49,7 +62,7 @@ export async function processComponent(component: Function, parentContext: Conte
     // TODO 1) add my nodesToSlot to the template !!! Attention - the append method is moving the node- DONE
     // TODO speed it up, return it in the render template, dont look it up by the query selector
     const slot = renderedTemplate.querySelector(Keywords.slot);
-    if (slot){
+    if (slot && nodesToSlot){
         for (const node of nodesToSlot){
             if (node.nodeName !== Keywords.slot.toUpperCase()){
                 slot.appendChild(node)
@@ -67,11 +80,10 @@ export async function processComponent(component: Function, parentContext: Conte
     // now process the child components, after the attributes and the one way and two way bindings
 
     for(const child of childComponents) {
-    // console.log("childComponent " + child.name);
-    // console.log("it has this slots: " + child.nodesToSLot);
+        // console.log("childComponent " + child.name);
+        // console.log("it has this slots: " + child.nodesToSLot);
         await processComponent(child.component, context, child.tag, child.nodesToSLot);
     }
 
     return newComponent
 }
-

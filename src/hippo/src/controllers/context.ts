@@ -1,5 +1,5 @@
 import { Context } from "../../types";
-import { createOriginVariable, createPartialVariable } from "./variable/variable_main";
+import { createOriginVariable } from "./variable/variable_main";
 import {Variable} from "../../types/variable";
 import {getNewId} from "./ids";
 import {stringToHtml} from "./template/template_getters";

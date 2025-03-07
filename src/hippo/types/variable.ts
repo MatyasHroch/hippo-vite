@@ -1,6 +1,11 @@
 import {Context} from "./context";
 import {Handler} from "./handler";
 
+export type ifStructure = {
+  placeholderNode: Node,
+  processTemplateFunction: Function,
+}
+
 export type Variable<T> = {
   // identifiers
   name: string;
@@ -22,7 +27,7 @@ export type Variable<T> = {
   textNodes: Array<Text>; // one-way binding - variables rendered as a string
   attributes: Array<{node: Element, attribute: Attr}>; // one-way binding - variables as attributes
 
-  ifNodes: Array<HTMLElement>; // nodes that will be removed if the variable is not truly
+  ifNodes: Array<ifStructure> // nodes that will be removed if the variable is not truly
   showNodes: Array<HTMLElement>; // nodes that will be given display none if the value is not truly
 
   // only when it has a partial variable

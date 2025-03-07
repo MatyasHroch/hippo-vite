@@ -2,7 +2,7 @@ import {Context} from "../../../types";
 import {processNodes} from "./template_getters";
 
 
-export async function renderTemplate(template:Element, context: Context) {
+export async function renderTemplate(template:Element, context: Context, nodesToSLot: Array<Node> = null) {
     // const clonedTemplate = template.cloneNode(true) as Element; // first we will clone it so we will not change the original template
     const clonedTemplate = template
 
@@ -10,7 +10,7 @@ export async function renderTemplate(template:Element, context: Context) {
     // TODO - optimize this -> bind the text nodes and attributes while getting them
     // TODO bind and model all attributes
     // TODO render all text nodes (vars or props) inside the process
-    const {textNodes, attributeNodes, childComponents} = processNodes(clonedTemplate, context);
+    const {textNodes, attributeNodes, childComponents} = await processNodes(clonedTemplate, context, nodesToSLot);
 
     // console.log("from the process nodes we have:")
     // console.log({textNodes})

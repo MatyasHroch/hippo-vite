@@ -9,7 +9,7 @@ import string from "vite-plugin-string";
 
 // 1) registers the attribute to the variable
 // 2) calls renderAttribute
-export function bindAttribute(context: Context, attribute: Attr, node: Element, variableNameExtractor: (contex: Context, attribute:Attr) => string = variableNameFromAttributeToBind) {
+export function bindAttribute(context: Context, attribute: Attr, node: Element, variableNameExtractor: (context: Context, attribute:Attr) => string = variableNameFromAttributeToBind) {
     // TODO - bind the attribute to its Variable, if there is non, dont do anything
     const {variables} = context;
 

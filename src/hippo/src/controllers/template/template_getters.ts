@@ -3,6 +3,9 @@ import {bindAttribute, isAttributeToBind, isAttributeToModel, modelAttribute} fr
 import {Component} from "../../../types/component";
 import {bindTextNode} from "./template_text_nodes";
 import {createPartialFromTemplateString} from "../variable/variable_partials";
+import {Keywords} from "../../../enums/keywords";
+import {getIfPlaceholderTag} from "../variable/variable_if_nodes";
+import {generateDerenderIf, generateRenderIf} from "./template_if_nodes";
 
 type ChildrenArray = Array<{
     tag: Node,
@@ -12,7 +15,7 @@ type ChildrenArray = Array<{
     name? : string
 }>;
 
-export function processNodes(node: Element, context: Context) {
+export async function processNodes(node: Element, context: Context, nodesToSlot: Array<Node> = null) {
     const textNodes: Array<Element> = [];
     // All elements with attributes starting with "bind:" or "model:"
     const attributeNodes = {
@@ -23,6 +26,44 @@ export function processNodes(node: Element, context: Context) {
     const childComponents :ChildrenArray = [];
 
     // TODO - if and else solve here
+    if (node.attributes && node.attributes.getNamedItem(Keywords.if)) {
+        const ifAttribute = node.attributes.getNamedItem(Keywords.if)
+        // TODO - here implement some syntactic sugar for the library users
+        // TODO - nest this to some function please
+        const variableName = ifAttribute.value.trim()
+        const variable = context.variables[variableName]
+        if (!variable) Error("Variable with name " + variableName + " has not found");
+
+        // put a placeholder after the node, then remove the node
+        const placeholderDiv = getIfPlaceholderTag()
+
+        const derenderIf = generateDerenderIf(node, placeholderDiv, ifAttribute)
+        const renderIf = generateRenderIf(context, node, placeholderDiv, nodesToSlot)
+
+        await derenderIf();
+
+        variable.ifNodes.push({
+            placeholderNode: node,
+            processTemplateFunction: renderIf
+        })
+
+
+        // when the variable is truly, we
+        if (!variable.value){
+            console.log("Here we have a truly if node")
+            const result = await renderIf()
+        }
+        else {
+            console.log("Here we have a falsy if node")
+            // await derenderIf();
+        }
+
+        // TODO - node and context to a function, which will process the node and then removes the father node
+        // TODO - if value True, just continue the rendering
+        // TODO - if value False, remove the inner html and replace it with the
+
+    }
+
     // TODO - h-for solve here
 
     // if the node is component, we skip the bindings, leave it to the high level function
@@ -67,17 +108,17 @@ export function processNodes(node: Element, context: Context) {
 
             // TODO - find out if this is ok: "childNode as Element"
             // recursively add all the textNodes and attributes to bind
-            const result = processNodes(childNode as Element, context);
+            const result = await processNodes(childNode as Element, context);
             textNodes.push(...result.textNodes);
             attributeNodes.toBind.push(...attributeNodes.toBind);
             attributeNodes.toModel.push(...attributeNodes.toModel);
             childComponents.push(...result.childComponents)
         }
     } else if (!isComponent && node.nodeType == Node.TEXT_NODE  && node.textContent !== "") {
-            // when the node is a leaf so we can inspect the text nodes
-            bindTextNode(context, node)
-            textNodes.push(node);
-        }
+        // when the node is a leaf so we can inspect the text nodes
+        bindTextNode(context, node)
+        textNodes.push(node);
+    }
 
     return {
         textNodes,
