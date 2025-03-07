@@ -22,7 +22,15 @@
         </p>
     </div>
     <div class="border p-2 m-2">
-        <span h-if="isCheckBoxEnabled" class="border p-2 m-2 block">The isCheckBoxEnabled Span </span>
+        <div h-if="isCheckBoxEnabled" class="border p-2 m-2 block">
+            <span class="border p-2 m-2 block">
+                The isCheckBoxEnabled Span
+
+            </span>
+            <span class="border p-2 m-2 block">
+                This is another span, both in the "ifed" tag
+            </span>
+        </div>
         <input type="checkbox" checked="[[isCheckBoxEnabled]]">
         <button disabled="{{isButtonDisabled}}"> Jsem button ovládaný checkboxem nade mnou </button>
     </div>
