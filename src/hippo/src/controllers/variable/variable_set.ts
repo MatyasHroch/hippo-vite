@@ -2,6 +2,7 @@ import {Context} from "../../../types";
 import {Variable} from "../../../types/variable";
 import string from "vite-plugin-string";
 import {ViteRuntimeImportMeta} from "vite/dist/node/runtime";
+import {derenderIfNode, renderIfNode} from "../template/template_if_nodes";
 
 // this function actually sets the variable's value
 export function _setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
@@ -63,14 +64,12 @@ export function rerenderDependencies<T>(context: Context, variable: Variable<T>,
 export function rerenderIfNodes<T>(context: Context, variable: Variable<T>, value: T){
     if (value){
         for (const ifNode of variable.ifNodes){
-            debugger
-            ifNode.renderIf();
+            renderIfNode(ifNode)
         }
     }
     else {
         for (const ifNode of variable.ifNodes){
-            debugger
-            ifNode.derenderIf();
+            derenderIfNode(ifNode)
         }
     }
 }

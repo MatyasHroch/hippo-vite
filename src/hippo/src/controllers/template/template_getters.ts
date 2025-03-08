@@ -4,18 +4,18 @@ import {Component} from "../../../types/component";
 import {bindTextNode} from "./template_text_nodes";
 import {createPartialFromTemplateString} from "../variable/variable_partials";
 import {Keywords} from "../../../enums/keywords";
-import {generateDerenderIf, generateRenderIf, getIfPlaceholderTag} from "./template_if_nodes";
-import {IfNodeStructure} from "../../../types/variable";
+import {derenderIfNode, getIfPlaceholderTag, renderIfNode} from "./template_if_nodes";
+import {cloneElement} from "./template_main";
 
 type ChildrenArray = Array<{
-    tag: Node,
+    tag: Element,
     component: Component,
-    nodesToSLot? : Array<Node>,
-    slot? : Node,
+    nodesToSLot? : Array<Element>,
+    slot? : Element,
     name? : string
 }>;
 
-export async function processNodes(node: Element, context: Context, nodesToSlot: Array<Node> = null) {
+export async function processNodes(node: Element, context: Context, nodesToSlot: Array<Element> = null) {
     const textNodes: Array<Element> = [];
     // All elements with attributes starting with "bind:" or "model:"
     const attributeNodes = {
@@ -28,33 +28,53 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
     // TODO - if and else solve here
     if (node.attributes && node.attributes.getNamedItem(Keywords.if)) {
         const ifAttribute = node.attributes.getNamedItem(Keywords.if)
-        // TODO - here implement some syntactic sugar for the library users
         // TODO - nest this to some function please
+        // TODO - here implement some syntactic sugar for the library users
         const variableName = ifAttribute.value.trim()
         const variable = context.variables[variableName]
         if (!variable) Error("Variable with name " + variableName + " has not found");
 
-        // put a placeholder after the node, then remove the node
-        const ifNodeStructure :IfNodeStructure = {
+        const ifNode = {
             placeholderNode: getIfPlaceholderTag(),
+            templateNode: node,
+            context: context,
+            nodesToSlot: nodesToSlot,
+            renderedTemplateNode: node,
         }
 
-        const derenderIf = generateDerenderIf(context, ifNodeStructure, node, ifNodeStructure.placeholderNode)
-        const renderIf = generateRenderIf(context, ifNodeStructure, node, ifNodeStructure.placeholderNode, nodesToSlot)
+        variable.ifNodes.push(ifNode)
 
-        await derenderIf();
+        derenderIfNode(ifNode)
 
-        variable.ifNodes.push(ifNodeStructure)
-
-        // when the variable is truly, we
         if (variable.value){
-            console.log("Here we have a truly if node")
-            await renderIf()
+            await renderIfNode(ifNode)
         }
-        else {
-            await derenderIf();
-            console.log("Here we have a falsy if node")
-        }
+
+        return {
+            textNodes,
+            attributeNodes,
+            childComponents
+        };
+        // // put a placeholder after the node, then remove the node
+        // const ifNodeStructure :IfNodeStructure = {
+        //     placeholderNode: getIfPlaceholderTag(),
+        // }
+
+        // const derenderIf = generateDerenderIf(context, ifNodeStructure, node, ifNodeStructure.placeholderNode)
+        // const renderIf = generateRenderIf(context, ifNodeStructure, node, ifNodeStructure.placeholderNode, nodesToSlot)
+
+        // await derenderIf();
+
+
+        // // when the variable is truly, we
+        // if (variable.value){
+        //     console.log("Here we have a truly if node")
+        //     await renderIf()
+        // }
+        // else {
+        //     await derenderIf();
+        //     console.log("Here we have a falsy if node")
+        // }
 
         // TODO - node and context to a function, which will process the node and then removes the father node
         // TODO - if value True, just continue the rendering
@@ -72,10 +92,8 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
             name: component.name,
             tag: node,
             component: component,
-            nodesToSLot: [...node.childNodes]
+            nodesToSLot: [...node.children]
         });
-        // console.log("We got to the child node:" + node);
-        // console.log("We got to the component:" + component);
 
         // TODO - make sure, that only this concrete tag is skipped, inner html may be processed normally - DONE
         // TODO - Process the children after all is done - DONE

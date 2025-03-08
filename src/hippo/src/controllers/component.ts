@@ -10,7 +10,7 @@ type ComponentStruct = {
 }
 
 // TODO - should be renamed as process context
-export async function processComponent(component: Function, parentContext: Context = null, elementToMount: Node = null, nodesToSlot: Array<Node> = null) {
+export async function processComponent(component: Function, parentContext: Context = null, elementToMount: Element = null, nodesToSlot: Array<Element> = null) {
     const context = createContext(parentContext);
     const newComponent : ComponentStruct = {
         context: context,
@@ -32,7 +32,7 @@ export async function processComponent(component: Function, parentContext: Conte
     return processTemplate(newComponent, elementToMount, nodesToSlot)
 }
 
-export async function processTemplate(newComponent: ComponentStruct, elementToMount: Node = null, nodesToSlot: Array<Node> = null){
+export async function processTemplate(newComponent: ComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null){
     const context = newComponent.context;
 
     // Check if there is any
