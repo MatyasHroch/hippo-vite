@@ -5,6 +5,7 @@ import {bindTextNode} from "./template_text_nodes";
 import {createPartialFromTemplateString} from "../variable/variable_partials";
 import {Keywords} from "../../../enums/keywords";
 import {generateDerenderIf, generateRenderIf, getIfPlaceholderTag} from "./template_if_nodes";
+import {IfNodeStructure} from "../../../types/variable";
 
 type ChildrenArray = Array<{
     tag: Node,
@@ -34,18 +35,16 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
         if (!variable) Error("Variable with name " + variableName + " has not found");
 
         // put a placeholder after the node, then remove the node
-        const placeholderDiv = getIfPlaceholderTag()
+        const ifNodeStructure :IfNodeStructure = {
+            placeholderNode: getIfPlaceholderTag(),
+        }
 
-        const derenderIf = generateDerenderIf(node, placeholderDiv, ifAttribute)
-        const renderIf = generateRenderIf(context, node, placeholderDiv, nodesToSlot)
+        const derenderIf = generateDerenderIf(context, ifNodeStructure, node, ifNodeStructure.placeholderNode)
+        const renderIf = generateRenderIf(context, ifNodeStructure, node, ifNodeStructure.placeholderNode, nodesToSlot)
 
         await derenderIf();
 
-        variable.ifNodes.push({
-            placeholderNode: node,
-            renderIf,
-            derenderIf
-        })
+        variable.ifNodes.push(ifNodeStructure)
 
         // when the variable is truly, we
         if (variable.value){

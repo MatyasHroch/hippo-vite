@@ -63,11 +63,13 @@ export function rerenderDependencies<T>(context: Context, variable: Variable<T>,
 export function rerenderIfNodes<T>(context: Context, variable: Variable<T>, value: T){
     if (value){
         for (const ifNode of variable.ifNodes){
+            debugger
             ifNode.renderIf();
         }
     }
     else {
         for (const ifNode of variable.ifNodes){
+            debugger
             ifNode.derenderIf();
         }
     }
