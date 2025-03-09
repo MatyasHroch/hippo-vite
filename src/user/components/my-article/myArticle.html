@@ -2,6 +2,9 @@
     <h3>
         {{heading}} - and some city -  {{user.value.address.city}}
     </h3>
+    <input type="checkbox" checked="[[isCheckBoxEnabled]]">
+    <button disabled="{{isButtonDisabled}}"> Jsem button ovládaný checkboxem nade mnou </button>
+
 
     <h-slot>
     </h-slot>
@@ -22,8 +25,9 @@
         </p>
     </div>
     <div class="border p-2 m-2">
-        <div h-if="isCheckBoxEnabled" class="border p-2 m-2 block">
-            <list></list>
+        <div class="border p-2 m-2 block">
+            <list h-if="isButtonDisabled">
+            </list>
             <span class="border p-2 m-2 block">
                 The isCheckBoxEnabled Span
 
@@ -32,7 +36,5 @@
                 This is another span, both in the "ifed" tag
             </span>
         </div>
-        <input type="checkbox" checked="[[isCheckBoxEnabled]]">
-        <button disabled="{{isButtonDisabled}}"> Jsem button ovládaný checkboxem nade mnou </button>
     </div>
 </article>
