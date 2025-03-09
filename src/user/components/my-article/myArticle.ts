@@ -30,6 +30,22 @@ export function myArticle(context:Context){
         return v;
     })
 
+
+    const myObject = {
+        "name": "Richardo",
+        "surname": "Donovan",
+        "age": 18,
+        "address": {
+            city: "Ostrava",
+            postCode: 70900
+        }
+    }
+
+    for (const item in myObject) {
+        console.log(item)
+        console.log(myObject[item]);
+    }
+
     setTimeout(() =>{
         heading.set("Changed-Heading");
 
