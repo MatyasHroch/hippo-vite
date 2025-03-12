@@ -57,6 +57,6 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
 
 
 function deleteVariable<T>(context: Context, variable: T){
-  return
+  return Error("Not Implemented")
 }
 

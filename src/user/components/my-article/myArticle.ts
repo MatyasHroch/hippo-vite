@@ -11,6 +11,8 @@ export function myArticle(context:Context){
     const isButtonDisabled = context.addVariable("isButtonDisabled", !isCheckBoxEnabled.value);
     const newParagraph = context.addVariable("newParagraph", "");
 
+    const myList = context.addVariable("myList", ["Hello", "Hi", "Hey"]);
+
     const userWithPartial = context.addVariable("user", {
         name: "Albert",
         surname: "Einstein",

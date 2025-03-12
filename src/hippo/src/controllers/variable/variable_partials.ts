@@ -12,8 +12,6 @@ export function createPartialVariable<T>(
     context?: Context,
     name?: string
 ) {
-    // TODO - does it make sense?
-    // contextId = originVariable.contextId;
 
     context ??= getGlobalContext();
     name ??= objectPath
@@ -48,7 +46,7 @@ export function createPartialVariable<T>(
 export function createPartialFromTemplateString(context: Context, fullObjectString:string, readOnly = false){
     const splitObjectString = fullObjectString.split(".");
     if (splitObjectString.length < 1) return;
-;
+
     const variableName = splitObjectString[0];
     const variable = context.variables[variableName];
     if (!variable) return null;

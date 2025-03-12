@@ -61,10 +61,10 @@ export function rerenderDependencies<T>(context: Context, variable: Variable<T>,
     return variable;
 }
 
-export function rerenderIfNodes<T>(context: Context, variable: Variable<T>, value: T){
+export async function rerenderIfNodes<T>(context: Context, variable: Variable<T>, value: T){
     if (value){
         for (const ifNode of variable.ifNodes){
-            renderIfNode(ifNode)
+            await renderIfNode(ifNode)
         }
     }
     else {

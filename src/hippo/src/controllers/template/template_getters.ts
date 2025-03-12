@@ -1,11 +1,16 @@
 import {Context} from "../../../types";
-import {bindAttribute, isAttributeToBind, isAttributeToModel, modelAttribute} from "./template_attributes";
+import {
+    bindAttribute,
+    getVariableFromTemplateString,
+    getVariableNameToAttributeBinding,
+    getVariableNameToAttributeModeling,
+    modelAttribute
+} from "./template_attributes";
 import {Component} from "../../../types/component";
 import {bindTextNode} from "./template_text_nodes";
-import {createPartialFromTemplateString} from "../variable/variable_partials";
 import {Keywords} from "../../../enums/keywords";
 import {derenderIfNode, getIfPlaceholderTag, renderIfNode} from "./template_if_nodes";
-import {cloneElement} from "./template_main";
+import {processFor} from "./template_for";
 
 type ChildrenArray = Array<{
     tag: Element,
@@ -31,7 +36,7 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
         // TODO - nest this to some function please
         // TODO - here implement some syntactic sugar for the library users
         const variableName = ifAttribute.value.trim()
-        const variable = context.variables[variableName]
+        const variable = getVariableFromTemplateString(context, variableName);
         if (!variable) Error("Variable with name " + variableName + " has not found");
 
         const ifNode = {
@@ -43,7 +48,6 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
         }
 
         variable.ifNodes.push(ifNode)
-
         derenderIfNode(ifNode)
 
         if (variable.value){
@@ -55,26 +59,7 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
             attributeNodes,
             childComponents
         };
-        // // put a placeholder after the node, then remove the node
-        // const ifNodeStructure :IfNodeStructure = {
-        //     placeholderNode: getIfPlaceholderTag(),
-        // }
 
-        // const derenderIf = generateDerenderIf(context, ifNodeStructure, node, ifNodeStructure.placeholderNode)
-        // const renderIf = generateRenderIf(context, ifNodeStructure, node, ifNodeStructure.placeholderNode, nodesToSlot)
-
-        // await derenderIf();
-
-
-        // // when the variable is truly, we
-        // if (variable.value){
-        //     console.log("Here we have a truly if node")
-        //     await renderIf()
-        // }
-        // else {
-        //     await derenderIf();
-        //     console.log("Here we have a falsy if node")
-        // }
 
         // TODO - node and context to a function, which will process the node and then removes the father node
         // TODO - if value True, just continue the rendering
@@ -83,6 +68,9 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
     }
 
     // TODO - h-for solve here
+    if (node.attributes && node.attributes.getNamedItem(Keywords.for)) {
+        await processFor(context, node, nodesToSlot)
+    }
 
     // if the node is component, we skip the bindings, leave it to the high level function
     const isComponent = !!context.childComponents[node.tagName]
@@ -103,15 +91,18 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
     // find attributes to bind and model and bind them and model them
     if (!isComponent && node.attributes && node.attributes.length > 0) {
         for(const attr of node.attributes) {
-            if (isAttributeToBind(attr)){
+            const variableTemplateName = getVariableNameToAttributeBinding(attr)
+            if (variableTemplateName){
                 attributeNodes.toBind.push(node)
-                // TODO really bind them
-                bindAttribute(context, attr, node);
+                bindAttribute(context, attr, node, variableTemplateName);
             }
-            if(isAttributeToModel(attr)){
-                attributeNodes.toModel.push(node)
-                // TODO model bind them
-                modelAttribute(context, attr, node);
+            // if not for one-way binding, maybe for two-way:
+            else {
+                const variableTemplateName = getVariableNameToAttributeModeling(attr)
+                if(variableTemplateName){
+                    attributeNodes.toModel.push(node)
+                    modelAttribute(context, attr, node, variableTemplateName);
+                }
             }
         }
     }
@@ -153,13 +144,13 @@ export function findVariables(node: Node) {
     return node.textContent.match(/{{\s*[\w.]+\s*}}/g);
 }
 
-export function variableNameFromTextWithBraces(context: Context, text: string, createNewPartial = true) {
+export function variableFromTextWithBraces(context: Context, text: string, createNewPartial = true) {
     const slicedText =text.slice(2, -2).trim();
 
-    if (slicedText && createNewPartial && slicedText.includes(".")){
-        const partialVariable = createPartialFromTemplateString(context, slicedText);
-        return partialVariable.name;
-    }
+    // if (slicedText && createNewPartial && slicedText.includes(".")){
+    //     const partialVariable = createPartialFromTemplateString(context, slicedText);
+    //     return partialVariable.name;
+    // }
 
-    return slicedText;
+    return getVariableFromTemplateString(context, slicedText);
 }
