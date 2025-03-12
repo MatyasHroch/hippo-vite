@@ -69,6 +69,7 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
     // TODO - h-for solve here
     if (node.attributes && node.attributes.getNamedItem(Keywords.for)) {
         await processFor(context, node, nodesToSlot)
+
         return {
             textNodes,
             attributeNodes,

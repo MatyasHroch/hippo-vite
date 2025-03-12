@@ -4,6 +4,7 @@ import {getVariableFromTemplateString} from "./template_attributes";
 import {cloneContext} from "../context";
 import {cloneElement} from "./template_main";
 import {processTemplate} from "../component";
+import {getIfPlaceholderTag} from "./template_if_nodes";
 
 export async function processFor(context:Context, node: Element, nodesToSlot: Array<Element>) {
     // if (!node.hasAttribute(Keywords.for)) return;
@@ -62,13 +63,26 @@ export async function processFor(context:Context, node: Element, nodesToSlot: Ar
     }
 
     // rendering and mounting
-
+    const placeHolder = getIfPlaceholderTag()
     for (const context of contexts){
         const newComponent = {
             name: "fake-for-component",
             context,
             template: context.template,
         }
-        await processTemplate(newComponent, node, nodesToSlot)
+        const result = await processTemplate(newComponent,
+            node,
+            nodesToSlot,
+            appendToElement
+        )
     }
+
+    node.remove()
+}
+
+function appendToElement(element: Element, renderedTemplate:Element) {
+    debugger
+    const parent = element.parentNode
+    if (!parent) return
+    return parent.insertBefore(renderedTemplate, element)
 }
