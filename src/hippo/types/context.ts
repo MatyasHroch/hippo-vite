@@ -16,7 +16,7 @@ export type Context = {
   // methods
   // TODO - describe the methods more, and do addVariables
   addVariable: <T>(name : string, value: T) => Variable<T>;
-  setTemplate: Function;
+  setTemplate: (htmlString: string) => Element | Node;
   addWatcher: (variable: Variable<any>, onUpdate: Handler) => Function;
   addChildren: (children: Record<string,Component>) => Record<string,Component>;
 };

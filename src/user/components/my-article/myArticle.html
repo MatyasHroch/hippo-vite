@@ -8,7 +8,13 @@
     <h-slot>
     </h-slot>
 
-    <div h-for="item in myList" class="border p-2 m-2">
+    <div>
+        Here is just controll div
+    </div>
+    <div h-for="item, index in myList">
+        Here is span of the iterated data - index: {{index}} and item: {{item}}
+    </div>
+    <div class="border p-2 m-2">
         <div>
             <h4 class="p-2 m-2">
                 Here we have the partial input value

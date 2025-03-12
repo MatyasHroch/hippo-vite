@@ -32,7 +32,7 @@ export async function processComponent(component: Function, parentContext: Conte
     return processTemplate(newComponent, elementToMount, nodesToSlot)
 }
 
-export async function processTemplate(newComponent: ComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null){
+export async function processTemplate(newComponent: ComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null, mountFunction = (element: Element, renderedTemplate: Element) => element.appendChild(renderedTemplate)){
     const context = newComponent.context;
 
     // Check if there is any
@@ -48,8 +48,14 @@ export async function processTemplate(newComponent: ComponentStruct, elementToMo
         console.warn("Template was not rendered properly in the component" + newComponent.name);
         return newComponent;
     }
+
+    // only if we render the template of the context, not just of the component, we change the context template
+    if (newComponent.template === context.template){
+        context.template = renderedTemplate
+    }
+
     newComponent.template = renderedTemplate
-    context.template = renderedTemplate
+
 
     if (!elementToMount) {
         console.warn("No element to mount this component:" + newComponent.name);
@@ -69,12 +75,11 @@ export async function processTemplate(newComponent: ComponentStruct, elementToMo
             }
         }
     }
-    // slot.remove();
 
     // TODO  2) remove all my html, that will be placed to the child process so this is DONE
     //  because of the append method behavior
 
-    elementToMount.appendChild(context.template)
+    mountFunction(elementToMount, newComponent.template)
 
     // PROCESS ALL THE CHILDREN
     // now process the child components, after the attributes and the one way and two way bindings

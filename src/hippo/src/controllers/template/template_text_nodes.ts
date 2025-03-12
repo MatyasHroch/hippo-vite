@@ -20,10 +20,11 @@ function renderTextNode(context:Context, nodeText: string, variables :Record<str
         const variable = variableFromTextWithBraces(context, nodeText);
 
         if (!variable) {
-            console.error(`Variable ${variable.name} not found.`);
+            console.error(`Variable ${nodeText} not found.`);
             return document.createTextNode("");
         }
 
+        // TODO - here handle how to behave when the value is something weird (null, undefined, Array of something,...)
         const value = variable.value;
         const element = document.createTextNode(value);
         variable.textNodes.push(element);

@@ -67,9 +67,9 @@ function addChildren(context: Context, children: Record<string,Component>){
 
 export function cloneContext(context: Context){
   const newContext = createContext(context);
-  newContext.variables = context.variables;
-  newContext.childComponents = context.childComponents;
-  newContext.template = context.template;
-  return newContext;
 
+  newContext.variables = {...context.variables};
+  newContext.childComponents = {...context.childComponents};
+  newContext.template = {...context.template};
+  return newContext;
 }
