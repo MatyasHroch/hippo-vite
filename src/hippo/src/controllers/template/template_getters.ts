@@ -60,7 +60,6 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
             childComponents
         };
 
-
         // TODO - node and context to a function, which will process the node and then removes the father node
         // TODO - if value True, just continue the rendering
         // TODO - if value False, remove the inner html and replace it with the
@@ -70,6 +69,11 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
     // TODO - h-for solve here
     if (node.attributes && node.attributes.getNamedItem(Keywords.for)) {
         await processFor(context, node, nodesToSlot)
+        return {
+            textNodes,
+            attributeNodes,
+            childComponents
+        };
     }
 
     // if the node is component, we skip the bindings, leave it to the high level function

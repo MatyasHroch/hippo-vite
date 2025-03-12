@@ -69,7 +69,6 @@ export async function processFor(context:Context, node: Element, nodesToSlot: Ar
             context,
             template: context.template,
         }
-        debugger
         await processTemplate(newComponent, node, nodesToSlot)
     }
 }
