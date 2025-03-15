@@ -4,6 +4,7 @@ import {isPrimitive} from "../../helpers/objects";
 import {cloneElement} from "../template/template_main";
 import {processTemplate} from "../component";
 import {getIfPlaceholderTag} from "../template/template_if_nodes";
+import { ForVariable} from "../../../types/for_variable";
 
 export async function createFor(context: Context, dataToLoop: any, node: HTMLElement, nodesToSlot: Array<HTMLElement>) {
     // if it is a primitive, just return it
@@ -28,4 +29,8 @@ export function createForStructure(context: Context, dataToLoop: any, node: HTML
         result[key]["node"] = cloneElement(node);
     }
     return result;
+}
+
+export function isForVariable<T>(variable: Variable<T>): variable is ForVariable<T> {
+    return variable["forNode"];
 }

@@ -55,6 +55,14 @@ export function myArticle(context:Context){
         myUser.address.city = "Olomouc";
 
         userWithPartial.set(myUser);
+
+        // list experiment
+        const list = myList.value
+        list[1] = "New Hello";
+        list.pop();
+        debugger
+        myList.set(list);
+
     }, 2 * 1000)
 
     function checkButton(){

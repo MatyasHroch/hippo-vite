@@ -5,6 +5,10 @@ import {cloneContext} from "../context";
 import {cloneElement} from "./template_main";
 import {processTemplate} from "../component";
 import {getIfPlaceholderTag} from "./template_if_nodes";
+import {createOriginVariable} from "../variable/variable_main";
+import {createPartialVariable} from "../variable/variable_partials";
+import {isForVariable} from "../variable/variable_for";
+import {ForStructure} from "../../../types/for_structure";
 
 export async function processFor(context:Context, node: Element, nodesToSlot: Array<Element>) {
     // if (!node.hasAttribute(Keywords.for)) return;
@@ -23,14 +27,16 @@ export async function processFor(context:Context, node: Element, nodesToSlot: Ar
 
     if (!itemName) return null;
 
+    const forStructures: Array<ForStructure<any>> = [];
+    const contexts:Array<Context> = [];
+
     // TODO - get from all lists variables, properties, computed and so on
     // TODO - get the partial variable as well if the variable is not right away
+    // TODO - better code here
     const variableToIterate = getVariableFromTemplateString(context, dataName)
 
     // if (!variableToIterate) return null;
     const dataToIterate = variableToIterate.value
-
-    const contexts = [];
 
     // TODO - index needs to be recalculated after some operations with the array
     let index = 0;
@@ -40,48 +46,61 @@ export async function processFor(context:Context, node: Element, nodesToSlot: Ar
         const itemContext = cloneContext(context);
 
         // to have the iteration value in the for loop
-        itemContext.addVariable(itemName, value)
+        itemContext.variables[itemName] = createPartialVariable(variableToIterate, variableToIterate.name + ".value." + itemKey)
 
-        // to have the template inside of the context
+        // to have the template inside the context and without the for attribute
         node.removeAttribute(Keywords.for);
         itemContext.template = cloneElement(node)
 
         // to have the index in the for loop
         if (indexName){
-            itemContext.addVariable(indexName, index)
+            // TODO - create not origin, but COMPUTED variable, the index will rerender everytime the iterable data are changed
+            itemContext.variables[indexName] = createOriginVariable(indexName, index)
         }
 
         // to have the key in the for loop
         if (keyName){
-            itemContext.addVariable(keyName, itemKey)
+            // TODO - create not origin, but COMPUTED variable, the index will rerender everytime the iterable data are changed
+            itemContext.variables[keyName] = createOriginVariable(keyName, itemKey)
         }
 
         // just for the first render, we generate the index like this
         index++;
-
+        // we stack the contexts so
         contexts.push(itemContext);
     }
 
     // rendering and mounting
-    const placeHolder = getIfPlaceholderTag()
+    putBeforeElement(node, getIfPlaceholderTag())
     for (const context of contexts){
         const newComponent = {
-            name: "fake-for-component",
+            name: "fake-for-component-"+ context.id,
             context,
             template: context.template,
         }
-        const result = await processTemplate(newComponent,
+        const {template} = await processTemplate(newComponent,
             node,
             nodesToSlot,
-            appendToElement
+            putBeforeElement
         )
+        forStructures.push({
+            context: context,
+            itemNode: template,
+            variable: context.variables[itemName],
+        })
     }
 
+    if (!isForVariable(variableToIterate)) return new Error("For Variable not created properly");
+    variableToIterate.nodesToSlot = nodesToSlot
+    variableToIterate.forStructures = forStructures;
+    variableToIterate.forNode = node;
+    variableToIterate.itemName = itemName;
+
+    // to get rid of the original node
     node.remove()
 }
 
-function appendToElement(element: Element, renderedTemplate:Element) {
-    debugger
+function putBeforeElement(element: Element, renderedTemplate:Element) {
     const parent = element.parentNode
     if (!parent) return
     return parent.insertBefore(renderedTemplate, element)

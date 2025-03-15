@@ -3,6 +3,7 @@ import {Variable} from "../../../types/variable";
 import string from "vite-plugin-string";
 import {ViteRuntimeImportMeta} from "vite/dist/node/runtime";
 import {derenderIfNode, renderIfNode} from "../template/template_if_nodes";
+import {isForVariable} from "./variable_for";
 
 // this function actually sets the variable's value
 export function _setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
@@ -16,6 +17,12 @@ export function setVariable<T>(context: Context, variable: Variable<T>, value: T
     if (isNotObject && value === variable.value){
         return
     }
+
+    if (isForVariable(variable)){
+        // TODO - change the contexts and do some
+
+    }
+
     _setVariableValue(context, variable, value);
 
     // here it just triggers all the watchers
@@ -81,11 +88,19 @@ export function rerenderPartials<T>(context: Context, variable: Variable<T>, val
         let currentValue = value;
         for (const key of partialName.split(".")) {
             // if I get to some point where the key does not exist, the objectPath is invalid
-            if (currentValue[key] === undefined) new Error(`Invalid path in partial variable: ${partialName}`);
+            if (currentValue[key] === undefined) {
+                partialVariable.set(undefined);
+                new Error(`Invalid path in partial variable: ${partialName}`);
+            }
             currentValue = currentValue[key];
         }
         partialVariable.set(currentValue);
     }
+    return variable;
+}
+
+export function rerenderFor<T>(context: Context, variable: Variable<T>, value: T){
+
     return variable;
 }
 
