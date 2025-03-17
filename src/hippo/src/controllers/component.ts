@@ -32,7 +32,7 @@ export async function processComponent(component: Function, parentContext: Conte
     return processTemplate(newComponent, elementToMount, nodesToSlot)
 }
 
-export async function processTemplate(newComponent: ComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null, mountFunction = (element: Element, renderedTemplate: Element) => element.appendChild(renderedTemplate)){
+export async function processTemplate(newComponent: ComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null, mountFunction = (element: Element, renderedTemplate: Element) => element.appendChild(renderedTemplate), mount: boolean = true){
     const context = newComponent.context;
 
     // Check if there is any
@@ -79,7 +79,9 @@ export async function processTemplate(newComponent: ComponentStruct, elementToMo
     // TODO  2) remove all my html, that will be placed to the child process so this is DONE
     //  because of the append method behavior
 
-    mountFunction(elementToMount, newComponent.template)
+    if (mount){
+        mountFunction(elementToMount, newComponent.template)
+    }
 
     // PROCESS ALL THE CHILDREN
     // now process the child components, after the attributes and the one way and two way bindings

@@ -32,5 +32,11 @@ export function createForStructure(context: Context, dataToLoop: any, node: HTML
 }
 
 export function isForVariable<T>(variable: Variable<T>): variable is ForVariable<T> {
-    return variable["forNode"];
+    return  variable["forNode"] &&
+            variable["nodesToSlot"] &&
+            variable["forStructures"]&&
+            variable["itemName"] &&
+            variable["indexName"] &&
+            variable["keyName"] &&
+            variable["placeHolder"]
 }

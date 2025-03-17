@@ -4,7 +4,7 @@ import {Variable} from "../../../types/variable";
 import {getGlobalContext} from "../globals";
 import {
   rerenderAttributes,
-  rerenderDependencies, rerenderIfNodes,
+  rerenderDependencies, rerenderFor, rerenderIfNodes,
   rerenderPartials,
   rerenderTextNodes,
   setVariable
@@ -40,10 +40,11 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
     }
   };
 
+  // @ts-ignore
   originalVariable.set = function <T>(value:T){
     // TODO - ts ignore
-    // @ts-ignore
-    return setVariable<T>(context, originalVariable, value);
+    return setVariable<T>(    // @ts-ignore
+        context, originalVariable, value);
   }
 
   context.addWatcher(originalVariable, rerenderIfNodes)
@@ -51,6 +52,7 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
   context.addWatcher(originalVariable, rerenderAttributes);
   context.addWatcher(originalVariable, rerenderDependencies);
   context.addWatcher(originalVariable, rerenderPartials)
+  context.addWatcher(originalVariable, rerenderFor)
 
   return originalVariable;
 }

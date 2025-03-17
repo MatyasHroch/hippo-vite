@@ -60,7 +60,6 @@ export function myArticle(context:Context){
         const list = myList.value
         list[1] = "New Hello";
         list.pop();
-        debugger
         myList.set(list);
 
     }, 2 * 1000)

@@ -4,6 +4,11 @@ import string from "vite-plugin-string";
 import {ViteRuntimeImportMeta} from "vite/dist/node/runtime";
 import {derenderIfNode, renderIfNode} from "../template/template_if_nodes";
 import {isForVariable} from "./variable_for";
+import {isPrimitive} from "../../helpers/objects";
+import {ForVariable} from "../../../types/for_variable";
+import {ForStructure} from "../../../types/for_structure";
+import {createForItemContext, createForItemTemplate, putBeforeElement} from "../template/template_for";
+import {createPartialVariable} from "./variable_partials";
 
 // this function actually sets the variable's value
 export function _setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
@@ -11,7 +16,7 @@ export function _setVariableValue<T>(context: Context, variable: Variable<T>, va
     variable.value = value;
 }
 
-export function setVariable<T>(context: Context, variable: Variable<T>, value: T){
+export async function setVariable<T>(context: Context, variable: Variable<T>, value: T){
     // here we set the variable value
     const isNotObject = !Object.keys(value);
     if (isNotObject && value === variable.value){
@@ -27,7 +32,7 @@ export function setVariable<T>(context: Context, variable: Variable<T>, value: T
 
     // here it just triggers all the watchers
     for (const watcher of variable.watchers) {
-        watcher(context, variable, value);
+        await watcher(context, variable, value);
     }
 
     return variable;
@@ -99,7 +104,58 @@ export function rerenderPartials<T>(context: Context, variable: Variable<T>, val
     return variable;
 }
 
-export function rerenderFor<T>(context: Context, variable: Variable<T>, value: T){
+export async function rerenderFor(context: Context, variable: ForVariable<any>, value: any){
+    if (isPrimitive(value)) return variable
+
+    const newData = value;
+    const forStructures = variable.forStructures;
+    const itemName = variable.itemName
+
+    // TODO - reduce the forStructures by those items that has been deleted
+    const newForStructures: Array<ForStructure<any>> = [];
+
+    let placeholder = variable.placeHolder;
+
+    let index = 0;
+    for (const key in newData){
+        const newForItem = newData[key];
+        const itemStructureIndex = forStructures.findIndex(
+            (forStructure: ForStructure<any>)=> newForItem === forStructure.context[itemName]
+        );
+        let newForStructure :ForStructure<any>;
+        let forItemTemplate: Element;
+        if (itemStructureIndex < 0){
+            // here we need to create a whole new structure (context, template)
+
+            // here we create the context
+            const newForItemContext = createForItemContext(context, variable, key, variable.forNode, itemName, variable.indexName, variable.keyName, index)
+            // and here the template
+            forItemTemplate = await createForItemTemplate(context, placeholder, variable.nodesToSlot, false)
+
+            // here we put the attributes together to the FofStructure
+            newForStructure = {
+                itemNode: forItemTemplate,
+                context: newForItemContext,
+                variable: context.variables[itemName]
+            }
+        }
+        else {
+            // we just need to put it to the
+            // so the structure stays the same after some changes
+            newForStructure = newForStructures[key]
+        }
+
+        newForStructures.push(newForStructure);
+
+        index ++;
+    }
+
+    // TODO - now mount it by the right order
+    for(const newStructure of newForStructures){
+        debugger
+        const forNode = newStructure.itemNode
+        putBeforeElement(placeholder, forNode)
+    }
 
     return variable;
 }

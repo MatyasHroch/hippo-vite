@@ -6,4 +6,7 @@ export type ForVariable<T> = Variable<T> & {
     nodesToSlot: Array<Element>;
     forNode: Element;
     itemName: string;
+    indexName: string;
+    keyName: string;
+    placeHolder: Element;
 }
