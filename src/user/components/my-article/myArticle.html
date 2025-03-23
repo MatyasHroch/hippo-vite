@@ -8,11 +8,13 @@
     <h-slot>
     </h-slot>
 
-    <div>
-        Here is just controll div
-    </div>
+<!--    {{myList}}-->
+
     <div h-for="item, index in myList">
-        Here is span of the iterated data - index: {{index}} and item: {{item}}
+        <span>
+            Index: {{index}} and item: {{item}}
+        </span>
+
     </div>
     <div class="border p-2 m-2">
         <div>

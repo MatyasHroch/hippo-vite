@@ -48,11 +48,11 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
   }
 
   context.addWatcher(originalVariable, rerenderIfNodes)
+  context.addWatcher(originalVariable, rerenderFor)
   context.addWatcher(originalVariable, rerenderTextNodes)
   context.addWatcher(originalVariable, rerenderAttributes);
   context.addWatcher(originalVariable, rerenderDependencies);
   context.addWatcher(originalVariable, rerenderPartials)
-  context.addWatcher(originalVariable, rerenderFor)
 
   return originalVariable;
 }
