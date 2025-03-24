@@ -1,5 +1,5 @@
 let nextId = 0;
 
-export function getId(){
-    return nextId++;
+export function getNewId(){
+    return ++nextId;
 }

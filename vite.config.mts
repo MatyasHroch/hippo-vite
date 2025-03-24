@@ -1,4 +1,4 @@
-// vite.config.ts
+// vite.config.mts
 import { defineConfig } from "vite";
 import string from 'vite-plugin-string';
 
@@ -7,11 +7,11 @@ export default defineConfig({
         outDir: "dist",
     },
     server: {
-        // Povolení JS souborů
+        // Support of js files
         strictPort: false,
     },
     resolve: {
-        extensions: ['.ts', '.js'], // Podpora TS a JS
+        extensions: ['.ts', '.js'], // Support of TS and JS
     },
     plugins: [string({
         include: '**/*.html',

@@ -1,43 +1,75 @@
 import { Context } from "../../types";
-import { createVariable } from "./variables";
-import { stringToHtml } from "./template";
+import { createOriginVariable } from "./variable/variable_main";
 import {Variable} from "../../types/variable";
-import {getId} from "./ids";
-import {createWatcher} from "./watchers";
+import {getNewId} from "./ids";
+import {stringToHtml} from "./template/template_getters";
+import {UserDefinedComponent} from "../../types/component";
+import {keysToUpper} from "../helpers/objects";
+import {Handler} from "../../types/handler";
 
-export function createContext(parentContext: Context = null): Context {
+export function createContext(parentContext: Context = null, id = null): Context {
   const newContext: any = {};
 
+  id ??= getNewId();
   // initial values
-  newContext.id = getId()
+  newContext.id = id
   newContext.variables = {};
   newContext.parent = parentContext;
+  newContext.childComponents = {};
 
-  // methods
+  // methods just called without the context for user
   newContext.addVariable = function (name: string, value: string) {
-    return _addVariable(newContext, name, value);
+    return addVariable(newContext, name, value);
   };
   newContext.setTemplate = function (htmlString: string) {
-    return _setTemplate(newContext, htmlString);
+    return setTemplate(newContext, htmlString);
   };
-  newContext.addWatcher = function (variable: Variable, onUpdate: Function) {
-    return _addWatcher(newContext, variable, onUpdate);
+  newContext.addWatcher = function (variable: Variable<any>, onUpdate: Handler) {
+    return addWatcher(newContext, variable, onUpdate);
+  }
+  newContext.addChildren = function (children: Record<string, UserDefinedComponent>) {
+    return addChildren(newContext, children);
   }
 
   return newContext;
 }
 
 // when we add Variable, it will be created and added to the variables object of the context
-function _addVariable(context: Context, key: string, value: any) {
-  context.variables[key] = createVariable(key, value, context.id);
+function addVariable(context: Context, key: string, value: any) {
+  context.variables[key] = createOriginVariable(key, value, context);
+  return context.variables[key];
 }
 
 // when we set the template, it will be rendered
-function _setTemplate(context: Context, htmlString: string) {
+function setTemplate(context: Context, htmlString: string) {
   context.template = stringToHtml(htmlString);
 }
 
 // when we set the watcher via context, it will be then passed as a third argument to the user's on-update function
-function _addWatcher(context: Context, variable: Variable, onUpdate: Function) {
-  createWatcher(variable, onUpdate, context);
+function addWatcher(context: Context, variable: Variable<any>, handler: Handler) {
+  variable.watchers.push(handler);
+  return handler
+}
+
+// we add the children, so then we could render them properly
+function addChildren(context: Context, children: Record<string,UserDefinedComponent>){
+  // TODO - prepare the components for render (later set the this to the context)
+  // TODO - check that there are no children of the same name
+
+  const upperCaseChildren = keysToUpper(children)
+
+  context.childComponents = {
+    ...context.childComponents,
+    ...upperCaseChildren
+  };
+  return children;
+}
+
+export function cloneContext(context: Context){
+  const newContext = createContext(context);
+
+  newContext.variables = {...context.variables};
+  newContext.childComponents = {...context.childComponents};
+  newContext.template = {...context.template};
+  return newContext;
 }

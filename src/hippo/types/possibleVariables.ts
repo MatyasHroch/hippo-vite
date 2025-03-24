@@ -1,1 +1,0 @@
-export type PossibleVariables = Record<string, any>;
