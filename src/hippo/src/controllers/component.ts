@@ -68,6 +68,11 @@ export async function processTemplate(newComponent: NewComponentStruct, elementT
                 slot.appendChild(node)
             }
         }
+        slot.remove()
+        // const parent = slot.parentElement;
+        // if (parent){
+        //     parent.removeChild(slot)
+        // }
     }
 
     // TODO  2) remove all my html, that will be placed to the child process so this is DONE

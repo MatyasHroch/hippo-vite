@@ -6,7 +6,7 @@ import {cloneElement} from "./template_main";
 import {processTemplate} from "../component";
 import {createOriginVariable} from "../variable/variable_main";
 import {createPartialVariable} from "../variable/variable_partials";
-import {ForItemStructure, ForLoopStructure, RootForData} from "../../../types/for_structure";
+import {ForItemStructure, RootForData} from "../../../types/for_structure";
 import {Variable} from "../../../types/variable";
 import {getIfPlaceholderTag} from "../../helpers/template";
 
@@ -159,10 +159,10 @@ export function createForItemContext(context: Context, variableToIterate: Variab
     return itemContext;
 }
 
-export function putBeforeElement(elementToBePutBefore: Element, somePlaceHolder:Element) {
-    const parent = elementToBePutBefore.parentNode
+export function putBeforeElement(placeholder: Element, elementToPutBefore:Element) {
+    const parent = placeholder.parentNode
     if (!parent) return
-    return parent.insertBefore(somePlaceHolder, elementToBePutBefore)
+    return parent.insertBefore(elementToPutBefore, placeholder)
 }
 
 export async function createForItemTemplate(forItemContext:Context, nodeToPutBefore: Element, nodesToSlot: Array<Element>, mount: boolean = true) {
