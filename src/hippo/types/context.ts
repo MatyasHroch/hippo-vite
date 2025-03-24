@@ -19,4 +19,5 @@ export type Context = {
   setTemplate: (htmlString: string) => Element | Node;
   addWatcher: (variable: Variable<any>, onUpdate: Watcher) => Function;
   addChildren: (children: Record<string,UserDefinedComponent>) => Record<string,UserDefinedComponent>;
+  addComputed: ( computation:() => any, name?: string, dependencies?: Array<Variable<any>>) => any
 };

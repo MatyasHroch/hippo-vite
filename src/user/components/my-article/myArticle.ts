@@ -10,6 +10,8 @@ export function myArticle(context:Context){
     const isCheckBoxEnabled = context.addVariable("isCheckBoxEnabled", true);
     const isButtonDisabled = context.addVariable("isButtonDisabled", !isCheckBoxEnabled.value);
     const newParagraph = context.addVariable("newParagraph", "");
+    debugger
+    const capitalizedHeading = context.addComputed(() => heading.value.toUpperCase(), "capitalizedHeading");
 
     const myList = context.addVariable("myList", ["Hello", "Hi", "Hey"]);
 

@@ -33,4 +33,6 @@ export function createComputedVariable(context: Context, computation: () => any,
     for (const variable of dependencies){
         addComputed(variable, newComputedVariable, computation);
     }
+
+    return newComputedVariable
 }
