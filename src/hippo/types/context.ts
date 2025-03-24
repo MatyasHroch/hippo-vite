@@ -1,5 +1,5 @@
 import {Variable} from "./variable";
-import {Component} from "./component";
+import {UserDefinedComponent} from "./component";
 import {Handler} from "./handler";
 
 export type Context = {
@@ -7,7 +7,7 @@ export type Context = {
   id: number,
   variables: Record<string, Variable<any>>;
   parent: Context | null;
-  childComponents:  Record<string, Component>;
+  childComponents:  Record<string, UserDefinedComponent>;
 
   // template
   template?: Element;
@@ -18,5 +18,5 @@ export type Context = {
   addVariable: <T>(name : string, value: T) => Variable<T>;
   setTemplate: (htmlString: string) => Element | Node;
   addWatcher: (variable: Variable<any>, onUpdate: Handler) => Function;
-  addChildren: (children: Record<string,Component>) => Record<string,Component>;
+  addChildren: (children: Record<string,UserDefinedComponent>) => Record<string,UserDefinedComponent>;
 };

@@ -3,7 +3,7 @@ import { createOriginVariable } from "./variable/variable_main";
 import {Variable} from "../../types/variable";
 import {getNewId} from "./ids";
 import {stringToHtml} from "./template/template_getters";
-import {Component} from "../../types/component";
+import {UserDefinedComponent} from "../../types/component";
 import {keysToUpper} from "../helpers/objects";
 import {Handler} from "../../types/handler";
 
@@ -27,7 +27,7 @@ export function createContext(parentContext: Context = null, id = null): Context
   newContext.addWatcher = function (variable: Variable<any>, onUpdate: Handler) {
     return addWatcher(newContext, variable, onUpdate);
   }
-  newContext.addChildren = function (children: Record<string, Component>) {
+  newContext.addChildren = function (children: Record<string, UserDefinedComponent>) {
     return addChildren(newContext, children);
   }
 
@@ -52,7 +52,7 @@ function addWatcher(context: Context, variable: Variable<any>, handler: Handler)
 }
 
 // we add the children, so then we could render them properly
-function addChildren(context: Context, children: Record<string,Component>){
+function addChildren(context: Context, children: Record<string,UserDefinedComponent>){
   // TODO - prepare the components for render (later set the this to the context)
   // TODO - check that there are no children of the same name
 

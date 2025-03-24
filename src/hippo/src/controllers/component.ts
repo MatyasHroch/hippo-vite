@@ -2,17 +2,12 @@ import {createContext} from "./context";
 import {Context} from "../../types";
 import {renderTemplate} from "./template/template_main";
 import {Keywords} from "../../enums/keywords";
-
-type ComponentStruct = {
-    template?: Element;
-    context?: Context;
-    name: string;
-}
+import {NewComponentStruct} from "../../types/component";
 
 // TODO - should be renamed as process context
 export async function processComponent(component: Function, parentContext: Context = null, elementToMount: Element = null, nodesToSlot: Array<Element> = null) {
     const context = createContext(parentContext);
-    const newComponent : ComponentStruct = {
+    const newComponent : NewComponentStruct = {
         context: context,
         name: component.name,
     };
@@ -32,7 +27,7 @@ export async function processComponent(component: Function, parentContext: Conte
     return processTemplate(newComponent, elementToMount, nodesToSlot)
 }
 
-export async function processTemplate(newComponent: ComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null, mountFunction = (element: Element, renderedTemplate: Element) => element.appendChild(renderedTemplate), mount: boolean = true){
+export async function processTemplate(newComponent: NewComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null, mountFunction = (element: Element, renderedTemplate: Element) => element.appendChild(renderedTemplate), mount: boolean = true){
     const context = newComponent.context;
 
     // Check if there is any
@@ -55,7 +50,6 @@ export async function processTemplate(newComponent: ComponentStruct, elementToMo
     }
 
     newComponent.template = renderedTemplate
-
 
     if (!elementToMount) {
         console.warn("No element to mount this component:" + newComponent.name);

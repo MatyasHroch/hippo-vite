@@ -1,5 +1,6 @@
 import {Context} from "./context";
 import {Handler} from "./handler";
+import {ForLoopStructure, ForItemStructure} from "./for_structure";
 
 export type IfNodeStructure = {
   placeholderNode: Element,
@@ -31,6 +32,7 @@ export type Variable<T> = {
   inputNodes: Array<HTMLInputElement>; // two-way binding - input, select and textarea
   textNodes: Array<Text>; // one-way binding - variables rendered as a string
   attributes: Array<{node: Element, attribute: Attr}>; // one-way binding - variables as attributes
+  forStructuresArray: Array<ForLoopStructure<T>> // structures for creating and operating with for iterations and elements
 
   ifNodes: Array<IfNodeStructure> // nodes that will be removed if the variable is not truly
   showNodes: Array<HTMLElement>; // nodes that will be given display none if the value is not truly
@@ -42,9 +44,9 @@ export type Variable<T> = {
   // only when it has a partial variables
   partialVariables: Record<string, Variable<any>>;
 
-  set: <T>(value: T) => Variable<T>;
+  // TODO - better typing
+  set: Function;
 
-  //
   updating: boolean;
 };
 

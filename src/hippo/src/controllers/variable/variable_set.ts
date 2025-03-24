@@ -1,11 +1,8 @@
 import {Context} from "../../../types";
 import {Variable} from "../../../types/variable";
 import {derenderIfNode, renderIfNode} from "../template/template_if_nodes";
-import {isForVariable} from "./variable_for";
 import {isPrimitive} from "../../helpers/objects";
-import {ForVariable} from "../../../types/for_variable";
-import {ForStructure} from "../../../types/for_structure";
-import {createForItemContext, createForItemTemplate, putBeforeElement} from "../template/template_for";
+import {renderForStructures} from "../template/template_for";
 
 // this function actually sets the variable's value
 export function _setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
@@ -15,14 +12,9 @@ export function _setVariableValue<T>(context: Context, variable: Variable<T>, va
 
 export async function setVariable<T>(context: Context, variable: Variable<T>, value: T){
     // here we set the variable value
-    const isNotObject = !Object.keys(value);
+    const isNotObject = !value || !Object.keys(value);
     if (isNotObject && value === variable.value){
         return
-    }
-
-    if (isForVariable(variable)){
-        // TODO - change the contexts and do some
-
     }
 
     _setVariableValue(context, variable, value);
@@ -101,81 +93,75 @@ export function rerenderPartials<T>(context: Context, variable: Variable<T>, val
     return variable;
 }
 
-export async function rerenderFor(context: Context, variable: ForVariable<any>, value: any){
+export async function rerenderFor(context: Context, variable: Variable<any>, value: any){
     if (isPrimitive(value)) return variable
 
-    const newData = value;
-    const oldForStructures = variable.forStructures;
-    if (!oldForStructures) {
-        console.log("We dont have the 'forStructures', so no for things")
-        return
+    for (const forStructures of variable.forStructuresArray){
+        await renderForStructures(context, variable, forStructures.forItemStructures, forStructures.rootForLoopData)
     }
-    const itemName = variable.itemName
-
-    // TODO - reduce the forStructures by those items that has been deleted
-    const newForStructures: Array<ForStructure<any>> = [];
-    // for (const forStructure of forStructures){
-    //     const oldItemValue = forStructure.context.variables[itemName].value;
-    //     let contains = false;
-    //     for (const key in newData){
-    //         const newForItemValue = newData[key];
-    //         if (oldItemValue === newForItemValue) {
-    //             contains = true;
-    //             break;
-    //         }
-    //     }
-    //     if (!contains){
-    //         forStructure.itemNode.remove()
-    //     }
-    // }
-
-    let placeholder = variable.placeHolder;
-
-    let index = 0;
-    for (const key in newData){
-        const newForItem = newData[key];
-        const itemStructureIndex = oldForStructures.findIndex(
-            (forStructure: ForStructure<any>)=> newForItem === forStructure.context.variables[itemName].value
-        );
-        let newForStructure :ForStructure<any>;
-        let forItemTemplate: Element;
-        if (itemStructureIndex < 0){
-            // here we need to create a whole new structure (context, template)
-            //      here we create the context
-            const newForItemContext = createForItemContext(context, variable, key, variable.forNode, itemName, variable.indexName, variable.keyName, index)
-            //      and here the template
-            forItemTemplate = await createForItemTemplate(newForItemContext, placeholder, variable.nodesToSlot, false)
-
-            // here we put the attributes together to the FofStructure
-            newForStructure = {
-                itemNode: forItemTemplate,
-                context: newForItemContext,
-                variable: newForItemContext.variables[itemName]
-            }
-        }
-        else {
-            // we just need to put it to the
-            // so the structure stays the same after some changes
-            newForStructure = oldForStructures[itemStructureIndex]
-        }
-
-        newForStructures.push(newForStructure);
-        index ++;
-    }
-
-    for (const oldStructure of oldForStructures){
-        oldStructure.itemNode.remove()
-    }
-
-
-    // TODO - now mount it by the right order
-    for(const newStructure of newForStructures){
-        const forNode = newStructure.itemNode
-        putBeforeElement(placeholder, forNode)
-    }
-
-    return variable;
 }
+
+// export async function oldRerenderFor(context: Context, variable: Variable<any>, value: any){
+//     if (isPrimitive(value)) return variable
+//
+//     const newData = value;
+//     const oldForStructures = variable.forStructures;
+//     if (!oldForStructures) {
+//         console.log("We dont have the 'forStructures', so no for things")
+//         return
+//     }
+//     const itemName = variable.itemName
+//
+//     // TODO - reduce the forStructures by those items that has been deleted
+//     const newForStructures: Array<ForStructure<any>> = [];
+//
+//     let placeholder = variable.placeHolder;
+//
+//     let index = 0;
+//     for (const key in newData){
+//         const newForItem = newData[key];
+//         const itemStructureIndex = oldForStructures.findIndex(
+//             (forStructure: ForStructure<any>)=> newForItem === forStructure.context.variables[itemName].value
+//         );
+//         let newForStructure :ForStructure<any>;
+//         let forItemTemplate: Element;
+//         if (itemStructureIndex < 0){
+//             // here we need to create a whole new structure (context, template)
+//             //      here we create the context
+//             const newForItemContext = createForItemContext(context, variable, key, variable.forNode, itemName, variable.indexName, variable.keyName, index)
+//             //      and here the template
+//             forItemTemplate = await createForItemTemplate(newForItemContext, placeholder, variable.nodesToSlot, false)
+//
+//             // here we put the attributes together to the FofStructure
+//             newForStructure = {
+//                 itemNode: forItemTemplate,
+//                 context: newForItemContext,
+//                 variable: newForItemContext.variables[itemName]
+//             }
+//         }
+//         else {
+//             // we just need to put it to the
+//             // so the structure stays the same after some changes
+//             newForStructure = oldForStructures[itemStructureIndex]
+//         }
+//
+//         newForStructures.push(newForStructure);
+//         index ++;
+//     }
+//
+//     for (const oldStructure of oldForStructures){
+//         oldStructure.itemNode.remove()
+//     }
+//
+//
+//     // TODO - now mount it by the right order
+//     for(const newStructure of newForStructures){
+//         const forNode = newStructure.itemNode
+//         putBeforeElement(placeholder, forNode)
+//     }
+//
+//     return variable;
+// }
 
 const booleanAttributes = new Set([
     "checked", "disabled", "readonly", "required", "open", "selected", "autofocus",

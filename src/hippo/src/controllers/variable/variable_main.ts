@@ -29,22 +29,20 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
     attributes: [],
     ifNodes: [],
     showNodes: [],
+    forStructuresArray: [],
     pathFromOrigin: null,
     originVariable: null,
     partialVariables: {},
     updating: false,
 
-    // @ts-ignore
     set: () => {
       console.log("Setter not initialized yet")
     }
   };
 
-  // @ts-ignore
-  originalVariable.set = function <T>(value:T){
+  originalVariable.set = function(value:T){
     // TODO - ts ignore
-    return setVariable<T>(    // @ts-ignore
-        context, originalVariable, value);
+    return setVariable<T>(context, originalVariable, value);
   }
 
   context.addWatcher(originalVariable, rerenderIfNodes)

@@ -6,15 +6,16 @@ import {
     getVariableNameToAttributeModeling,
     modelAttribute
 } from "./template_attributes";
-import {Component} from "../../../types/component";
+import {UserDefinedComponent} from "../../../types/component";
 import {bindTextNode} from "./template_text_nodes";
 import {Keywords} from "../../../enums/keywords";
-import {derenderIfNode, getIfPlaceholderTag, renderIfNode} from "./template_if_nodes";
+import {derenderIfNode, renderIfNode} from "./template_if_nodes";
 import {processFor} from "./template_for";
+import {getIfPlaceholderTag} from "../../helpers/template";
 
 type ChildrenArray = Array<{
     tag: Element,
-    component: Component,
+    component: UserDefinedComponent,
     nodesToSLot? : Array<Element>,
     slot? : Element,
     name? : string
@@ -68,6 +69,7 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
 
     // TODO - h-for solve here
     if (node.attributes && node.attributes.getNamedItem(Keywords.for)) {
+        debugger
         await processFor(context, node, nodesToSlot)
 
         return {
@@ -127,6 +129,9 @@ export async function processNodes(node: Element, context: Context, nodesToSlot:
             childComponents.push(...result.childComponents)
         }
     } else if (!isComponent && node.nodeType == Node.TEXT_NODE  && node.textContent !== "") {
+        if (node.nodeName === "time"){
+            debugger
+        }
         // when the node is a leaf so we can inspect the text nodes
         bindTextNode(context, node)
         textNodes.push(node);

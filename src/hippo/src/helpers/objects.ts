@@ -6,9 +6,10 @@ export function keysToUpper<T>(obj: Record<string, T>) {
     return objWithUpperCase;
 }
 
-export function notPrimitive(object) {
+export function notPrimitive(object:any) {
     return typeof object === "object" && object !== null;
 }
-export function isPrimitive(object) {
+
+export function isPrimitive(object:any) {
     return typeof object !== "object" || object === null;
 }

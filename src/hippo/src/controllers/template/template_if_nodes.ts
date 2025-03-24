@@ -42,9 +42,4 @@ export async function renderIfNode(ifNode: IfNodeStructure) {
     ifNode.renderedTemplateNode = newTemplate
 }
 
-export function getIfPlaceholderTag(){
-    const placeHolder = document.createElement("div");
-    placeHolder.style.display = "none";
-    return placeHolder;
-}
 

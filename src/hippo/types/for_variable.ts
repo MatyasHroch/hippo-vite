@@ -1,8 +1,8 @@
 import {Variable} from "./variable";
-import {ForStructure} from "./for_structure";
+import {ForItemStructure} from "./for_structure";
 
 export type ForVariable<T> = Variable<T> & {
-    forStructures: Array<ForStructure<T>>;
+    forStructures: Array<ForItemStructure<T>>;
     nodesToSlot: Array<Element>;
     forNode: Element;
     itemName: string;

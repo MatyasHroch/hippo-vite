@@ -1,14 +1,19 @@
 <article class="border shadow p-2">
+<!--    {{heading}}-->
     <h3>
         {{heading}} - and some city -  {{user.value.address.city}}
     </h3>
     <input type="checkbox" checked="[[isCheckBoxEnabled]]">
-    <button disabled="{{isButtonDisabled}}"> Jsem button ovládaný checkboxem nade mnou </button>
+    <button disabled="{{isButtonDisabled}}">
+        Jsem button ovládaný checkboxem vedle me
+    </button>
 
     <h-slot>
     </h-slot>
 
-<!--    {{myList}}-->
+    <span class="m-2">
+        {{myList}}
+    </span>
 
     <div h-for="item, index in myList">
         <span>

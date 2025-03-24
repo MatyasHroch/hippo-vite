@@ -52,7 +52,7 @@ export function getVariableFromTemplateString(context: Context, variableString: 
     if (context.variables[variableString]) {
         return context.variables[variableString];
     }
-    // TODO - here add if the variable is not in the properties
+    // TODO - here add if the variable is not in the properties and computed and so on
 
     if (variableString && createNewPartial && variableString.includes(".")){
         return  createPartialFromTemplateString(context, variableString);

@@ -4,17 +4,69 @@ import {getVariableFromTemplateString} from "./template_attributes";
 import {cloneContext} from "../context";
 import {cloneElement} from "./template_main";
 import {processTemplate} from "../component";
-import {getIfPlaceholderTag} from "./template_if_nodes";
 import {createOriginVariable} from "../variable/variable_main";
 import {createPartialVariable} from "../variable/variable_partials";
-import {isForVariable} from "../variable/variable_for";
-import {ForStructure} from "../../../types/for_structure";
+import {ForItemStructure, ForLoopStructure, RootForData} from "../../../types/for_structure";
 import {Variable} from "../../../types/variable";
+import {getIfPlaceholderTag} from "../../helpers/template";
 
-export async function processFor(context:Context, node: Element, nodesToSlot: Array<Element>) {
+export async function renderForStructures<T>(variableToIterateContext: Context, variable: Variable<T>, oldForStructures: Array<ForItemStructure<T>>, rootForLoopData: RootForData){
+    const newDataToIterate = variable.value;
+    const {itemName, indexName, keyName, originForNode, endPlaceHolder, nodesToSlot} = rootForLoopData;
+
+    const newForLoopItemStructures : Array<ForItemStructure<T>> = []
+    let index = 0;
+
+    for (const key in newDataToIterate){
+        const newForItem = newDataToIterate[key];
+        const itemStructureIndex = oldForStructures.findIndex(
+            (forStructure: ForItemStructure<any>)=> newForItem === forStructure.forItemContext.variables[itemName]?.value
+        );
+        let newForItemStructure :ForItemStructure<T>;
+        let forItemTemplate: Element;
+
+        if (itemStructureIndex < 0){
+            // here we need to create a whole new structure (context, template)
+            //      here we create the context
+            const newForItemContext = createForItemContext(variableToIterateContext, variable, key, originForNode, itemName, indexName, keyName, index)
+            //      and here the template
+            forItemTemplate = await createForItemTemplate(newForItemContext, endPlaceHolder, nodesToSlot, false)
+
+            // here we put the attributes together to the FofStructure
+            newForItemStructure = {
+                forItemNode: forItemTemplate,
+                forItemContext: newForItemContext,
+                forItemVariable: newForItemContext.variables[itemName]
+            }
+        }
+        else {
+            // we just need to put it to the
+            // so the structure stays the same after some changes
+            newForItemStructure = oldForStructures[itemStructureIndex]
+        }
+
+        newForLoopItemStructures.push(newForItemStructure);
+        index ++;
+    }
+
+
+    // we remove the old nodes from the real DOM
+    for (const oldForLoopItemStructure of oldForStructures) {
+        oldForLoopItemStructure.forItemNode.remove()
+    }
+
+    for (const newForLoopItemStructure of newForLoopItemStructures){
+        putBeforeElement(endPlaceHolder, newForLoopItemStructure.forItemNode)
+    }
+}
+
+export async function processFor(context:Context, originForNode: Element, nodesToSlot: Array<Element>) {
     // if (!node.hasAttribute(Keywords.for)) return;
-    const forString = node.getAttribute(Keywords.for);
+    const forString = originForNode.getAttribute(Keywords.for);
+    originForNode.removeAttribute(Keywords.for);
+    // we do not need the origin for node anymore
     const splitForString = forString.split(Keywords.in)
+
     if (splitForString.length < 2) return;
 
     let [variablePart, dataName] = splitForString;
@@ -28,7 +80,7 @@ export async function processFor(context:Context, node: Element, nodesToSlot: Ar
 
     if (!itemName) return null;
 
-    const forStructures: Array<ForStructure<any>> = [];
+    const forStructures: Array<ForItemStructure<any>> = [];
     const contexts:Array<Context> = [];
 
     // TODO - get from all lists variables, properties, computed and so on
@@ -39,13 +91,10 @@ export async function processFor(context:Context, node: Element, nodesToSlot: Ar
     // if (!variableToIterate) return null;
     const dataToIterate = variableToIterate.value
 
-    // to have the node without the for attribute
-    node.removeAttribute(Keywords.for);
-
     let index = 0;
     // creating the context with the template
     for (const itemKey in dataToIterate) {
-        const itemContext = createForItemContext(context, variableToIterate, itemKey, node, itemName,indexName, keyName, index)
+        const itemContext = createForItemContext(context, variableToIterate, itemKey, originForNode, itemName,indexName, keyName, index)
 
         // just for the first render, we generate the index like this
         index++;
@@ -54,29 +103,36 @@ export async function processFor(context:Context, node: Element, nodesToSlot: Ar
         contexts.push(itemContext);
     }
 
+    const endPlaceHolder = getIfPlaceholderTag()
+    // We add the for information to the variable
+    const rootForLoopData = {
+        itemName,
+        indexName,
+        keyName,
+        originForNode,
+        nodesToSlot,
+        endPlaceHolder
+    }
+
     // rendering and mounting
-    const placeHolder = getIfPlaceholderTag()
-    putBeforeElement(node, placeHolder)
+    putBeforeElement(originForNode, endPlaceHolder,)
     for (const forItemContext of contexts){
-        const template = await createForItemTemplate(forItemContext, placeHolder, nodesToSlot)
+        const template = await createForItemTemplate(forItemContext, endPlaceHolder, nodesToSlot)
         forStructures.push({
-            context: forItemContext,
-            itemNode: template,
-            variable: forItemContext.variables[itemName],
+            forItemContext: forItemContext,
+            forItemNode: template,
+            forItemVariable: forItemContext.variables[itemName],
         })
     }
 
-    node.remove()
 
-    // to have al least this attribute, so i could tell that this is the
-    variableToIterate["forNode"] = node;
-    variableToIterate["nodesToSlot"] = nodesToSlot
-    variableToIterate["forStructures"] = forStructures;
-    variableToIterate["itemName"] = itemName;
-    variableToIterate["indexName"] = indexName;
-    variableToIterate["keyName"] = keyName;
-    variableToIterate["placeHolder"] = placeHolder
-    if (!isForVariable(variableToIterate)) return new Error("For Variable not created properly");
+    variableToIterate.forStructuresArray.push({
+        forItemStructures: forStructures,
+        rootForLoopData
+    });
+
+    // we do not need the original node to be in the real DOM anymore
+    originForNode.remove()
 }
 
 export function createForItemContext(context: Context, variableToIterate: Variable<any>, itemKey: string, node: Element, itemName : string, indexName : string, keyName : string, index: number){
@@ -103,19 +159,19 @@ export function createForItemContext(context: Context, variableToIterate: Variab
     return itemContext;
 }
 
-export function putBeforeElement(element: Element, renderedTemplate:Element) {
-    const parent = element.parentNode
+export function putBeforeElement(elementToBePutBefore: Element, somePlaceHolder:Element) {
+    const parent = elementToBePutBefore.parentNode
     if (!parent) return
-    return parent.insertBefore(renderedTemplate, element)
+    return parent.insertBefore(somePlaceHolder, elementToBePutBefore)
 }
 
-export async function createForItemTemplate(context:Context, nodeToPutBefore: Element, nodesToSlot: Array<Element>, mount: boolean = true) {
+export async function createForItemTemplate(forItemContext:Context, nodeToPutBefore: Element, nodesToSlot: Array<Element>, mount: boolean = true) {
     const newComponent = {
-        name: "fake-for-component-"+ context.id,
-        context,
-        template: context.template,
+        name: "fake-for-component-"+ forItemContext.id,
+        context: forItemContext,
+        template: forItemContext.template,
     }
-    return  (await processTemplate(newComponent,
+    return (await processTemplate(newComponent,
         nodeToPutBefore,
         nodesToSlot,
         putBeforeElement,
