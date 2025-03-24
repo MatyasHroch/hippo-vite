@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "lib": ["ES2020", "DOM"],
     "target": "es6",
     "module": "esnext", // Use "esnext" or "commonjs" for Node
     "moduleResolution": "node", // Resolves modules like Node.js

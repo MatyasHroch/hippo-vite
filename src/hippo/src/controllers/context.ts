@@ -5,7 +5,8 @@ import {getNewId} from "./ids";
 import {stringToHtml} from "./template/template_getters";
 import {UserDefinedComponent} from "../../types/component";
 import {keysToUpper} from "../helpers/objects";
-import {Handler} from "../../types/handler";
+import {Watcher} from "../../types/watcher";
+import {createComputedVariable} from "./variable/variable_computed";
 
 export function createContext(parentContext: Context = null, id = null): Context {
   const newContext: any = {};
@@ -18,17 +19,20 @@ export function createContext(parentContext: Context = null, id = null): Context
   newContext.childComponents = {};
 
   // methods just called without the context for user
-  newContext.addVariable = function (name: string, value: string) {
-    return addVariable(newContext, name, value);
-  };
   newContext.setTemplate = function (htmlString: string) {
     return setTemplate(newContext, htmlString);
   };
-  newContext.addWatcher = function (variable: Variable<any>, onUpdate: Handler) {
+  newContext.addWatcher = function (variable: Variable<any>, onUpdate: Watcher) {
     return addWatcher(newContext, variable, onUpdate);
   }
   newContext.addChildren = function (children: Record<string, UserDefinedComponent>) {
     return addChildren(newContext, children);
+  }
+  newContext.addVariable = function (name: string, value: string) {
+    return addVariable(newContext, name, value);
+  };
+  newContext.addComputed = function ( computation:() => any, name: string = null, dependencies: Array<Variable<any>>){
+    return addComputed(newContext, computation, name, dependencies)
   }
 
   return newContext;
@@ -40,13 +44,17 @@ function addVariable(context: Context, key: string, value: any) {
   return context.variables[key];
 }
 
+function addComputed(context: Context, computation: () => any, name: string = null, dependencies: Array<Variable<any>>) {
+  createComputedVariable(context, computation, name, dependencies)
+}
+
 // when we set the template, it will be rendered
 function setTemplate(context: Context, htmlString: string) {
   context.template = stringToHtml(htmlString);
 }
 
 // when we set the watcher via context, it will be then passed as a third argument to the user's on-update function
-function addWatcher(context: Context, variable: Variable<any>, handler: Handler) {
+function addWatcher(context: Context, variable: Variable<any>, handler: Watcher) {
   variable.watchers.push(handler);
   return handler
 }

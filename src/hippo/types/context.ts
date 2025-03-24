@@ -1,6 +1,6 @@
 import {Variable} from "./variable";
 import {UserDefinedComponent} from "./component";
-import {Handler} from "./handler";
+import {Watcher} from "./watcher";
 
 export type Context = {
   // values
@@ -17,6 +17,6 @@ export type Context = {
   // TODO - describe the methods more, and do addVariables
   addVariable: <T>(name : string, value: T) => Variable<T>;
   setTemplate: (htmlString: string) => Element | Node;
-  addWatcher: (variable: Variable<any>, onUpdate: Handler) => Function;
+  addWatcher: (variable: Variable<any>, onUpdate: Watcher) => Function;
   addChildren: (children: Record<string,UserDefinedComponent>) => Record<string,UserDefinedComponent>;
 };

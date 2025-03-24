@@ -9,6 +9,7 @@ import {
   rerenderTextNodes,
   setVariable
 } from "./variable_set";
+import {Watcher} from "../../../types/watcher";
 
 
 export function createOriginVariable<T = any>(name: string, value: T, context?: Context) {
@@ -34,29 +35,48 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
     originVariable: null,
     partialVariables: {},
     updating: false,
+    // TODO -add watcher
 
+    addWatcher: () => {
+      console.log("This function is not initialized yet.");
+    },
     set: () => {
       console.log("Setter not initialized yet")
     }
+
   };
 
+  // USER FUNCTIONS
   originalVariable.set = function(value:T){
     // TODO - ts ignore
     return setVariable<T>(context, originalVariable, value);
   }
 
-  context.addWatcher(originalVariable, rerenderIfNodes)
-  context.addWatcher(originalVariable, rerenderFor)
-  context.addWatcher(originalVariable, rerenderTextNodes)
-  context.addWatcher(originalVariable, rerenderAttributes);
-  context.addWatcher(originalVariable, rerenderDependencies);
-  context.addWatcher(originalVariable, rerenderPartials)
+  originalVariable.addWatcher = function (watcher: Watcher) {
+    addWatcher(originalVariable, watcher);
+  }
+
+  // DEFAULT WATCHERS
+  addWatcher(originalVariable, rerenderIfNodes)
+  addWatcher(originalVariable, rerenderFor)
+  addWatcher(originalVariable, rerenderTextNodes)
+  addWatcher(originalVariable, rerenderAttributes);
+  addWatcher(originalVariable, rerenderDependencies);
+  addWatcher(originalVariable, rerenderPartials)
 
   return originalVariable;
 }
 
+function addWatcher<T>(variable: Variable<T>, watcher: Watcher){
+  variable.watchers.push(watcher);
+}
+
+export function addComputed<T>(variableToDepend: Variable<T>, newComputedVariable : Variable<any>, computation: () => any){
+  variableToDepend.addWatcher(async function (){
+     await setVariable(newComputedVariable.context, newComputedVariable, computation());
+  });
+}
 
 function deleteVariable<T>(context: Context, variable: T){
   return Error("Not Implemented")
 }
-

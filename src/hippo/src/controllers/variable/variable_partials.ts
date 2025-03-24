@@ -33,15 +33,32 @@ export function createPartialVariable<T>(
     let partialVariable = originVariable.partialVariables[path];
     if (!partialVariable) {
         partialVariable = createOriginVariable<T>(name, currentValue);
-        // setting up the slots
+        // setting up the slots ??
         partialVariable.pathFromOrigin = path
         partialVariable.originVariable = originVariable;
         originVariable.partialVariables[path] = partialVariable;
+
+        // TODO - optimaze this, so the origin variable will know it should not look for other updates then in the path
+        //  and be careful about infinite loop
+        // originVariable.set = (value: T) => {
+        //     const keys = path.split(".");
+        //     const lastKey = keys.pop()
+        //     let currentValue = originVariable.value;
+        //     for (const key of keys) {
+        //         if (key in currentValue) {
+        //             return new Error(`Invalid path: ${path}`);
+        //         }
+        //         currentValue = currentValue[key];
+        //     }
+        //     currentValue[lastKey] = value;
+        //     originVariable.set(originVariable.value)
+        // }
     }
 
     context.variables[partialVariable.name] = partialVariable;
     return partialVariable;
 }
+
 
 export function createPartialFromTemplateString(context: Context, fullObjectString:string, readOnly = false){
     const splitObjectString = fullObjectString.split(".");

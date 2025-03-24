@@ -1,6 +1,6 @@
 import {Context} from "./context";
-import {Handler} from "./handler";
-import {ForLoopStructure, ForItemStructure} from "./for_structure";
+import {Watcher} from "./watcher";
+import {ForLoopStructure} from "./for_structure";
 
 export type IfNodeStructure = {
   placeholderNode: Element,
@@ -27,7 +27,8 @@ export type Variable<T> = {
   previousValue: T | undefined;
 
   // TODO - create addWatcher method, and the typing should be better
-  watchers: Array<Handler>; // functions that activates when the variable is changed
+  watchers: Array<Watcher>; // functions that activates when the variable is changed
+  addWatcher: Function;
 
   inputNodes: Array<HTMLInputElement>; // two-way binding - input, select and textarea
   textNodes: Array<Text>; // one-way binding - variables rendered as a string
