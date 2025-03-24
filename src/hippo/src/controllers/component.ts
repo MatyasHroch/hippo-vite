@@ -3,6 +3,7 @@ import {Context} from "../../types";
 import {renderTemplate} from "./template/template_main";
 import {Keywords} from "../../enums/keywords";
 import {NewComponentStruct} from "../../types/component";
+import {unwrapElement} from "../helpers/template";
 
 // TODO - should be renamed as process context
 export async function processComponent(component: Function, parentContext: Context = null, elementToMount: Element = null, nodesToSlot: Array<Element> = null) {
@@ -18,16 +19,17 @@ export async function processComponent(component: Function, parentContext: Conte
 
     // PROCESS THE TEMPLATE
     // Check if there is any
-    if (!context.template){
+    if (!context.template) {
         console.warn("This component has no Template:" + component.name);
         return newComponent;
     }
 
     newComponent.template = context.template;
+
     return processTemplate(newComponent, elementToMount, nodesToSlot)
 }
 
-export async function processTemplate(newComponent: NewComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null, mountFunction = (element: Element, renderedTemplate: Element) => element.appendChild(renderedTemplate), mount: boolean = true){
+export async function processTemplate(newComponent: NewComponentStruct, elementToMount: Element = null, nodesToSlot: Array<Element> = null, mountFunction= defaultMount , mount: boolean = true){
     const context = newComponent.context;
 
     // Check if there is any
@@ -38,7 +40,10 @@ export async function processTemplate(newComponent: NewComponentStruct, elementT
 
     // Render the template
     const renderTemplateResult = await renderTemplate(newComponent.template, context);
+
+    // TODO - here we just give up on not having just one root element in template
     const renderedTemplate = renderTemplateResult.clonedTemplate;
+
     if (!renderedTemplate){
         console.warn("Template was not rendered properly in the component" + newComponent.name);
         return newComponent;
@@ -68,11 +73,8 @@ export async function processTemplate(newComponent: NewComponentStruct, elementT
                 slot.appendChild(node)
             }
         }
+
         slot.remove()
-        // const parent = slot.parentElement;
-        // if (parent){
-        //     parent.removeChild(slot)
-        // }
     }
 
     // TODO  2) remove all my html, that will be placed to the child process so this is DONE
@@ -88,8 +90,16 @@ export async function processTemplate(newComponent: NewComponentStruct, elementT
     for(const child of childComponents) {
         // console.log("childComponent " + child.name);
         // console.log("it has this slots: " + child.nodesToSLot);
+
         await processComponent(child.component, context, child.tag, child.nodesToSLot);
     }
 
     return newComponent
+}
+
+function defaultMount(element: Element, templateToMount: Element){
+     element.appendChild(templateToMount);
+     // TODO - if there is some problem with the ATTRIBUTES or else
+     unwrapElement(element);
+// debugger
 }
