@@ -1,6 +1,6 @@
-import {createApp, createContext, createOriginVariable} from "../hippo";
+import { createApp } from "../hippo";
 import { app } from "./components/app";
-createApp(app)
+createApp(app);
 
 // const newVar = createOriginVariable<string>("name", "Albert");
 //
@@ -40,4 +40,3 @@ createApp(app)
 //
 // console.log(address);
 // console.log(reactiveAddress.value);
-

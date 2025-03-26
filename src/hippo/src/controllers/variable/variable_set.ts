@@ -1,104 +1,143 @@
-import {Context} from "../../../types";
-import {Variable} from "../../../types/variable";
-import {derenderIfNode, renderIfNode} from "../template/template_if_nodes";
-import {isPrimitive} from "../../helpers/objects";
-import {renderForStructures} from "../template/template_for";
+import { Context } from "../../../types";
+import { Variable } from "../../../types/variable";
+import { derenderIfNode, renderIfNode } from "../template/template_if_nodes";
+import { isPrimitive } from "../../helpers/objects";
+import { renderForStructures } from "../template/template_for";
 
 // this function actually sets the variable's value
-export function _setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
-    variable.previousValue = variable.value;
-    variable.value = value;
+export function _setVariableValue<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  variable.previousValue = variable.value;
+  variable.value = value;
 }
 
-export async function setVariable<T>(context: Context, variable: Variable<T>, value: T){
-    // here we set the variable value
-    const isNotObject = !value || !Object.keys(value);
-    if (isNotObject && value === variable.value){
-        return
-    }
+export async function setVariable<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  // here we set the variable value
+  const isNotObject = !value || !Object.keys(value);
+  if (isNotObject && value === variable.value) {
+    return;
+  }
 
-    _setVariableValue(context, variable, value);
+  _setVariableValue(context, variable, value);
 
-    // here it just triggers all the watchers
-    for (const watcher of variable.watchers) {
-        await watcher(context, variable, value);
-    }
+  // here it just triggers all the watchers
+  for (const watcher of variable.watchers) {
+    await watcher(context, variable, value);
+  }
 
-    return variable;
+  return variable;
 }
 
-export function rerenderTextNodes<T>(context: Context, variable: Variable<T>, value: T){
-    for (const node of variable.textNodes) {
-        // changing just the text content
-        node.textContent = variable.value as string;
-    }
-    return variable;
+export function rerenderTextNodes<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  for (const node of variable.textNodes) {
+    // changing just the text content
+    node.textContent = variable.value as string;
+  }
+  return variable;
 }
 
-export function rerenderAttributes<T>(context: Context, variable: Variable<T>, value: T){
-    for (const attributeNode of variable.attributes) {
-        renderAttribute(attributeNode, value)
-    }
-    return variable;
+export function rerenderAttributes<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  for (const attributeNode of variable.attributes) {
+    renderAttribute(attributeNode, value);
+  }
+  return variable;
 }
 
-export function renderAttribute(attributeNode: {node: Element, attribute: Attr}, value: any){
-    // we set the attribute to the value
-    attributeNode.attribute.value = value as string;
+export function renderAttribute(
+  attributeNode: { node: Element; attribute: Attr },
+  value: any
+) {
+  // we set the attribute to the value
+  attributeNode.attribute.value = value as string;
 
-    // if it is a bolean attribute, we add it or remove it from the
-    if (isBooleanAttribute(attributeNode.attribute)) {
-        if (value){
-            attributeNode.node.attributes.setNamedItem(attributeNode.attribute)
-        } else {
-            attributeNode.node.removeAttribute(attributeNode.attribute.name)
-        }
+  // if it is a bolean attribute, we add it or remove it from the
+  if (isBooleanAttribute(attributeNode.attribute)) {
+    if (value) {
+      attributeNode.node.attributes.setNamedItem(attributeNode.attribute);
+    } else {
+      attributeNode.node.removeAttribute(attributeNode.attribute.name);
     }
+  }
 }
 
-export function rerenderDependencies<T>(context: Context, variable: Variable<T>, value: T){
-    // TODO - rerender the Dependencies
-    console.log("// TODO - rerender the Dependencies")
-    return variable;
+export function rerenderDependencies<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  // TODO - rerender the Dependencies
+  console.log("// TODO - rerender the Dependencies");
+  return variable;
 }
 
-export async function rerenderIfNodes<T>(context: Context, variable: Variable<T>, value: T){
-    if (value){
-        for (const ifNode of variable.ifNodes){
-            await renderIfNode(ifNode)
-        }
+export async function rerenderIfNodes<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  if (value) {
+    for (const ifNode of variable.ifNodes) {
+      await renderIfNode(ifNode);
     }
-    else {
-        for (const ifNode of variable.ifNodes){
-            derenderIfNode(ifNode)
-        }
+  } else {
+    for (const ifNode of variable.ifNodes) {
+      derenderIfNode(ifNode);
     }
+  }
 }
 
-export function rerenderPartials<T>(context: Context, variable: Variable<T>, value: T){
-    for (const partialName in variable.partialVariables){
-        const partialVariable = variable.partialVariables[partialName];
+export function rerenderPartials<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  for (const partialName in variable.partialVariables) {
+    const partialVariable = variable.partialVariables[partialName];
 
-        let currentValue = value;
-        for (const key of partialName.split(".")) {
-            // if I get to some point where the key does not exist, the objectPath is invalid
-            if (currentValue[key] === undefined) {
-                partialVariable.set(undefined);
-                new Error(`Invalid path in partial variable: ${partialName}`);
-            }
-            currentValue = currentValue[key];
-        }
-        partialVariable.set(currentValue);
+    let currentValue = value;
+    for (const key of partialName.split(".")) {
+      // if I get to some point where the key does not exist, the objectPath is invalid
+      if (currentValue[key] === undefined) {
+        partialVariable.set(undefined);
+        new Error(`Invalid path in partial variable: ${partialName}`);
+      }
+      currentValue = currentValue[key];
     }
-    return variable;
+    partialVariable.set(currentValue);
+  }
+  return variable;
 }
 
-export async function rerenderFor(context: Context, variable: Variable<any>, value: any){
-    if (isPrimitive(value)) return variable
+export async function rerenderFor(
+  context: Context,
+  variable: Variable<any>,
+  value: any
+) {
+  if (isPrimitive(value)) return variable;
 
-    for (const forStructures of variable.forStructuresArray){
-        await renderForStructures(context, variable, forStructures.forItemStructures, forStructures.rootForLoopData)
-    }
+  for (const forStructures of variable.forStructuresArray) {
+    await renderForStructures(
+      context,
+      variable,
+      forStructures.forItemStructures,
+      forStructures.rootForLoopData
+    );
+  }
 }
 
 // export async function oldRerenderFor(context: Context, variable: Variable<any>, value: any){
@@ -164,12 +203,34 @@ export async function rerenderFor(context: Context, variable: Variable<any>, val
 // }
 
 const booleanAttributes = new Set([
-    "checked", "disabled", "readonly", "required", "open", "selected", "autofocus",
-    "autoplay", "controls", "loop", "muted", "multiple", "novalidate", "reversed",
-    "ismap", "defer", "hidden", "playsinline", "async", "default", "inert",
-    "nomodule", "formnovalidate", "allowfullscreen", "itemscope", "sortable"
+  "checked",
+  "disabled",
+  "readonly",
+  "required",
+  "open",
+  "selected",
+  "autofocus",
+  "autoplay",
+  "controls",
+  "loop",
+  "muted",
+  "multiple",
+  "novalidate",
+  "reversed",
+  "ismap",
+  "defer",
+  "hidden",
+  "playsinline",
+  "async",
+  "default",
+  "inert",
+  "nomodule",
+  "formnovalidate",
+  "allowfullscreen",
+  "itemscope",
+  "sortable",
 ]);
 
 export function isBooleanAttribute(attr: Attr): boolean {
-    return booleanAttributes.has(attr.name);
+  return booleanAttributes.has(attr.name);
 }

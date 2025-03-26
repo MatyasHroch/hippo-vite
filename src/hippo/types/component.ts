@@ -1,9 +1,9 @@
-import {Context} from "./context";
+import { Context } from "./context";
 
 export type UserDefinedComponent = Function;
 
 export type NewComponentStruct = {
-    template?: Element;
-    context?: Context;
-    name: string;
-}
+  template?: Element;
+  context?: Context;
+  name: string;
+};

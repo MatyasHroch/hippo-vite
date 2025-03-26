@@ -1,11 +1,11 @@
-import {createContext} from "./context";
-import {Context} from "../../types";
+import { createContext } from "./context";
+import { Context } from "../../types";
 
-let globalContext : Context | null= null;
+let globalContext: Context | null = null;
 
-export function getGlobalContext(){
-    if (!globalContext){
-        globalContext = createContext(null, 0);
-    }
-    return globalContext;
+export function getGlobalContext() {
+  if (!globalContext) {
+    globalContext = createContext(null, 0);
+  }
+  return globalContext;
 }

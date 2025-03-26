@@ -1,53 +1,36 @@
 <article class="border shadow p-2">
-    <h3>
-        {{heading}} - and some city -  {{user.value.address.city}}
-    </h3>
-    <h3>
-        {{capitalizedHeading}} - and some city -  {{user.value.address}}
-    </h3>
-    <input type="checkbox" checked="[[isCheckBoxEnabled]]">
-    <button disabled="{{isButtonDisabled}}">
-        Jsem button ovládaný checkboxem vedle me
-    </button>
+  <h3>{{heading}} - and some city - {{user.value.address.city}}</h3>
+  <h3>{{capitalizedHeading}} - and some city - {{user.value.address}}</h3>
+  <input type="checkbox" checked="[[isCheckBoxEnabled]]" />
+  <button disabled="{{isButtonDisabled}}">
+    Jsem button ovládaný checkboxem vedle me
+  </button>
 
-    <h-slot>
-    </h-slot>
+  <h-slot> </h-slot>
 
-           {{myList}}
-           -> to je ten list.
+  {{myList}} -> to je ten list.
 
-    <div h-for="item, index in myList">
-        <span>
-            Index: {{index}} and item: {{item}}
+  <div h-for="item, index in myList">
+    <span> Index: {{index}} and item: {{item}} </span>
+  </div>
+  <div class="border p-2 m-2">
+    <div>
+      <h4 class="p-2 m-2">Here we have the partial input value</h4>
+      <p>{{user.value.address.city}}</p>
+      <input value="[[user.value.address.city]]" />
+    </div>
+    <input value="[[ newParagraph ]]" />
+    <p>{{newParagraph}}</p>
+  </div>
+  <div class="border p-2 m-2">
+    <div class="border p-2 m-2 block">
+      <div h-if="isButtonDisabled">
+        <list></list>
+        <span class="border p-2 m-2 block"> The isCheckBoxEnabled Span </span>
+        <span class="border p-2 m-2 block">
+          This is another span, both in the "ifed" tag
         </span>
-
+      </div>
     </div>
-    <div class="border p-2 m-2">
-        <div>
-            <h4 class="p-2 m-2">
-                Here we have the partial input value
-            </h4>
-            <p>
-                {{user.value.address.city}}
-            </p>
-            <input value="[[user.value.address.city]]">
-        </div>
-        <input value="[[ newParagraph ]]">
-        <p>
-            {{newParagraph}}
-        </p>
-    </div>
-    <div class="border p-2 m-2">
-        <div class="border p-2 m-2 block">
-            <list h-if="isButtonDisabled">
-            </list>
-            <span class="border p-2 m-2 block">
-                The isCheckBoxEnabled Span
-
-            </span>
-            <span class="border p-2 m-2 block">
-                This is another span, both in the "ifed" tag
-            </span>
-        </div>
-    </div>
+  </div>
 </article>

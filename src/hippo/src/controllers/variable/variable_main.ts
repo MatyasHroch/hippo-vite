@@ -1,18 +1,23 @@
 import string from "vite-plugin-string";
-import {Context} from "../../../types";
-import {Variable} from "../../../types/variable";
-import {getGlobalContext} from "../globals";
+import { Context } from "../../../types";
+import { Variable } from "../../../types/variable";
+import { getGlobalContext } from "../globals";
 import {
   rerenderAttributes,
-  rerenderDependencies, rerenderFor, rerenderIfNodes,
+  rerenderDependencies,
+  rerenderFor,
+  rerenderIfNodes,
   rerenderPartials,
   rerenderTextNodes,
-  setVariable
+  setVariable,
 } from "./variable_set";
-import {Watcher} from "../../../types/watcher";
+import { Watcher } from "../../../types/watcher";
 
-
-export function createOriginVariable<T = any>(name: string, value: T, context?: Context) {
+export function createOriginVariable<T = any>(
+  name: string,
+  value: T,
+  context?: Context
+) {
   // when no context id provided, we give it to the global context, which is 0
   context ??= getGlobalContext();
   const contextId = context.id;
@@ -41,42 +46,49 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
       console.log("This function is not initialized yet.");
     },
     set: () => {
-      console.log("Setter not initialized yet")
-    }
-
+      console.log("Setter not initialized yet");
+    },
   };
 
   // USER FUNCTIONS
-  originalVariable.set = function(value:T){
+  originalVariable.set = function (value: T) {
     // TODO - ts ignore
     return setVariable<T>(context, originalVariable, value);
-  }
+  };
 
   originalVariable.addWatcher = function (watcher: Watcher) {
     addWatcher(originalVariable, watcher);
-  }
+  };
 
   // DEFAULT WATCHERS
-  addWatcher(originalVariable, rerenderIfNodes)
-  addWatcher(originalVariable, rerenderFor)
-  addWatcher(originalVariable, rerenderTextNodes)
+  addWatcher(originalVariable, rerenderIfNodes);
+  addWatcher(originalVariable, rerenderFor);
+  addWatcher(originalVariable, rerenderTextNodes);
   addWatcher(originalVariable, rerenderAttributes);
   addWatcher(originalVariable, rerenderDependencies);
-  addWatcher(originalVariable, rerenderPartials)
+  addWatcher(originalVariable, rerenderPartials);
 
   return originalVariable;
 }
 
-function addWatcher<T>(variable: Variable<T>, watcher: Watcher){
+function addWatcher<T>(variable: Variable<T>, watcher: Watcher) {
   variable.watchers.push(watcher);
 }
 
-export function addComputed<T>(variableToDepend: Variable<T>, newComputedVariable : Variable<any>, computation: () => any){
-  variableToDepend.addWatcher(async function (){
-     await setVariable(newComputedVariable.context, newComputedVariable, computation());
+export function addComputed<T>(
+  variableToDepend: Variable<T>,
+  newComputedVariable: Variable<any>,
+  computation: () => any
+) {
+  variableToDepend.addWatcher(async function () {
+    await setVariable(
+      newComputedVariable.context,
+      newComputedVariable,
+      computation()
+    );
   });
 }
 
-function deleteVariable<T>(context: Context, variable: T){
-  return Error("Not Implemented")
+function deleteVariable<T>(context: Context, variable: T) {
+  return Error("Not Implemented");
 }
