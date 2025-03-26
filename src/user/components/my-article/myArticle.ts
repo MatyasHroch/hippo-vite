@@ -6,12 +6,12 @@ import {list} from "../list/list";
 export function myArticle(context:Context){
     // SETTING UP VARIABLES
     const heading = context.addVariable("heading", "My Heading");
+    const capitalizedHeading = context.addComputed(() => heading.value.toUpperCase(), "capitalizedHeading");
+
     const paragraph = context.addVariable("paragraph", "My Paragraph content");
     const isCheckBoxEnabled = context.addVariable("isCheckBoxEnabled", true);
     const isButtonDisabled = context.addVariable("isButtonDisabled", !isCheckBoxEnabled.value);
     const newParagraph = context.addVariable("newParagraph", "");
-    debugger
-    const capitalizedHeading = context.addComputed(() => heading.value.toUpperCase(), "capitalizedHeading");
 
     const myList = context.addVariable("myList", ["Hello", "Hi", "Hey"]);
 

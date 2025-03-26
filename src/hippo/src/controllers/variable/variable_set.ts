@@ -1,104 +1,201 @@
-import {Context} from "../../../types";
-import {Variable} from "../../../types/variable";
-import {derenderIfNode, renderIfNode} from "../template/template_if_nodes";
-import {isPrimitive} from "../../helpers/objects";
-import {renderForStructures} from "../template/template_for";
+import { Context } from "../../../types";
+import { Variable } from "../../../types/variable";
+import { derenderIfNode, renderIfNode } from "../template/template_if_nodes";
+import { isPrimitive } from "../../helpers/objects";
+import { renderForStructures } from "../template/template_for";
 
 // this function actually sets the variable's value
-export function _setVariableValue<T>(context: Context, variable: Variable<T>, value: T){
+export function _setVariableValue<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  variable.previousValue = variable.value;
+  variable.value = value;
+}
+
+export async function setVariable<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+): Promise<Variable<T>> {
+  if (!variable) {
+    throw new Error("Variable cannot be null or undefined");
+  }
+
+  // Prevent circular updates
+  if (variable.updating) {
+    console.warn("Attempted to update variable while it was already updating");
+    return variable;
+  }
+
+  // For primitive values, do a direct comparison
+  if (typeof value !== "object" || value === null) {
+    if (value === variable.value) {
+      return variable;
+    }
     variable.previousValue = variable.value;
     variable.value = value;
-}
-
-export async function setVariable<T>(context: Context, variable: Variable<T>, value: T){
-    // here we set the variable value
-    const isNotObject = !value || !Object.keys(value);
-    if (isNotObject && value === variable.value){
-        return
+  } else {
+    // For objects, do a deep comparison
+    if (JSON.stringify(value) === JSON.stringify(variable.value)) {
+      return variable;
     }
+    variable.previousValue = { ...variable.value };
+    variable.value = value;
+  }
 
-    _setVariableValue(context, variable, value);
+  variable.updating = true;
 
-    // here it just triggers all the watchers
+  try {
+    // Trigger all watchers
     for (const watcher of variable.watchers) {
-        await watcher(context, variable, value);
+      await watcher(context, variable, value);
     }
+  } catch (error) {
+    console.error(`Error in watcher for variable ${variable.name}:`, error);
+    // Revert the value if a watcher fails
+    variable.value = variable.previousValue;
+  } finally {
+    variable.updating = false;
+  }
 
+  return variable;
+}
+
+export function rerenderTextNodes<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  for (const node of variable.textNodes) {
+    // changing just the text content
+    node.textContent = variable.value as string;
+  }
+  return variable;
+}
+
+export function rerenderAttributes<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  for (const attributeNode of variable.attributes) {
+    renderAttribute(attributeNode, value);
+  }
+  return variable;
+}
+
+export function renderAttribute(
+  attributeNode: { node: Element; attribute: Attr },
+  value: any
+) {
+  // we set the attribute to the value
+  attributeNode.attribute.value = value as string;
+
+  // if it is a bolean attribute, we add it or remove it from the
+  if (isBooleanAttribute(attributeNode.attribute)) {
+    if (value) {
+      attributeNode.node.attributes.setNamedItem(attributeNode.attribute);
+    } else {
+      attributeNode.node.removeAttribute(attributeNode.attribute.name);
+    }
+  }
+}
+
+export function rerenderDependencies<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  // TODO - rerender the Dependencies
+  console.log("// TODO - rerender the Dependencies");
+  return variable;
+}
+
+export async function rerenderIfNodes<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+) {
+  if (value) {
+    for (const ifNode of variable.ifNodes) {
+      await renderIfNode(ifNode);
+    }
+  } else {
+    for (const ifNode of variable.ifNodes) {
+      derenderIfNode(ifNode);
+    }
+  }
+}
+
+export function rerenderPartials<T>(
+  context: Context,
+  variable: Variable<T>,
+  value: T
+): Variable<T> {
+  if (!variable || !variable.partialVariables) {
     return variable;
-}
+  }
 
-export function rerenderTextNodes<T>(context: Context, variable: Variable<T>, value: T){
-    for (const node of variable.textNodes) {
-        // changing just the text content
-        node.textContent = variable.value as string;
-    }
-    return variable;
-}
+  const partialVariables = variable.partialVariables;
+  const updatedPartials = new Set<string>();
 
-export function rerenderAttributes<T>(context: Context, variable: Variable<T>, value: T){
-    for (const attributeNode of variable.attributes) {
-        renderAttribute(attributeNode, value)
-    }
-    return variable;
-}
+  for (const [partialName, partialVariable] of Object.entries(
+    partialVariables
+  )) {
+    try {
+      let currentValue = value;
+      const pathParts = partialName.split(".");
 
-export function renderAttribute(attributeNode: {node: Element, attribute: Attr}, value: any){
-    // we set the attribute to the value
-    attributeNode.attribute.value = value as string;
-
-    // if it is a bolean attribute, we add it or remove it from the
-    if (isBooleanAttribute(attributeNode.attribute)) {
-        if (value){
-            attributeNode.node.attributes.setNamedItem(attributeNode.attribute)
-        } else {
-            attributeNode.node.removeAttribute(attributeNode.attribute.name)
+      // Validate path exists
+      for (const key of pathParts) {
+        if (currentValue === null || currentValue === undefined) {
+          console.warn(`Invalid path in partial variable: ${partialName}`);
+          partialVariable.set(undefined);
+          continue;
         }
-    }
-}
+        currentValue = currentValue[key];
+      }
 
-export function rerenderDependencies<T>(context: Context, variable: Variable<T>, value: T){
-    // TODO - rerender the Dependencies
-    console.log("// TODO - rerender the Dependencies")
-    return variable;
-}
-
-export async function rerenderIfNodes<T>(context: Context, variable: Variable<T>, value: T){
-    if (value){
-        for (const ifNode of variable.ifNodes){
-            await renderIfNode(ifNode)
-        }
-    }
-    else {
-        for (const ifNode of variable.ifNodes){
-            derenderIfNode(ifNode)
-        }
-    }
-}
-
-export function rerenderPartials<T>(context: Context, variable: Variable<T>, value: T){
-    for (const partialName in variable.partialVariables){
-        const partialVariable = variable.partialVariables[partialName];
-
-        let currentValue = value;
-        for (const key of partialName.split(".")) {
-            // if I get to some point where the key does not exist, the objectPath is invalid
-            if (currentValue[key] === undefined) {
-                partialVariable.set(undefined);
-                new Error(`Invalid path in partial variable: ${partialName}`);
-            }
-            currentValue = currentValue[key];
-        }
+      // Only update if value has changed
+      if (
+        JSON.stringify(currentValue) !== JSON.stringify(partialVariable.value)
+      ) {
         partialVariable.set(currentValue);
+        updatedPartials.add(partialName);
+      }
+    } catch (error) {
+      console.error(`Error updating partial variable ${partialName}:`, error);
+      partialVariable.set(undefined);
     }
-    return variable;
+  }
+
+  // Clean up any partial variables that are no longer needed
+  for (const partialName of Object.keys(partialVariables)) {
+    if (!updatedPartials.has(partialName)) {
+      delete partialVariables[partialName];
+    }
+  }
+
+  return variable;
 }
 
-export async function rerenderFor(context: Context, variable: Variable<any>, value: any){
-    if (isPrimitive(value)) return variable
+export async function rerenderFor(
+  context: Context,
+  variable: Variable<any>,
+  value: any
+) {
+  if (isPrimitive(value)) return variable;
 
-    for (const forStructures of variable.forStructuresArray){
-        await renderForStructures(context, variable, forStructures.forItemStructures, forStructures.rootForLoopData)
-    }
+  for (const forStructures of variable.forStructuresArray) {
+    await renderForStructures(
+      context,
+      variable,
+      forStructures.forItemStructures,
+      forStructures.rootForLoopData
+    );
+  }
 }
 
 // export async function oldRerenderFor(context: Context, variable: Variable<any>, value: any){
@@ -164,12 +261,34 @@ export async function rerenderFor(context: Context, variable: Variable<any>, val
 // }
 
 const booleanAttributes = new Set([
-    "checked", "disabled", "readonly", "required", "open", "selected", "autofocus",
-    "autoplay", "controls", "loop", "muted", "multiple", "novalidate", "reversed",
-    "ismap", "defer", "hidden", "playsinline", "async", "default", "inert",
-    "nomodule", "formnovalidate", "allowfullscreen", "itemscope", "sortable"
+  "checked",
+  "disabled",
+  "readonly",
+  "required",
+  "open",
+  "selected",
+  "autofocus",
+  "autoplay",
+  "controls",
+  "loop",
+  "muted",
+  "multiple",
+  "novalidate",
+  "reversed",
+  "ismap",
+  "defer",
+  "hidden",
+  "playsinline",
+  "async",
+  "default",
+  "inert",
+  "nomodule",
+  "formnovalidate",
+  "allowfullscreen",
+  "itemscope",
+  "sortable",
 ]);
 
 export function isBooleanAttribute(attr: Attr): boolean {
-    return booleanAttributes.has(attr.name);
+  return booleanAttributes.has(attr.name);
 }

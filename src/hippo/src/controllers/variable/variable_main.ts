@@ -1,18 +1,27 @@
 import string from "vite-plugin-string";
-import {Context} from "../../../types";
-import {Variable} from "../../../types/variable";
-import {getGlobalContext} from "../globals";
+import { Context } from "../../../types";
+import { Variable } from "../../../types/variable";
+import { getGlobalContext } from "../globals";
 import {
   rerenderAttributes,
-  rerenderDependencies, rerenderFor, rerenderIfNodes,
+  rerenderDependencies,
+  rerenderFor,
+  rerenderIfNodes,
   rerenderPartials,
   rerenderTextNodes,
-  setVariable
+  setVariable,
 } from "./variable_set";
-import {Watcher} from "../../../types/watcher";
+import { Watcher } from "../../../types/watcher";
 
+export function createOriginVariable<T = any>(
+  name: string,
+  value: T,
+  context?: Context
+): Variable<T> {
+  if (!name) {
+    throw new Error("Variable name cannot be empty");
+  }
 
-export function createOriginVariable<T = any>(name: string, value: T, context?: Context) {
   // when no context id provided, we give it to the global context, which is 0
   context ??= getGlobalContext();
   const contextId = context.id;
@@ -21,8 +30,8 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
     name,
     contextId,
     context: context,
-    fullName: name + `-${contextId}`,
-    value: value,
+    fullName: `${name}-${contextId}`,
+    value,
     previousValue: null,
     watchers: [],
     inputNodes: [],
@@ -35,48 +44,49 @@ export function createOriginVariable<T = any>(name: string, value: T, context?: 
     originVariable: null,
     partialVariables: {},
     updating: false,
-    // TODO -add watcher
 
-    addWatcher: () => {
-      console.log("This function is not initialized yet.");
+    addWatcher: (watcher: Watcher) => {
+      if (!watcher) {
+        throw new Error("Watcher cannot be null or undefined");
+      }
+      addWatcher(originalVariable, watcher);
     },
-    set: () => {
-      console.log("Setter not initialized yet")
-    }
 
+    set: (newValue: T) => {
+      if (originalVariable.updating) {
+        console.warn(
+          "Attempted to update variable while it was already updating"
+        );
+        return;
+      }
+      return setVariable<T>(context, originalVariable, newValue);
+    },
   };
 
-  // USER FUNCTIONS
-  originalVariable.set = function(value:T){
-    // TODO - ts ignore
-    return setVariable<T>(context, originalVariable, value);
-  }
-
-  originalVariable.addWatcher = function (watcher: Watcher) {
-    addWatcher(originalVariable, watcher);
-  }
-
   // DEFAULT WATCHERS
-  addWatcher(originalVariable, rerenderIfNodes)
-  addWatcher(originalVariable, rerenderFor)
-  addWatcher(originalVariable, rerenderTextNodes)
+  addWatcher(originalVariable, rerenderIfNodes);
+  addWatcher(originalVariable, rerenderFor);
+  addWatcher(originalVariable, rerenderTextNodes);
   addWatcher(originalVariable, rerenderAttributes);
-  addWatcher(originalVariable, rerenderDependencies);
-  addWatcher(originalVariable, rerenderPartials)
+  addWatcher(originalVariable, rerenderPartials);
 
   return originalVariable;
 }
 
-function addWatcher<T>(variable: Variable<T>, watcher: Watcher){
+function addWatcher<T>(variable: Variable<T>, watcher: Watcher) {
   variable.watchers.push(watcher);
 }
 
-export function addComputed<T>(variableToDepend: Variable<T>, newComputedVariable : Variable<any>, computation: () => any){
-  variableToDepend.addWatcher(async function (){
-     await setVariable(newComputedVariable.context, newComputedVariable, computation());
+export function addComputed<T>(
+  variableToDepend: Variable<T>,
+  newComputedVariable: Variable<any>,
+  computation: () => any
+) {
+  variableToDepend.addWatcher(async function () {
+    await setVariable(
+      newComputedVariable.context,
+      newComputedVariable,
+      computation()
+    );
   });
-}
-
-function deleteVariable<T>(context: Context, variable: T){
-  return Error("Not Implemented")
 }
