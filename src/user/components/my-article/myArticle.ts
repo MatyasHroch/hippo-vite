@@ -81,4 +81,16 @@ export function myArticle(context: Context) {
     list,
   });
   context.setTemplate(template);
+
+  // context.addHandler(function articleButtonClicked(event) {
+  //   console.log(" I cklicked the Article's button")
+  //   context.emitEvent("articleButtonClicked", context.id), "onclick";
+  // });
+
+  // Add a click handler that will be visible
+  context.addHandler(function clicked(event: PointerEvent) {
+    // console.log("Button clicked!");
+    console.log(event);
+    context.emitEvent("articleButtonCLicked", context.id, event);
+  }, "onclick");
 }

@@ -43,5 +43,5 @@ export type Context = {
     eventName?: string,
     stopEvent?: boolean
   ) => HandlerStructure;
-  emitEvent: (eventName, [...args]) => any;
+  emitEvent: (eventName: string, ...args: unknown[]) => unknown;
 };

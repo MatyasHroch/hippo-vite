@@ -72,4 +72,22 @@ export async function app(context: Context) {
     console.log(name);
     badInputs.set(false);
   }, "onclick");
+
+  context.addHandler((childId: number, event: PointerEvent) => {
+    console.log({ event });
+    console.log(
+      "Hey I did it! In the app.ts I have the child's id: " + childId
+    );
+    console.log("And i have the event too:" + { event });
+  }, "articleButtonCLicked");
+
+  // TODO - change for the USER:
+  // context.addHandlers({
+  //   handler,
+  //   handler,
+  //   handler,
+  //   handlerName: () => null,
+  // });
+
+  // context.addEventHandler("onArticleCLicked", handler)
 }

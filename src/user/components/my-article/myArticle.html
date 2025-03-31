@@ -2,8 +2,8 @@
   <h3>{{heading}} - and some city - {{user.value.address.city}}</h3>
   <h3>{{capitalizedHeading}} - and some city - {{user.value.address.city}}</h3>
   <input type="checkbox" checked="[[isCheckBoxEnabled]]" />
-  <button disabled="{{isButtonDisabled}}">
-    Jsem button ovládaný checkboxem vedle me
+  <button disabled="{{isButtonDisabled}}" onclick="articleButtonClicked(event)">
+    ; Jsem button ovládaný checkboxem vedle me
   </button>
 
   <h-slot> </h-slot>

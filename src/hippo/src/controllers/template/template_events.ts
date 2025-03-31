@@ -49,6 +49,7 @@ export function bindEventToHandler(
 }
 
 export function isEventToHandle(context: Context, attribute: Attr) {
+  // TODO - change for the USER, so it will be about the value and not about the name of the attribute, or about the name and not about the attribute
   const attributeName = attribute.name;
   return attributeName in context.handlers;
 }

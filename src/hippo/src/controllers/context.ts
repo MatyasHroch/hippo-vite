@@ -55,8 +55,8 @@ export function createContext(
       return addHandler(newContext, handler, eventName);
     }
   };
-  newContext.emitEvent = function (eventName: string, [...args]) {
-    emitEvent(newContext, eventName, [args]);
+  newContext.emitEvent = function (eventName: string, ...args: unknown[]) {
+    emitEvent(newContext, eventName, ...args);
   };
 
   return newContext as Context;
