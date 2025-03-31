@@ -1,5 +1,5 @@
 import { Context } from "../../../types";
-import { processNodes } from "./template_getters";
+import { processNodes } from "./template_main_process";
 
 export async function renderTemplate(
   template: Element,

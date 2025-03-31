@@ -12,6 +12,7 @@ import { Keywords } from "../../../enums/keywords";
 import { derenderIfNode, renderIfNode } from "./template_if_nodes";
 import { processFor } from "./template_for";
 import { getIfPlaceholderTag } from "../../helpers/template";
+import { bindEventToHandler, isEventToHandle } from "./template_events";
 
 type ChildrenArray = Array<{
   tag: Element;
@@ -92,21 +93,26 @@ export async function processNodes(
       component: component,
       nodesToSLot: Array.from(node.children),
     });
-
-    // TODO - make sure, that only this concrete tag is skipped, inner html may be processed normally - DONE
-    // TODO - Process the children after all is done - DONE
-    // TODO - make sure that all the inside html is properly mount to the SLOT
   }
 
+  // ATTRIBUTES
   // find attributes to bind and model and bind them and model them
   if (!isComponent && node.attributes && node.attributes.length > 0) {
     for (const attr of Array.from(node.attributes)) {
+      // EVENTS
+      // debugger;
+      if (isEventToHandle(context, attr)) {
+        bindEventToHandler(context, attr, node);
+      }
+
+      // ONE WAY ATTRIBUTE BINDING
       const variableTemplateName = getVariableNameToAttributeBinding(attr);
       if (variableTemplateName) {
         attributeNodes.toBind.push(node);
         bindAttribute(context, attr, node, variableTemplateName);
       }
-      // if not for one-way binding, maybe for two-way:
+
+      // TWO WAY ATTRIBUTE BINDING
       else {
         const variableTemplateName = getVariableNameToAttributeModeling(attr);
         if (variableTemplateName) {
@@ -117,6 +123,7 @@ export async function processNodes(
     }
   }
 
+  // CHILDREN processing
   // Here we recursively go to the next nodes
   if (node.childNodes.length > 0) {
     // when the node is not a leaf

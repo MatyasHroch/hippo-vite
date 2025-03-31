@@ -1,5 +1,8 @@
 import { Context } from "../../../types";
-import { findVariables, variableFromTextWithBraces } from "./template_getters";
+import {
+  findVariables,
+  variableFromTextWithBraces,
+} from "./template_main_process";
 import { Variable } from "../../../types/variable";
 import { textNodePattern } from "./constants";
 import { getIfPlaceholderTag, unwrapElement } from "../../helpers/template";

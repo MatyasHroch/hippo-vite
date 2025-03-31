@@ -56,19 +56,20 @@ export async function app(context: Context) {
     delete items.value.user3;
     items.set(items.value);
   }, 2 * 1000);
-  
+
   setTimeout(() => {
     console.log("Bad Inputs value is " + badInputs.value);
     badInputs.set(true);
     console.log("Now we have set it to false");
   }, 5 * 1000);
 
-  // we can access the variables via context
-  console.log(
-    "in my component.ts 2 which is ts the variables are: ",
-    variables
-  );
-  console.log({ context });
-
-  //
+  // Add a click handler that will be visible
+  context.addHandler(function (index: any, key: any, event: any, name: string) {
+    console.log("Button clicked!");
+    console.log(index);
+    console.log(key);
+    console.log(event);
+    console.log(name);
+    badInputs.set(false);
+  }, "onclick");
 }

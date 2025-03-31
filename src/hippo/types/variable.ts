@@ -1,16 +1,16 @@
-import {Context} from "./context";
-import {Watcher} from "./watcher";
-import {ForLoopStructure} from "./for_structure";
+import { Context } from "./context";
+import { Watcher } from "./watcher";
+import { ForLoopStructure } from "./for_structure";
 
 export type IfNodeStructure = {
-  placeholderNode: Element,
-  templateNode: Element,
-  context: Context,
-  nodesToSlot: Array<Element>,
-  renderedTemplateNode?: Element,
+  placeholderNode: Element;
+  templateNode: Element;
+  context: Context;
+  nodesToSlot: Array<Element>;
+  renderedTemplateNode?: Element;
   // renderIf?: Function,
   // derenderIf?: Function,
-}
+};
 
 export type Variable<T> = {
   // identifiers
@@ -32,15 +32,15 @@ export type Variable<T> = {
 
   inputNodes: Array<HTMLInputElement>; // two-way binding - input, select and textarea
   textNodes: Array<Text>; // one-way binding - variables rendered as a string
-  attributes: Array<{node: Element, attribute: Attr}>; // one-way binding - variables as attributes
-  forStructuresArray: Array<ForLoopStructure<T>> // structures for creating and operating with for iterations and elements
+  attributes: Array<{ node: Element; attribute: Attr }>; // one-way binding - variables as attributes
+  forStructuresArray: Array<ForLoopStructure<T>>; // structures for creating and operating with for iterations and elements
 
-  ifNodes: Array<IfNodeStructure> // nodes that will be removed if the variable is not truly
+  ifNodes: Array<IfNodeStructure>; // nodes that will be removed if the variable is not truly
   showNodes: Array<HTMLElement>; // nodes that will be given display none if the value is not truly
 
   // only when it has a partial variable
   pathFromOrigin: string | null;
-  originVariable: Variable<any> |null;
+  originVariable: Variable<any> | null;
 
   // only when it has a partial variables
   partialVariables: Record<string, Variable<any>>;
@@ -50,4 +50,3 @@ export type Variable<T> = {
 
   updating: boolean;
 };
-

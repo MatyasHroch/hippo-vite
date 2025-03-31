@@ -110,6 +110,7 @@ export function rerenderPartials<T>(
     const partialVariable = variable.partialVariables[partialName];
 
     let currentValue = value;
+    if (!currentValue) continue;
     for (const key of partialName.split(".")) {
       // if I get to some point where the key does not exist, the objectPath is invalid
       if (currentValue[key] === undefined) {
