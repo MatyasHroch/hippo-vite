@@ -9,6 +9,7 @@ import { createPartialVariable } from "../variable/variable_partials";
 import { ForItemStructure, RootForData } from "../../../types/for_structure";
 import { Variable } from "../../../types/variable";
 import { getIfPlaceholderTag } from "../../helpers/template";
+import { createComputedVariable } from "../variable/variable_computed";
 
 export async function renderForStructures<T>(
   variableToIterateContext: Context,
@@ -203,13 +204,39 @@ export function createForItemContext(
   // to have the index in the for loop
   if (indexName) {
     // TODO - create not origin, but COMPUTED variable, the index will rerender everytime the iterable data are changed
-    itemContext.variables[indexName] = createOriginVariable(indexName, index);
+    itemContext.variables[indexName] = createComputedVariable(
+      itemContext,
+      () => {
+        if (!variableToIterate) return 0;
+        const dataToIterate = variableToIterate.value;
+        const index = Object.keys(dataToIterate).indexOf(itemKey);
+        return index;
+      },
+      indexName,
+      [variableToIterate]
+    );
   }
 
   // to have the key in the for loop
   if (keyName) {
     // TODO - create not origin, but COMPUTED variable, the index will rerender everytime the iterable data are changed
-    itemContext.variables[keyName] = createOriginVariable(keyName, itemKey);
+    itemContext.variables[keyName] = createComputedVariable(
+      itemContext,
+      () => {
+        if (!variableToIterate) return null;
+        const dataToIterate = variableToIterate.value;
+        // we need to find the key in the dataToIterate of the itemData because it can change and we need to have the correct key
+        const itemData = dataToIterate[itemKey];
+        for (const key in dataToIterate) {
+          if (dataToIterate[key] === itemData) {
+            return key;
+          }
+        }
+        return null;
+      },
+      keyName,
+      [variableToIterate]
+    );
   }
 
   return itemContext;

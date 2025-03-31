@@ -1,6 +1,6 @@
 <article class="border shadow p-2">
   <h3>{{heading}} - and some city - {{user.value.address.city}}</h3>
-  <h3>{{capitalizedHeading}} - and some city - {{user.value.address}}</h3>
+  <h3>{{capitalizedHeading}} - and some city - {{user.value.address.city}}</h3>
   <input type="checkbox" checked="[[isCheckBoxEnabled]]" />
   <button disabled="{{isButtonDisabled}}">
     Jsem button ovládaný checkboxem vedle me
@@ -10,8 +10,10 @@
 
   {{myList}} -> to je ten list.
 
-  <div h-for="item, index in myList">
-    <span> Index: {{index}} and item: {{item}} </span>
+  <div>
+    <span h-for="item, index, key in myList">
+      Index: {{index}} and item: {{item}} and key: {{key}}
+    </span>
   </div>
   <div class="border p-2 m-2">
     <div>

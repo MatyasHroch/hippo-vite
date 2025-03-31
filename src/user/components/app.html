@@ -1,9 +1,17 @@
 <section>
+  <div h-for="user, index, key in items">
+    <h3>{{user.value.name}} -- {{index}} -- {{key}}</h3>
+    <p>{{user.value.age}} - {{user.value.address.city}}</p>
+  </div>
+
   <article>
     <h2>Hello</h2>
     <p>I would like to present</p>
   </article>
   <myArticle> </myArticle>
+
+  <!-- <myArticle2> </myArticle2> -->
+  <!-- <ReactiveTest></ReactiveTest> -->
   <!--        <button>-->
   <!--            Hello, im button from the app.html, no the article-->
   <!--        </button>-->

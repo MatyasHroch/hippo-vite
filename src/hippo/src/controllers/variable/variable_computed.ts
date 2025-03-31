@@ -28,8 +28,6 @@ export function createComputedVariable(
         dependencies.push(variable);
       }
     }
-
-    // return console.warn('Dependencies not found. Not implemented yet without errors');
   }
 
   name ??= getNewId() + "-computed";
