@@ -1,5 +1,4 @@
 import { Variable } from "../../../types/variable";
-import string from "vite-plugin-string";
 import { Context } from "../../../types";
 import { getGlobalContext } from "../globals";
 import { createOriginVariable } from "./variable_main";
