@@ -60,7 +60,8 @@ export async function processTemplate(
   const renderTemplateResult = await renderTemplate(
     newComponent.template,
     context,
-    nodesToSlot
+    nodesToSlot,
+    attributesFromParent
   );
 
   // TODO - here we just give up on not having just one root element in template

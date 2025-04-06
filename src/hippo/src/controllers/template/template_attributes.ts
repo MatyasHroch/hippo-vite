@@ -1,9 +1,7 @@
 import { Context } from "../../../types";
-import { Keywords } from "../../../enums/keywords";
 import { attributeBindPattern, attributeModelPattern } from "./constants";
 import { renderAttribute } from "../variable/variable_set";
 import { createPartialFromTemplateString } from "../variable/variable_partials";
-import string from "vite-plugin-string";
 import { Variable } from "../../../types/variable";
 
 // 1) registers the attribute to the variable

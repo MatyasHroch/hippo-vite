@@ -41,7 +41,28 @@ export async function processNodes(
   // HERE WE CHECK IF THE CHILD COMPONENT HAS ATTRIBUTES FROM THE PARENT
   if (attributesFromParent) {
     for (const attr of attributesFromParent) {
-      // TODO - check if the attribute is a bind attribute
+      // TODO - if the attribute already exists, we check if the value can be merged
+      // if the value can be merged, we merge it like with the class attribute
+      // if the value cannot be merged, we replace it with the new value -> !parent has priority!
+      debugger;
+      const attributeName = attr.name;
+      const attributeValue = attr.value;
+      const existingAttribute = node.attributes.getNamedItem(attributeName);
+      if (existingAttribute) {
+        const existingAttributeValue = existingAttribute.value;
+        if (attributeName === "class") {
+          // TODO - merge the values
+          const existingClasses = existingAttributeValue.split(" ");
+          const newClasses = attributeValue.split(" ");
+          const mergedClasses = [...existingClasses, ...newClasses];
+          const uniqueClasses = [...new Set(mergedClasses)];
+          existingAttribute.value = uniqueClasses.join(" ");
+        } else {
+          existingAttribute.value = attributeValue;
+        }
+      } else {
+        node.setAttribute(attributeName, attributeValue);
+      }
     }
   }
 
@@ -96,6 +117,7 @@ export async function processNodes(
   const isComponent = !!context.childComponents[node.tagName];
   if (isComponent) {
     const component = context.childComponents[node.nodeName];
+    debugger;
     childComponents.push({
       name: component.name,
       tag: node,
