@@ -267,6 +267,7 @@ export async function createForItemTemplate(
       newComponent,
       nodeToPutBefore,
       nodesToSlot,
+      null,
       putBeforeElement,
       mount
     )

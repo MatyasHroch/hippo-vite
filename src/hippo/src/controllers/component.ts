@@ -10,7 +10,8 @@ export async function processComponent(
   component: Function,
   parentContext: Context = null,
   elementToMount: Element = null,
-  nodesToSlot: Array<Element> = null
+  nodesToSlot: Array<Element> = null,
+  attributesFromParent: Array<Attr> = null
 ) {
   const context = createContext(parentContext);
   const newComponent: NewComponentStruct = {
@@ -31,13 +32,19 @@ export async function processComponent(
 
   newComponent.template = context.template;
 
-  return processTemplate(newComponent, elementToMount, nodesToSlot);
+  return processTemplate(
+    newComponent,
+    elementToMount,
+    nodesToSlot,
+    attributesFromParent
+  );
 }
 
 export async function processTemplate(
   newComponent: NewComponentStruct,
   elementToMount: Element = null,
   nodesToSlot: Array<Element> = null,
+  attributesFromParent: Array<Attr> = null,
   mountFunction = defaultMount,
   mount: boolean = true
 ) {
@@ -52,7 +59,8 @@ export async function processTemplate(
   // Render the template
   const renderTemplateResult = await renderTemplate(
     newComponent.template,
-    context
+    context,
+    nodesToSlot
   );
 
   // TODO - here we just give up on not having just one root element in template
@@ -111,7 +119,8 @@ export async function processTemplate(
       child.component,
       context,
       child.tag,
-      child.nodesToSLot
+      child.nodesToSLot,
+      child.attributesFromParent
     );
   }
 

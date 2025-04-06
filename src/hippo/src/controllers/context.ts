@@ -18,8 +18,11 @@ export function createContext(
   id ??= getNewId();
   // initial values
   newContext.id = id;
+
   newContext.variables = {};
   newContext.properties = {};
+  newContext.temporaryVariables = {};
+
   newContext.handlers = {};
 
   newContext.parent = parentContext;

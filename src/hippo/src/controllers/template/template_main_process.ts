@@ -20,7 +20,7 @@ type ChildrenArray = Array<{
   nodesToSLot?: Array<Element>;
   slot?: Element;
   name?: string;
-  attributes?: Array<Attr>;
+  attributesFromParent?: Array<Attr>;
 }>;
 
 export async function processNodes(
@@ -101,7 +101,7 @@ export async function processNodes(
       tag: node,
       component: component,
       nodesToSLot: Array.from(node.children),
-      attributes: Array.from(node.attributes),
+      attributesFromParent: Array.from(node.attributes),
     });
   }
 
@@ -138,12 +138,17 @@ export async function processNodes(
   if (node.childNodes.length > 0) {
     // when the node is not a leaf
     for (const childNode of Array.from(node.childNodes)) {
-      // // check if we can cast the Node to the Element
-      // if (childNode.nodeType !== Node.ELEMENT_NODE) continue;
+      // now we are going to the next levels so we will delete the temporary variables
+      context.temporaryVariables = {};
 
-      // TODO - find out if this is ok: "childNode as Element"
       // recursively add all the textNodes and attributes to bind
-      const result = await processNodes(childNode as Element, context);
+      const result = await processNodes(
+        childNode as Element,
+        context,
+        nodesToSlot,
+        // we need the attributes from the parent just for the first level, so we need to pass null for the rest of the levels
+        null
+      );
       textNodes.push(...result.textNodes);
       attributeNodes.toBind.push(...attributeNodes.toBind);
       attributeNodes.toModel.push(...attributeNodes.toModel);

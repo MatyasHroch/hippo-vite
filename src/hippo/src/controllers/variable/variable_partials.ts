@@ -3,6 +3,7 @@ import string from "vite-plugin-string";
 import { Context } from "../../../types";
 import { getGlobalContext } from "../globals";
 import { createOriginVariable } from "./variable_main";
+import { getVariableFromTemplateString } from "../template/template_attributes";
 
 // creates a partial variable of any variable
 // it should work for object paths like "user.value.address.city" as for "user.address.city"
@@ -67,7 +68,12 @@ export function createPartialFromTemplateString(
   if (splitObjectString.length < 1) return;
 
   const variableName = splitObjectString[0];
-  const variable = context.variables[variableName];
+  const variable = getVariableFromTemplateString(
+    context,
+    variableName,
+    false,
+    readOnly
+  );
   if (!variable) return null;
 
   return createPartialVariable(variable, fullObjectString, context);

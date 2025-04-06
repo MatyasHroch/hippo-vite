@@ -12,6 +12,9 @@ export type Context = {
   // all variables that has been passed as a properties
   properties: Record<string, Variable<any>>;
 
+  // all variables that we need only on the first level
+  temporaryVariables: Record<string, Variable<any>>;
+
   // key is name of the event and then there is an object
   handlers: HandlerStructures;
 
