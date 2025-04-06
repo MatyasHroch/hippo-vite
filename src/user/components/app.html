@@ -2,7 +2,9 @@
   <div h-for="user, index, key in items">
     <h3>{{user.value.name}} -- {{index}} -- {{key}}</h3>
     <p>{{user.value.age}} - {{user.value.address.city}}</p>
-    <button onclick="clickHandler(index, key, event, user.value.name)">Click me</button>
+    <button onclick="clickHandler(index, key, event, user.value.name)">
+      Click me
+    </button>
   </div>
 
   <button onclick="clickHandler">Click me</button>
@@ -10,6 +12,12 @@
     <h2>Hello</h2>
     <p>I would like to present</p>
   </article>
+  <h2>
+    And this is the second article, which we will be testing for the h-if and
+    h-for
+  </h2>
+  <myArticle> </myArticle>
+  
   <myArticle> </myArticle>
 
   <!-- <myArticle2> </myArticle2> -->

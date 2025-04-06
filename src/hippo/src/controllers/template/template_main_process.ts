@@ -20,12 +20,14 @@ type ChildrenArray = Array<{
   nodesToSLot?: Array<Element>;
   slot?: Element;
   name?: string;
+  attributes?: Array<Attr>;
 }>;
 
 export async function processNodes(
   node: Element,
   context: Context,
-  nodesToSlot: Array<Element> = null
+  nodesToSlot: Array<Element> = null,
+  attributesFromParent: Array<Attr> = null
 ) {
   const textNodes: Array<Element> = [];
   // All elements with attributes starting with "bind:" or "model:"
@@ -35,6 +37,13 @@ export async function processNodes(
   };
   // all components that should be rendered after all the bindings
   const childComponents: ChildrenArray = [];
+
+  // HERE WE CHECK IF THE CHILD COMPONENT HAS ATTRIBUTES FROM THE PARENT
+  if (attributesFromParent) {
+    for (const attr of attributesFromParent) {
+      // TODO - check if the attribute is a bind attribute
+    }
+  }
 
   // TODO - if and else solve here
   if (node.attributes && node.attributes.getNamedItem(Keywords.if)) {
@@ -92,6 +101,7 @@ export async function processNodes(
       tag: node,
       component: component,
       nodesToSLot: Array.from(node.children),
+      attributes: Array.from(node.attributes),
     });
   }
 
