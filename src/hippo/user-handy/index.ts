@@ -1,4 +1,4 @@
-import { processComponent } from "../src/controllers/component";
+import { processComponent } from "../src/controllers/component/component_main";
 import { Keywords } from "../enums/keywords";
 
 export async function createApp(

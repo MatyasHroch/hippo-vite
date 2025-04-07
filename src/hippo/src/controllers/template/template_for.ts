@@ -1,9 +1,9 @@
 import { Keywords } from "../../../enums/keywords";
 import { Context } from "../../../types";
-import { getVariableFromTemplateString } from "./template_attributes";
+import { getVariableByName } from "./template_attributes";
 import { cloneContext } from "../context";
 import { cloneElement } from "./template_main";
-import { processTemplate } from "../component";
+import { processTemplate } from "../component/component_main";
 import { createOriginVariable } from "../variable/variable_main";
 import { createPartialVariable } from "../variable/variable_partials";
 import { ForItemStructure, RootForData } from "../../../types/for_structure";
@@ -119,7 +119,7 @@ export async function processFor(
   // TODO - get from all lists variables, properties, computed and so on
   // TODO - get the partial variable as well if the variable is not right away
   // TODO - better code here
-  const variableToIterate = getVariableFromTemplateString(context, dataName);
+  const variableToIterate = getVariableByName(context, dataName);
 
   // if (!variableToIterate) return null;
   const dataToIterate = variableToIterate.value;

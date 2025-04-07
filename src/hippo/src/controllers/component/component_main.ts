@@ -1,9 +1,9 @@
-import { createContext } from "./context";
-import { Context } from "../../types";
-import { renderTemplate } from "./template/template_main";
-import { Keywords } from "../../enums/keywords";
-import { NewComponentStruct } from "../../types/component";
-import { unwrapElement } from "../helpers/template";
+import { createContext } from "../context";
+import { Context } from "../../../types";
+import { renderTemplate } from "../template/template_main";
+import { Keywords } from "../../../enums/keywords";
+import { NewComponentStruct } from "../../../types/component";
+import { unwrapElement } from "../../helpers/template";
 
 // TODO - should be renamed as process context
 export async function processComponent(

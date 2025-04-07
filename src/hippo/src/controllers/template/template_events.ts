@@ -1,5 +1,5 @@
 import { Context } from "src/hippo/types";
-import { getVariableFromTemplateString } from "./template_attributes";
+import { getVariableByName } from "./template_attributes";
 
 export function bindEventToHandler(
   context: Context,
@@ -27,7 +27,7 @@ export function bindEventToHandler(
           eventObjectIndex = args.indexOf(arg);
           continue;
         }
-        const variable = getVariableFromTemplateString(context, arg);
+        const variable = getVariableByName(context, arg);
         if (variable) {
           argumentsValues.push(variable.value);
         }

@@ -3,12 +3,16 @@
   <h3>{{capitalizedHeading}} - and some city - {{user.value.address.city}}</h3>
   <input type="checkbox" checked="[[isCheckBoxEnabled]]" />
   <button disabled="{{isButtonDisabled}}" onclick="articleButtonClicked(event)">
-    ; Jsem button ovládaný checkboxem vedle me
+    Jsem button ovládaný checkboxem vedle me
   </button>
 
   <h-slot> </h-slot>
 
   {{myList}} -> to je ten list.
+
+  <div>
+    <span>This is my property secondHeading: {{secondheading}}</span>
+  </div>
 
   <div>
     <span h-for="item, index, key in myList">

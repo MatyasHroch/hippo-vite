@@ -1,7 +1,7 @@
 import { Context } from "../../../types";
 import {
   bindAttribute,
-  getVariableFromTemplateString,
+  getVariableByName,
   getVariableNameToAttributeBinding,
   getVariableNameToAttributeModeling,
   modelAttribute,
@@ -13,6 +13,7 @@ import { derenderIfNode, renderIfNode } from "./template_if_nodes";
 import { processFor } from "./template_for";
 import { getIfPlaceholderTag } from "../../helpers/template";
 import { bindEventToHandler, isEventToHandle } from "./template_events";
+import { bindVariable, modelVariable } from "../component/component_bindings";
 
 type ChildrenArray = Array<{
   tag: Element;
@@ -40,11 +41,31 @@ export async function processNodes(
 
   // HERE WE CHECK IF THE CHILD COMPONENT HAS ATTRIBUTES FROM THE PARENT
   if (attributesFromParent) {
+    // if we have the attributes and maybe we want to bind something, we need to create the temporary variables
+    context.temporaryVariables = {
+      ...context.parent.properties,
+      ...context.parent.variables,
+    };
     for (const attr of attributesFromParent) {
       // TODO - if the attribute already exists, we check if the value can be merged
       // if the value can be merged, we merge it like with the class attribute
       // if the value cannot be merged, we replace it with the new value -> !parent has priority!
-      debugger;
+
+      // TODO -  WE SHOULD MAKE IT CASE INSENSITIVE
+      const variableNameToBind = getVariableNameToAttributeBinding(attr);
+      if (variableNameToBind) {
+        debugger;
+        bindVariable(context, variableNameToBind, attr.name);
+        continue;
+      }
+
+      const variableNameToModel = getVariableNameToAttributeModeling(attr);
+      if (variableNameToModel) {
+        debugger;
+        modelVariable(context, variableNameToModel, attr.name);
+        continue;
+      }
+
       const attributeName = attr.name;
       const attributeValue = attr.value;
       const existingAttribute = node.attributes.getNamedItem(attributeName);
@@ -72,7 +93,7 @@ export async function processNodes(
     // TODO - nest this to some function please
     // TODO - here implement some syntactic sugar for the library users
     const variableName = ifAttribute.value.trim();
-    const variable = getVariableFromTemplateString(context, variableName);
+    const variable = getVariableByName(context, variableName);
     if (!variable)
       Error("Variable with name " + variableName + " has not found");
 
@@ -117,7 +138,6 @@ export async function processNodes(
   const isComponent = !!context.childComponents[node.tagName];
   if (isComponent) {
     const component = context.childComponents[node.nodeName];
-    debugger;
     childComponents.push({
       name: component.name,
       tag: node,
@@ -162,6 +182,9 @@ export async function processNodes(
     for (const childNode of Array.from(node.childNodes)) {
       // now we are going to the next levels so we will delete the temporary variables
       context.temporaryVariables = {};
+
+      // TODO - we should check if all properties that the child component wants are present in the context
+      // if not, we should throw an error
 
       // recursively add all the textNodes and attributes to bind
       const result = await processNodes(
@@ -209,5 +232,5 @@ export function variableFromTextWithBraces(
   createNewPartial = true
 ) {
   const slicedText = text.slice(2, -2).trim();
-  return getVariableFromTemplateString(context, slicedText);
+  return getVariableByName(context, slicedText);
 }

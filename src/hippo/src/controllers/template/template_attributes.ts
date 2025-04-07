@@ -12,10 +12,7 @@ export function bindAttribute(
   node: Element,
   variableTemplateString: string
 ) {
-  const variable = getVariableFromTemplateString(
-    context,
-    variableTemplateString
-  );
+  const variable = getVariableByName(context, variableTemplateString);
 
   const attributeNode = { node, attribute };
   variable.attributes.push(attributeNode);
@@ -66,12 +63,17 @@ export function getVariableNameToAttribute(
   return match ? match[1] : null;
 }
 
-export function getVariableFromTemplateString(
+export function getVariableByName(
   context: Context,
   variableString: string,
   createNewPartial = true,
   readOnly = false
 ): Variable<any> | null {
+  // TODO - WE SHOULD MAKE IT CASE INSENSITIVE
+
+  if (variableString === "secondheading") {
+    debugger;
+  }
   if (context.variables[variableString]) {
     return context.variables[variableString];
   }
