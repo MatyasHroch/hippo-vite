@@ -1,43 +1,48 @@
 <section>
-  <div h-for="user, index, key in items">
-    <h3>{{user.value.name}} -- {{index}} -- {{key}}</h3>
-    <p>{{user.value.age}} - {{user.value.address.city}}</p>
-    <button onclick="clickHandler(index, key, event, user.value.name)">
-      Click me
-    </button>
-  </div>
+  <h1>This is a test page for the hippo framework</h1>
+  <section>
+    <h2>Variable one way binding in the text content</h2>
+    <p>This is a test paragraph:</p>
+    <p>{{paragraph}}</p>
+  </section>
+  <section>
+    <h2>Variable one way binding in the attributes</h2>
+    <p>This is a test of the attribute disabled of a button:</p>
+    <button disabled="{{disabled}}">Click me</button>
+  </section>
+  <section>
+    <h2>Variable in two way binding</h2>
+    <p>This is a test of the two way binding of a text input:</p>
+    <input type="text" value="{{testInputText}}" />
+    <p>The value of the input is: {{testInputText}}</p>
+    <p>This is a test of the two way binding of a number input:</p>
+    <input type="number" value="{{testInputNumber}}" />
+    <p>The value of the input is: {{testInputNumber}}</p>
+  </section>
+  <section>
+    <h2>H-if directive</h2>
+    <p>This is a test of the h-if directive and primitive event handling:</p>
+    <button onclick="toggleShowParagraph">Toggle paragraph</button>
+    <p class="text--error">
+      WE MUST ADD THE HANDLER WITH THE NAME OF THE EVENT FOR NOW
+    </p>
+    <p h-if="showParagraph">This is a test paragraph.</p>
+    <p class="text--error">
+      THE H-IF DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
+    </p>
+  </section>
 
-  <button onclick="clickHandler">Click me</button>
-  <article>
-    <h2>Hello</h2>
-    <p>I would like to present</p>
-  </article>
-  <h2>
-    And this is the second article, which we will be testing for the h-if and
-    h-for
-  </h2>
-  <myArticle secondheading="{{name}}"> </myArticle>
-
-  <!-- <myArticle> </myArticle> -->
-
-  <!-- <myArticle2> </myArticle2> -->
-  <!-- <ReactiveTest></ReactiveTest> -->
-  <!--        <button>-->
-  <!--            Hello, im button from the app.html, no the article-->
-  <!--        </button>-->
-  <!--        <myArticle>-->
-  <!--            <button disabled="{{badInputs}}">-->
-  <!--                Disabled button inside of an article inside of an article-->
-  <!--            </button>-->
-  <!--            <list>-->
-  <!--                <span>-->
-  <!--                In the list of the article is this-->
-  <!--            </span>-->
-  <!--            </list>-->
-  <!--        </myArticle>-->
-
-  <!--    <h4>-->
-  <!--        And here is the List-->
-  <!--    </h4>-->
-  <!--    <list></list>-->
+  <section>
+    <h2>H-for directive</h2>
+    <p>
+      This is a test of the h-for directive of the iteration of the array
+      "items":
+    </p>
+    <ul>
+      <li h-for="item in items">{{item.name}}</li>
+    </ul>
+    <p class="text--error">
+      THE H-FOR DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
+    </p>
+  </section>
 </section>
