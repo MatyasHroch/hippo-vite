@@ -1,4 +1,4 @@
-export function getIfPlaceholderTag(text = null) {
+export function getPlaceholderTag(text = null) {
   const placeHolder = document.createElement("div");
   placeHolder.style.color = "blue";
   if (text) {

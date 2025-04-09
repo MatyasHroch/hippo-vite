@@ -14,7 +14,6 @@ import { processFor } from "./template_for";
 import { getPlaceholderTag } from "../../helpers/template";
 import { bindEventToHandler, isEventToHandle } from "./template_events";
 import { bindVariable, modelVariable } from "../component/component_bindings";
-import {addToGlobalDependentElements} from "../globals";
 
 type ChildrenArray = Array<{
   tag: Element;

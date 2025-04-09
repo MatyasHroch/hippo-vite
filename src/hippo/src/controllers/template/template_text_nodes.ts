@@ -5,7 +5,7 @@ import {
 } from "./template_main_process";
 import { Variable } from "../../../types/variable";
 import { textNodePattern } from "./constants";
-import { getIfPlaceholderTag, unwrapElement } from "../../helpers/template";
+import { getPlaceholderTag, unwrapElement } from "../../helpers/template";
 import { putBeforeElement } from "./template_for";
 
 export function bindTextNode(context: Context, node: Element) {
@@ -15,7 +15,7 @@ export function bindTextNode(context: Context, node: Element) {
     const nodeText = node.nodeValue;
     const splitText = splitNodeText(nodeText);
     const parent = node.parentNode;
-    const placeholder = getIfPlaceholderTag();
+    const placeholder = getPlaceholderTag();
     putBeforeElement(node, placeholder);
 
     composeTextNodes(context, splitText, context.variables, placeholder);

@@ -8,8 +8,8 @@ import { createOriginVariable } from "../variable/variable_main";
 import { createPartialVariable } from "../variable/variable_partials";
 import { ForItemStructure, RootForData } from "../../../types/for_structure";
 import { Variable } from "../../../types/variable";
-import { getIfPlaceholderTag } from "../../helpers/template";
 import { createComputedVariable } from "../variable/variable_computed";
+import {getPlaceholderTag} from "../../helpers/template";
 
 export async function renderForStructures<T>(
   variableToIterateContext: Context,
@@ -146,7 +146,7 @@ export async function processFor(
     contexts.push(itemContext);
   }
 
-  const endPlaceHolder = getIfPlaceholderTag();
+  const endPlaceHolder = getPlaceholderTag();
   // We add the for information to the variable
   const rootForLoopData = {
     itemName,
