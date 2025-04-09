@@ -1,5 +1,5 @@
 <div>
-  <h1>This is a test page for the hippo framework</h1>
+  <h1>This is a test page for the hippo framework, page: <span>{{page}}</span> </h1>
 
   <section class="box">
     <h2>Variable one way binding in the text content</h2>
@@ -12,13 +12,12 @@
     <p>This is a test of the attribute disabled of a button:</p>
     <button disabled="{{disabledButton}}">Click me</button>
   </section>
-
   <section class="box">
-    <h2>Variable in two way binding</h2>
-    <p>This is a test of the two way binding of a text input:</p>
+    <h2>Variable in two-way binding</h2>
+    <p>This is a test of the two-way binding of a text input:</p>
     <input type="text" value="[[testInputText]]" />
     <p>The value of the input is: {{testInputText}}</p>
-    <p>This is a test of the two way binding of a number input:</p>
+    <p>This is a test of the two-way binding of a number input:</p>
     <input type="number" value="[[testInputNumber]]" />
     <p>The value of the input is: {{testInputNumber}}</p>
   </section>
@@ -35,7 +34,7 @@
       <span>Here is just test if the TestArticle's slot works</span>
     </TestArticle>
     <p class="text--error">
-      THE H-IF DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
+      THE H-IF DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW?
     </p>
   </section>
 
@@ -107,6 +106,4 @@
       </TestArticle>
     </div>
   </section>
-
-</section>
 </div>

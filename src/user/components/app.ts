@@ -8,6 +8,15 @@ export async function app(context: Context) {
   // we must set the template
   context.setTemplate(appTemplate);
 
+  const page = context.addVariable("page", 0)
+
+  context.addComputed(() => {
+    return page.value === 0
+  }, "firstPage")
+  context.addComputed(() => {
+    return page.value === 1
+  }, "secondPage")
+
   // create variables that we display and let interact with the user
   context.addVariable("paragraph", "This paragraph is dedicated to those who are open to new frameworks.");
   context.addVariable("testInputText", "...");
@@ -45,6 +54,8 @@ export async function app(context: Context) {
     for (const variableName in context.variables){
       allIfNodes.push(...context.variables[variableName].ifNodes);
     }
+
+    page.set((page.value + 1) % 2);
     console.log(...allIfNodes);
   }, 1000 * 4, )
 }
