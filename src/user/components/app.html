@@ -31,6 +31,7 @@
       WE MUST ADD THE HANDLER WITH THE NAME OF THE EVENT FOR NOW
     </p>
     <p h-if="showParagraph">This is a test paragraph.</p>
+    <TestArticle h-if="showParagraph"></TestArticle>
     <p class="text--error">
       THE H-IF DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
     </p>
@@ -64,12 +65,46 @@
         <li>Item 3</li>
       </ul>
     </TestArticle>
+    <h3 class="m-2">Here is a test Article component with the h-slot directive and the list is rendered by h-for:</h3>
+    <TestArticle>
+      <ul>
+        <li h-for="item,index in items">
+          <div class="flex gap-1">
+            <span>
+              Item value is
+            </span>
+            <span>
+              {{item.value.name}}.
+            </span>
+            <span>
+              And the index is
+            </span>
+            <span>
+               {{ index}}
+            </span>
+          </div>
+        </li>
+      </ul>
+    </TestArticle>
   </section>
 
-  <section>
+  <section class="box">
     <h2>Passing the variables to the children components</h2>
     <h3>Here is a test article component with the variables passed to it:</h3>
-    <testArticle heading="{{childheading}}"></testArticle>
+    <TestArticle heading="{{childheading}}"></TestArticle>
+  </section>
+
+  <section class="box">
+    <h2>H-for at components</h2>
+    <h3>Here we should have 3 articles</h3>
+    <div>
+      <TestArticle h-for="number in numbers">
+        <span>
+          Article number: {{number}}
+        </span>
+      </TestArticle>
+    </div>
   </section>
 
 </section>
+</div>

@@ -11,9 +11,10 @@ import { bindTextNode } from "./template_text_nodes";
 import { Keywords } from "../../../enums/keywords";
 import { derenderIfNode, renderIfNode } from "./template_if_nodes";
 import { processFor } from "./template_for";
-import { getIfPlaceholderTag } from "../../helpers/template";
+import { getPlaceholderTag } from "../../helpers/template";
 import { bindEventToHandler, isEventToHandle } from "./template_events";
 import { bindVariable, modelVariable } from "../component/component_bindings";
+import {addToGlobalDependentElements} from "../globals";
 
 type ChildrenArray = Array<{
   tag: Element;
@@ -40,6 +41,7 @@ export async function processNodes(
   const childComponents: ChildrenArray = [];
 
   // HERE WE CHECK IF THE CHILD COMPONENT HAS ATTRIBUTES FROM THE PARENT
+  // TODO - attributes from parents (parameters should be done by this time)
   if (attributesFromParent) {
     // if we have the attributes and maybe we want to bind something, we need to create the temporary variables
     context.temporaryVariables = {
@@ -51,7 +53,6 @@ export async function processNodes(
       // if the value can be merged, we merge it like with the class attribute
       // if the value cannot be merged, we replace it with the new value -> !parent has priority!
 
-      debugger;
       // TODO -  WE SHOULD MAKE IT CASE INSENSITIVE
       const variableNameToBind = getVariableNameToAttributeBinding(attr);
       if (variableNameToBind) {
@@ -86,6 +87,8 @@ export async function processNodes(
     }
   }
 
+  const isComponent = !!context.childComponents[node.tagName];
+
   // TODO - if and else solve here
   if (node.attributes && node.attributes.getNamedItem(Keywords.if)) {
     const ifAttribute = node.attributes.getNamedItem(Keywords.if);
@@ -97,11 +100,13 @@ export async function processNodes(
       Error("Variable with name " + variableName + " has not found");
 
     const ifNode = {
-      placeholderNode: getIfPlaceholderTag(),
+      placeholderNode: getPlaceholderTag(),
       templateNode: node,
       context: context,
       nodesToSlot: nodesToSlot,
       renderedTemplateNode: node,
+      elementToRemoveOnFalse: node,
+      isComponent: isComponent
     };
 
     variable.ifNodes.push(ifNode);
@@ -124,6 +129,7 @@ export async function processNodes(
 
   // TODO - h-for solve here
   if (node.attributes && node.attributes.getNamedItem(Keywords.for)) {
+
     await processFor(context, node, nodesToSlot);
 
     return {
@@ -134,7 +140,6 @@ export async function processNodes(
   }
 
   // if the node is component, we skip the bindings, leave it to the high level function
-  const isComponent = !!context.childComponents[node.tagName];
   if (isComponent) {
     const component = context.childComponents[node.nodeName];
     childComponents.push({

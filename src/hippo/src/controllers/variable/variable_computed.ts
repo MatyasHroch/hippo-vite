@@ -10,7 +10,6 @@ export function createComputedVariable(
   dependencies: Array<Variable<any>>
 ) {
   if (!dependencies) {
-    // TODO - find out the variables from the expression by using the ".value" - DONE?
     dependencies = [];
 
     const bodyString = computation.toString();

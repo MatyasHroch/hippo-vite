@@ -8,6 +8,8 @@ export type IfNodeStructure = {
   context: Context;
   nodesToSlot: Array<Element>;
   renderedTemplateNode?: Element;
+  isComponent: boolean,
+  elementToRemoveOnFalse: Element;
   // renderIf?: Function,
   // derenderIf?: Function,
 };
