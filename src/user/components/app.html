@@ -31,7 +31,9 @@
       WE MUST ADD THE HANDLER WITH THE NAME OF THE EVENT FOR NOW
     </p>
     <p h-if="showParagraph">This is a test paragraph.</p>
-    <TestArticle h-if="showParagraph"></TestArticle>
+    <TestArticle h-if="showParagraph">
+      <span>Here is just test if the TestArticle's slot works</span>
+    </TestArticle>
     <p class="text--error">
       THE H-IF DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
     </p>

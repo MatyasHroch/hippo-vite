@@ -14,6 +14,7 @@ import { processFor } from "./template_for";
 import { getPlaceholderTag } from "../../helpers/template";
 import { bindEventToHandler, isEventToHandle } from "./template_events";
 import { bindVariable, modelVariable } from "../component/component_bindings";
+import {addGlobalIfNode, getGlobalIfNodes} from "../globals";
 
 type ChildrenArray = Array<{
   tag: Element;
@@ -108,8 +109,19 @@ export async function processNodes(
       isComponent: isComponent
     };
 
+    // we need to register it, so in unwrap function we can change the node to remove
+    addGlobalIfNode(ifNode)
+
     variable.ifNodes.push(ifNode);
     derenderIfNode(ifNode);
+
+    for (const ifNode of variable.ifNodes){
+      for (const globalIfNode of getGlobalIfNodes()){
+        if (globalIfNode === ifNode) {
+          // debugger
+        }
+      }
+    }
 
     if (variable.value) {
       await renderIfNode(ifNode);

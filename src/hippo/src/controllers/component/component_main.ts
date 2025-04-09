@@ -115,7 +115,6 @@ export async function processTemplate(
 
   for (const child of childComponents) {
     // console.log("childComponent " + child.name);
-    // console.log("it has this slots: " + child.nodesToSLot);
 
     await processComponent(
       child.component,

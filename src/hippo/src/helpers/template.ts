@@ -1,3 +1,6 @@
+import {getGlobalIfNodes} from "../controllers/globals";
+import {IfNodeStructure} from "../../types/variable";
+
 export function getPlaceholderTag(text = null) {
   const placeHolder = document.createElement("div");
   placeHolder.style.color = "blue";
@@ -10,8 +13,22 @@ export function getPlaceholderTag(text = null) {
 export function unwrapElement(element: Element) {
   if (!element || !element.parentNode) return;
 
-  const parent = element.parentNode;
+  let foundIfNode : IfNodeStructure;
 
+  for (const ifNode of getGlobalIfNodes()){
+    debugger
+    if(ifNode.elementToRemoveOnFalse == element || ifNode.renderedTemplateNode == element || ifNode.placeholderNode){
+      foundIfNode = ifNode
+    }
+  }
+
+  if (foundIfNode) {
+    foundIfNode.elementToRemoveOnFalse = element.firstElementChild;
+    console.log("Setting to :");
+    console.log(element.firstElementChild)
+  }
+
+  const parent = element.parentNode;
   while (element.firstChild) {
     parent.insertBefore(element.firstChild, element);
   }

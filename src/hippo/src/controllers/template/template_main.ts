@@ -1,5 +1,6 @@
 import { Context } from "../../../types";
 import { processNodes } from "./template_main_process";
+import {getGlobalIfNodes} from "../globals";
 
 export async function renderTemplate(
   template: Element,
@@ -20,5 +21,15 @@ export async function renderTemplate(
 }
 
 export function cloneElement<T extends Element>(element: T): T {
-  return element.cloneNode(true) as T;
+  const clonedElement = element.cloneNode(true) as T;
+  for (const ifNode of getGlobalIfNodes()){
+    if (ifNode.elementToRemoveOnFalse == element) {
+
+      ifNode.elementToRemoveOnFalse = clonedElement;
+      console.log("Setting to " + clonedElement.tagName)
+    }
+  }
+
+  return clonedElement;
+
 }

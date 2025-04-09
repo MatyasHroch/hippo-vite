@@ -4,7 +4,7 @@ import { Keywords } from "../../../enums/keywords";
 import { cloneElement } from "./template_main";
 
 export function derenderIfNode(ifNode: IfNodeStructure) {
-  const node = ifNode.renderedTemplateNode;
+  const node = ifNode.elementToRemoveOnFalse;
   const placeholder = ifNode.placeholderNode;
 
   if (node.hasAttribute(Keywords.if)) {
@@ -33,6 +33,7 @@ export async function renderIfNode(ifNode: IfNodeStructure) {
     placeholder,
     nodesToSlot
   );
+
   const newTemplate = result.template;
   const parent = placeholder.parentNode;
   if (parent) {
@@ -41,4 +42,7 @@ export async function renderIfNode(ifNode: IfNodeStructure) {
   }
 
   ifNode.renderedTemplateNode = newTemplate;
+  if (!ifNode.isComponent){
+    ifNode.elementToRemoveOnFalse = newTemplate;
+  }
 }

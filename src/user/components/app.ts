@@ -39,4 +39,12 @@ export async function app(context: Context) {
 
       }, 2 * 1000
   )
+
+  setInterval(() => {
+    const allIfNodes = []
+    for (const variableName in context.variables){
+      allIfNodes.push(...context.variables[variableName].ifNodes);
+    }
+    console.log(...allIfNodes);
+  }, 1000 * 4, )
 }
