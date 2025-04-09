@@ -13,6 +13,7 @@ export function bindAttribute(
   variableTemplateString: string
 ) {
   const variable = getVariableByName(context, variableTemplateString);
+  if (!variable) return null;
 
   const attributeNode = { node, attribute };
   variable.attributes.push(attributeNode);
@@ -71,9 +72,6 @@ export function getVariableByName(
 ): Variable<any> | null {
   // TODO - WE SHOULD MAKE IT CASE INSENSITIVE
 
-  if (variableString === "secondheading") {
-    debugger;
-  }
   if (context.variables[variableString]) {
     return context.variables[variableString];
   }

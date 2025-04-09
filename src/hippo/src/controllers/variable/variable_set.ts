@@ -81,7 +81,6 @@ export function rerenderDependencies<T>(
   value: T
 ) {
   // TODO - rerender the Dependencies
-  console.log("// TODO - rerender the Dependencies");
   return variable;
 }
 

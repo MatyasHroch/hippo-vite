@@ -120,6 +120,7 @@ export async function processFor(
   // TODO - get the partial variable as well if the variable is not right away
   // TODO - better code here
   const variableToIterate = getVariableByName(context, dataName);
+  if (!variableToIterate) return null;
 
   // if (!variableToIterate) return null;
   const dataToIterate = variableToIterate.value;

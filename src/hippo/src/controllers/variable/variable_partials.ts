@@ -17,6 +17,10 @@ export function createPartialVariable<T>(
 
   // TODO - make sure it works even with the value and also without it
   const path = objectPath.split("value.")[1];
+  if (!path) {
+    console.warn("Invalid path: " + objectPath);
+    return null;
+  }
   const keys = path.split(".");
 
   let currentValue = originVariable.value;

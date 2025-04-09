@@ -1,25 +1,29 @@
-<section>
+<div>
   <h1>This is a test page for the hippo framework</h1>
-  <section>
+
+  <section class="box">
     <h2>Variable one way binding in the text content</h2>
     <p>This is a test paragraph:</p>
     <p>{{paragraph}}</p>
   </section>
-  <section>
+
+  <section class="box">
     <h2>Variable one way binding in the attributes</h2>
     <p>This is a test of the attribute disabled of a button:</p>
-    <button disabled="{{disabled}}">Click me</button>
+    <button disabled="{{disabledButton}}">Click me</button>
   </section>
-  <section>
+
+  <section class="box">
     <h2>Variable in two way binding</h2>
     <p>This is a test of the two way binding of a text input:</p>
-    <input type="text" value="{{testInputText}}" />
+    <input type="text" value="[[testInputText]]" />
     <p>The value of the input is: {{testInputText}}</p>
     <p>This is a test of the two way binding of a number input:</p>
-    <input type="number" value="{{testInputNumber}}" />
+    <input type="number" value="[[testInputNumber]]" />
     <p>The value of the input is: {{testInputNumber}}</p>
   </section>
-  <section>
+
+  <section class="box">
     <h2>H-if directive</h2>
     <p>This is a test of the h-if directive and primitive event handling:</p>
     <button onclick="toggleShowParagraph">Toggle paragraph</button>
@@ -32,17 +36,40 @@
     </p>
   </section>
 
-  <section>
+  <section class="box">
     <h2>H-for directive</h2>
     <p>
       This is a test of the h-for directive of the iteration of the array
       "items":
     </p>
     <ul>
-      <li h-for="item in items">{{item.name}}</li>
+      <li h-for="item in items">{{item.value.name}}</li>
     </ul>
     <p class="text--error">
       THE H-FOR DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
     </p>
   </section>
+
+  <section class="box">
+    <h2>H-slot directive</h2>
+
+    <h3 class="m-2">Here is a test article component without the h-slot directive:</h3>
+    <testArticle></testArticle>
+
+    <h3 class="m-2">Here is a test Article component with the h-slot directive:</h3>
+    <TestArticle>
+      <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+      </ul>
+    </TestArticle>
+  </section>
+
+  <section>
+    <h2>Passing the variables to the children components</h2>
+    <h3>Here is a test article component with the variables passed to it:</h3>
+    <testArticle heading="{{childheading}}"></testArticle>
+  </section>
+
 </section>

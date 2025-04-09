@@ -51,17 +51,16 @@ export async function processNodes(
       // if the value can be merged, we merge it like with the class attribute
       // if the value cannot be merged, we replace it with the new value -> !parent has priority!
 
+      debugger;
       // TODO -  WE SHOULD MAKE IT CASE INSENSITIVE
       const variableNameToBind = getVariableNameToAttributeBinding(attr);
       if (variableNameToBind) {
-        debugger;
         bindVariable(context, variableNameToBind, attr.name);
         continue;
       }
 
       const variableNameToModel = getVariableNameToAttributeModeling(attr);
       if (variableNameToModel) {
-        debugger;
         modelVariable(context, variableNameToModel, attr.name);
         continue;
       }

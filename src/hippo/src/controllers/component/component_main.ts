@@ -4,6 +4,7 @@ import { renderTemplate } from "../template/template_main";
 import { Keywords } from "../../../enums/keywords";
 import { NewComponentStruct } from "../../../types/component";
 import { unwrapElement } from "../../helpers/template";
+import { putBeforeElement } from "../template/template_for";
 
 // TODO - should be renamed as process context
 export async function processComponent(
@@ -95,7 +96,7 @@ export async function processTemplate(
   if (slot && nodesToSlot) {
     for (const node of nodesToSlot) {
       if (node.nodeName !== Keywords.slot.toUpperCase()) {
-        slot.appendChild(node);
+        putBeforeElement(slot, node);
       }
     }
 

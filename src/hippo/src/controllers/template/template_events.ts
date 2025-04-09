@@ -10,7 +10,6 @@ export function bindEventToHandler(
   const handler = context.handlers[attributeName].handler;
   // Convert 'onclick' to 'click' for addEventListener by removing first two chars
   const eventName = attributeName.slice(2);
-  console.log("Adding event listener for:", eventName);
 
   // Extract arguments from function call pattern
   const value = attribute.value;
