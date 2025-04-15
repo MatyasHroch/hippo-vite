@@ -18,7 +18,7 @@ export function emitEvent(
     debugger
     if (isFakeForContext(currentContext) && currentContext.parent) {
       currentContext = currentContext.parent.parent;
-      continue
+
     }
 
     currentContext = currentContext.parent;
