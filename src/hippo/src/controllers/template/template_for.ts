@@ -1,5 +1,5 @@
 import { Keywords } from "../../../enums/keywords";
-import { Context } from "../../../types";
+import {Context, ContextType} from "../../../types";
 import { getVariableByName } from "./template_attributes";
 import { cloneContext } from "../context";
 import { cloneElement } from "./template_main";
@@ -191,7 +191,7 @@ export function createForItemContext(
   keyName: string,
   index: number
 ) {
-  const itemContext = cloneContext(context);
+  const itemContext = cloneContext(context, ContextType.for);
 
   // to have the iteration value in the for loop
   itemContext.variables[itemName] = createPartialVariable(

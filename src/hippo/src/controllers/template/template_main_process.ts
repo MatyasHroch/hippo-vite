@@ -12,7 +12,7 @@ import { Keywords } from "../../../enums/keywords";
 import { derenderIfNode, renderIfNode } from "./template_if_nodes";
 import { processFor } from "./template_for";
 import { getPlaceholderTag } from "../../helpers/template";
-import { bindEventToHandler, isEventToHandle } from "./template_events";
+import { bindEventToHandler, findHandler } from "./template_events";
 import { bindVariable, modelVariable } from "../component/component_bindings";
 
 type ChildrenArray = Array<{
@@ -88,7 +88,18 @@ export async function processNodes(
 
   const isComponent = !!context.childComponents[node.tagName];
 
-  // TODO - if and else solve here
+  // EVENTS OF THE COMPONENTS, EASY AND QUICK
+  if(isComponent && node.attributes){
+    for (const attr of Array.from(node.attributes)) {
+      const handlerStructure = findHandler(context, attr)
+
+      if (handlerStructure) {
+        bindEventToHandler(context, attr, node, handlerStructure)
+      }
+    }
+  }
+
+    // TODO - if and else solve here
   if (node.attributes && node.attributes.getNamedItem(Keywords.if)) {
     const ifAttribute = node.attributes.getNamedItem(Keywords.if);
     // TODO - nest this to some function please
@@ -154,10 +165,11 @@ export async function processNodes(
   // find attributes to bind and model and bind them and model them
   if (!isComponent && node.attributes && node.attributes.length > 0) {
     for (const attr of Array.from(node.attributes)) {
+
       // EVENTS
-      // debugger;
-      if (isEventToHandle(context, attr)) {
-        bindEventToHandler(context, attr, node);
+      const handlerStructure = findHandler(context, attr);
+      if (handlerStructure) {
+        bindEventToHandler(context, attr, node, handlerStructure);
       }
 
       // ONE WAY ATTRIBUTE BINDING

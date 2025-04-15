@@ -1,13 +1,13 @@
-import { Context } from "../../types";
-import { createOriginVariable } from "./variable/variable_main";
-import { Variable } from "../../types/variable";
-import { getNewId } from "./ids";
-import { stringToHtml } from "./template/template_main_process";
-import { UserDefinedComponent } from "../../types/component";
-import { keysToUpper } from "../helpers/objects";
-import { Watcher } from "../../types/watcher";
-import { createComputedVariable } from "./variable/variable_computed";
-import { emitEvent } from "./event";
+import {Context, ContextType} from "../../types";
+import {createOriginVariable} from "./variable/variable_main";
+import {Variable} from "../../types/variable";
+import {getNewId} from "./ids";
+import {stringToHtml} from "./template/template_main_process";
+import {UserDefinedComponent} from "../../types/component";
+import {keysToUpper} from "../helpers/objects";
+import {Watcher} from "../../types/watcher";
+import {createComputedVariable} from "./variable/variable_computed";
+import {emitEvent} from "./event";
 
 export function createContext(
   parentContext: Context = null,
@@ -18,12 +18,14 @@ export function createContext(
   id ??= getNewId();
   // initial values
   newContext.id = id;
+  newContext.type = "regular"
 
   newContext.variables = {};
   newContext.properties = {};
   newContext.temporaryVariables = {};
 
   newContext.handlers = {};
+  newContext.eventHandlers = {};
 
   newContext.parent = parentContext;
   newContext.childComponents = {};
@@ -53,9 +55,9 @@ export function createContext(
   ) {
     return addComputed(newContext, computation, name, dependencies);
   };
-  newContext.addHandler = function (handler: Function, eventName?: string) {
-    if (eventName) {
-      return addHandler(newContext, handler, eventName);
+  newContext.addHandlers = function (handlers: Record<string, Function>, stopEvent?: boolean) {
+    if (handlers){
+      return addHandlers(newContext, handlers, stopEvent);
     }
   };
   newContext.emitEvent = function (eventName: string, ...args: unknown[]) {
@@ -118,27 +120,21 @@ function addChildren(
   return children;
 }
 
-function addHandler(
+function addHandlers(
   context: Context,
-  handler: Function,
-  eventName: string,
+  handlers: Record<string, Function>,
   stopEvent: boolean = false
 ) {
-  context.handlers[eventName] = {
-    handler,
-    stopEvent,
-  };
+    for (const handlerName in handlers) {
+      context.handlers[handlerName] = {
+        handlerName: handlerName,
+        handler: handlers[handlerName],
+        stopEvent: stopEvent
+      };
+    }
 }
 
-function addPotentialHandler(
-  context: Context,
-  handler: Function,
-  stopEvent: boolean = false
-) {
-  console.warn("Not implemented yet");
-}
-
-export function cloneContext(context: Context) {
+export function cloneContext(context: Context, contextType :ContextType = null) {
   const newContext = createContext(context);
 
   newContext.variables = { ...context.variables };
@@ -146,5 +142,15 @@ export function cloneContext(context: Context) {
   newContext.handlers = { ...context.handlers };
   newContext.childComponents = { ...context.childComponents };
   newContext.template = { ...context.template };
+
+  // for indicating
+  contextType ??= ContextType.regular
+  newContext.type = contextType
+
   return newContext;
+}
+
+
+export function isFakeForContext(context :Context){
+  return context.type == ContextType.for
 }

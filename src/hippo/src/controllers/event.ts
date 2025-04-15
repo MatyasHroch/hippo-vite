@@ -1,4 +1,5 @@
 import { Context } from "src/hippo/types";
+import {isFakeForContext} from "./context";
 
 export function emitEvent(
   context: Context,
@@ -7,15 +8,17 @@ export function emitEvent(
 ) {
   let currentContext = context.parent;
   while (currentContext) {
-    const handlerStructure = currentContext.handlers[eventName];
-    console.log("Arguments in emitEvent = " + args);
+    const handlerStructure = currentContext.eventHandlers[eventName] ?? currentContext.eventHandlers[eventName.toLowerCase()]
+
     if (handlerStructure) {
       handlerStructure.handler(...args);
-      if (
-        handlerStructure.stopEvent !== undefined &&
-        handlerStructure.stopEvent
-      )
-        break;
+      if (handlerStructure.stopEvent) break;
+    }
+
+    debugger
+    if (isFakeForContext(currentContext) && currentContext.parent) {
+      currentContext = currentContext.parent.parent;
+      continue
     }
 
     currentContext = currentContext.parent;

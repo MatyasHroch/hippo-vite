@@ -2,9 +2,18 @@ import { Variable } from "./variable";
 import { UserDefinedComponent } from "./component";
 import { Watcher } from "./watcher";
 
+export enum ContextType {
+  regular = "regular",
+  for = "for",
+  if = "if"
+}
+
 export type Context = {
   // values
   id: number;
+
+  // type of context
+  type: ContextType;
 
   // all variables created by the context itself
   variables: Record<string, Variable<any>>;
@@ -15,8 +24,11 @@ export type Context = {
   // all variables that we need only on the first level
   temporaryVariables: Record<string, Variable<any>>;
 
-  // key is name of the event and then there is an object
-  handlers: HandlerStructures;
+  // key is name of the HANDLER and then there is an object with the handler itself
+  handlers: HandlersStructure;
+
+  //key is the name of the EVENT and then there is an object with the handler itself
+  eventHandlers: EventHandlersStructure;
 
   // context in which this context has been created
   parent: Context | null;
@@ -41,10 +53,9 @@ export type Context = {
     name?: string,
     dependencies?: Array<Variable<any>>
   ) => any;
-  addHandler: (
-    handler: Function,
-    eventName?: string,
+  addHandlers: (
+    handlers: Record<string, Function>,
     stopEvent?: boolean
-  ) => HandlerStructure;
+  ) => Record<string, Function>;
   emitEvent: (eventName: string, ...args: unknown[]) => unknown;
 };

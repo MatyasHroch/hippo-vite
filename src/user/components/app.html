@@ -14,11 +14,11 @@
   </section>
 
   <section class="box">
-    <h2>Variable in two way binding</h2>
-    <p>This is a test of the two way binding of a text input:</p>
+    <h2>Variable in two-way binding</h2>
+    <p>This is a test of the two-way binding of a text input:</p>
     <input type="text" value="[[testInputText]]" />
     <p>The value of the input is: {{testInputText}}</p>
-    <p>This is a test of the two way binding of a number input:</p>
+    <p>This is a test of the two-way binding of a number input:</p>
     <input type="number" value="[[testInputNumber]]" />
     <p>The value of the input is: {{testInputNumber}}</p>
   </section>
@@ -31,8 +31,6 @@
       WE MUST ADD THE HANDLER WITH THE NAME OF THE EVENT FOR NOW
     </p>
     <p h-if="showParagraph">This is a test paragraph.</p>
-    <div h-if="showParagraph">
-    </div>
     <p class="text--error">
       THE H-IF DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
     </p>
@@ -59,7 +57,7 @@
     <testArticle></testArticle>
 
     <h3 class="m-2">Here is a test Article component with the h-slot directive:</h3>
-    <TestArticle>
+    <TestArticle testArticleClicked="clickedArticle">
       <ul>
         <li>Item 1</li>
         <li>Item 2</li>
@@ -99,11 +97,13 @@
     <h2>H-for at components</h2>
     <h3>Here we should have 3 articles</h3>
     <div>
-      <TestArticle h-for="number in numbers">
-        <span>
-          Article number: {{number}}
-        </span>
-      </TestArticle>
+      <div h-for="number, index in numbers">
+        <TestArticle testarticleclicked="clickedArticle(number)">
+          <span>
+            Article number: {{number}}
+          </span>
+        </TestArticle>
+      </div>
     </div>
   </section>
 

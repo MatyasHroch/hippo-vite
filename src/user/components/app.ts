@@ -26,10 +26,16 @@ export async function app(context: Context) {
   ]);
 
   // we save this variable to the constant to have access later
-  const showVariable = context.addVariable("showParagraph", false);
+  const showParagraph = context.addVariable("showParagraph", false);
 
   //here we set the handler of the
-  context.addHandler(() => showVariable.set(!showVariable.value), "onclick");
+  function toggleShowParagraph(){
+    showParagraph.set(!showParagraph.value)
+  }
+
+  context.addHandlers({toggleShowParagraph, clickedArticle : (index) => {
+    alert(`article ${index} clicked`)
+    }})
 
   // to have the children components rendered we need to add them to the context
   context.addChildren({ testArticle, list });

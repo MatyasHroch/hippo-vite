@@ -1,6 +1,11 @@
 type HandlerStructure = {
-  handler: Function;
-  stopEvent: boolean;
-};
+  handler: Function,
+  stopEvent: boolean,
+  handlerName?: string,
+}
 
-type HandlerStructures = Record<string, HandlerStructure>;
+// the string here is name of the handler function
+type HandlersStructure = Record<string, HandlerStructure>
+
+// the string here is name of the event
+type EventHandlersStructure = Record<string, HandlerStructure>

@@ -5,5 +5,6 @@ export enum Keywords{
     "in" = " in ",
     "app" = "app",
     "slot" = "h-slot",
+    "nativeEvent" = "$event"
 }
 
