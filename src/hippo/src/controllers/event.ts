@@ -15,10 +15,9 @@ export function emitEvent(
       if (handlerStructure.stopEvent) break;
     }
 
-    debugger
     if (isFakeForContext(currentContext) && currentContext.parent) {
       currentContext = currentContext.parent.parent;
-
+      continue
     }
 
     currentContext = currentContext.parent;
