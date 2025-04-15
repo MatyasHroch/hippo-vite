@@ -3,6 +3,7 @@
 import appTemplate from "./app.html";
 import { Context } from "../../hippo";
 import { testArticle } from "./test-article/testArticle";
+import { list } from "./list/list";
 
 export async function app(context: Context) {
   // we must set the template
@@ -31,13 +32,13 @@ export async function app(context: Context) {
   ]);
 
   // we save this variable to the constant to have access later
-  const showVariable = context.addVariable("showParagraph", false);
+  const showVariable = context.addVariable("showParagraph", true);
 
   //here we set the handler of the
   context.addHandler(() => showVariable.set(!showVariable.value), "onclick");
 
   // to have the children components rendered we need to add them to the context
-  context.addChildren({ testArticle });
+  context.addChildren({ testArticle, list });
 
   context.addVariable("childheading", "Heading from parent");
 
@@ -49,13 +50,13 @@ export async function app(context: Context) {
       }, 2 * 1000
   )
 
-  setInterval(() => {
-    const allIfNodes = []
-    for (const variableName in context.variables){
-      allIfNodes.push(...context.variables[variableName].ifNodes);
-    }
-
-    page.set((page.value + 1) % 2);
-    console.log(...allIfNodes);
-  }, 1000 * 4, )
+  // setInterval(() => {
+  //   const allIfNodes = []
+  //   for (const variableName in context.variables){
+  //     allIfNodes.push(...context.variables[variableName].ifNodes);
+  //   }
+  //
+  //   page.set((page.value + 1) % 2);
+  //   console.log(...allIfNodes);
+  // }, 1000 * 4, )
 }

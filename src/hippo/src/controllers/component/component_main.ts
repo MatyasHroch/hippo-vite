@@ -116,6 +116,7 @@ export async function processTemplate(
   for (const child of childComponents) {
     // console.log("childComponent " + child.name);
 
+    debugger
     await processComponent(
       child.component,
       context,
@@ -129,6 +130,7 @@ export async function processTemplate(
 }
 
 function defaultMount(element: Element, templateToMount: Element) {
+
   element.appendChild(templateToMount);
   // TODO - if there is some problem with the ATTRIBUTES or else
   unwrapElement(element);

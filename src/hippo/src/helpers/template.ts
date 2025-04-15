@@ -16,7 +16,6 @@ export function unwrapElement(element: Element) {
   let foundIfNode : IfNodeStructure;
 
   for (const ifNode of getGlobalIfNodes()){
-    debugger
     if(ifNode.elementToRemoveOnFalse == element || ifNode.placeholderNode){
       foundIfNode = ifNode
     }

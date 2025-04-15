@@ -1,26 +1,27 @@
 <div>
   <h1>This is a test page for the hippo framework, page: <span>{{page}}</span> </h1>
 
-  <section class="box">
-    <h2>Variable one way binding in the text content</h2>
-    <p>This is a test paragraph:</p>
-    <p>{{paragraph}}</p>
-  </section>
+<!--  <section class="box">-->
+<!--    <h2>Variable one way binding in the text content</h2>-->
+<!--    <p>This is a test paragraph:</p>-->
+<!--    <p>{{paragraph}}</p>-->
+<!--  </section>-->
 
-  <section class="box">
-    <h2>Variable one way binding in the attributes</h2>
-    <p>This is a test of the attribute disabled of a button:</p>
-    <button disabled="{{disabledButton}}">Click me</button>
-  </section>
-  <section class="box">
-    <h2>Variable in two-way binding</h2>
-    <p>This is a test of the two-way binding of a text input:</p>
-    <input type="text" value="[[testInputText]]" />
-    <p>The value of the input is: {{testInputText}}</p>
-    <p>This is a test of the two-way binding of a number input:</p>
-    <input type="number" value="[[testInputNumber]]" />
-    <p>The value of the input is: {{testInputNumber}}</p>
-  </section>
+<!--  <section class="box">-->
+<!--    <h2>Variable one way binding in the attributes</h2>-->
+<!--    <p>This is a test of the attribute disabled of a button:</p>-->
+<!--    <button disabled="{{disabledButton}}">Click me</button>-->
+<!--  </section>-->
+
+<!--  <section class="box">-->
+<!--    <h2>Variable in two-way binding</h2>-->
+<!--    <p>This is a test of the two-way binding of a text input:</p>-->
+<!--    <input type="text" value="[[testInputText]]" />-->
+<!--    <p>The value of the input is: {{testInputText}}</p>-->
+<!--    <p>This is a test of the two-way binding of a number input:</p>-->
+<!--    <input type="number" value="[[testInputNumber]]" />-->
+<!--    <p>The value of the input is: {{testInputNumber}}</p>-->
+<!--  </section>-->
 
   <section class="box">
     <h2>H-if directive</h2>
@@ -31,79 +32,84 @@
     </p>
     <p h-if="showParagraph">This is a test paragraph.</p>
     <TestArticle h-if="showParagraph">
-      <span>Here is just test if the TestArticle's slot works</span>
+      <list>
+        <span>
+        {{paragraph}}
+        </span>
+      </list>
     </TestArticle>
     <p class="text--error">
       THE H-IF DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW?
     </p>
   </section>
 
-  <section class="box">
-    <h2>H-for directive</h2>
-    <p>
-      This is a test of the h-for directive of the iteration of the array
-      "items":
-    </p>
-    <ul>
-      <li h-for="item in items">{{item.value.name}}</li>
-    </ul>
-    <p class="text--error">
-      THE H-FOR DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
-    </p>
-  </section>
+<!--  <section class="box">-->
+<!--    <h2>H-for directive</h2>-->
+<!--    <p>-->
+<!--      This is a test of the h-for directive of the iteration of the array-->
+<!--      "items":-->
+<!--    </p>-->
+<!--    <ul>-->
+<!--      <li h-for="item in items">{{item.value.name}}</li>-->
+<!--    </ul>-->
+<!--    <p class="text&#45;&#45;error">-->
+<!--      THE H-FOR DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW-->
+<!--    </p>-->
+<!--  </section>-->
 
-  <section class="box">
-    <h2>H-slot directive</h2>
+<!--  <section class="box">-->
+<!--    <h2>H-slot directive</h2>-->
 
-    <h3 class="m-2">Here is a test article component without the h-slot directive:</h3>
-    <testArticle></testArticle>
+<!--    <h3 class="m-2">Here is a test article component without the h-slot directive:</h3>-->
+<!--    <testArticle></testArticle>-->
 
-    <h3 class="m-2">Here is a test Article component with the h-slot directive:</h3>
-    <TestArticle>
-      <ul>
-        <li>Item 1</li>
-        <li>Item 2</li>
-        <li>Item 3</li>
-      </ul>
-    </TestArticle>
-    <h3 class="m-2">Here is a test Article component with the h-slot directive and the list is rendered by h-for:</h3>
-    <TestArticle>
-      <ul>
-        <li h-for="item,index in items">
-          <div class="flex gap-1">
-            <span>
-              Item value is
-            </span>
-            <span>
-              {{item.value.name}}.
-            </span>
-            <span>
-              And the index is
-            </span>
-            <span>
-               {{ index}}
-            </span>
-          </div>
-        </li>
-      </ul>
-    </TestArticle>
-  </section>
+<!--    <h3 class="m-2">Here is a test Article component with the h-slot directive:</h3>-->
+<!--    <TestArticle>-->
+<!--      <ul>-->
+<!--        <li>Item 1</li>-->
+<!--        <li>Item 2</li>-->
+<!--        <li>Item 3</li>-->
+<!--      </ul>-->
+<!--    </TestArticle>-->
 
-  <section class="box">
-    <h2>Passing the variables to the children components</h2>
-    <h3>Here is a test article component with the variables passed to it:</h3>
-    <TestArticle heading="{{childheading}}"></TestArticle>
-  </section>
+<!--    <h3 class="m-2">Here is a test Article component with the h-slot directive and the list is rendered by h-for:</h3>-->
+<!--    <TestArticle>-->
+<!--      <ul>-->
+<!--        <li h-for="item,index in items">-->
+<!--          <div class="flex gap-1">-->
+<!--            <span>-->
+<!--              Item value is-->
+<!--            </span>-->
+<!--            <span>-->
+<!--              {{item.value.name}}.-->
+<!--            </span>-->
+<!--            <span>-->
+<!--              And the index is-->
+<!--            </span>-->
+<!--            <span>-->
+<!--               {{ index}}-->
+<!--            </span>-->
+<!--          </div>-->
+<!--        </li>-->
+<!--      </ul>-->
+<!--    </TestArticle>-->
+<!--  </section>-->
 
-  <section class="box">
-    <h2>H-for at components</h2>
-    <h3>Here we should have 3 articles</h3>
-    <div>
-      <TestArticle h-for="number in numbers">
-        <span>
-          Article number: {{number}}
-        </span>
-      </TestArticle>
-    </div>
-  </section>
+<!--  <section class="box">-->
+<!--    <h2>Passing the variables to the children components</h2>-->
+<!--    <h3>Here is a test article component with the variables passed to it:</h3>-->
+<!--    <TestArticle heading="{{childheading}}"></TestArticle>-->
+<!--  </section>-->
+
+<!--  <section class="box">-->
+<!--    <h2>H-for at components</h2>-->
+<!--    <h3>Here we should have 3 articles</h3>-->
+<!--    <div>-->
+<!--      <TestArticle h-for="number in numbers">-->
+<!--        <span>-->
+<!--          Article number: {{number}}-->
+<!--        </span>-->
+<!--      </TestArticle>-->
+<!--    </div>-->
+<!--  </section>-->
 </div>
