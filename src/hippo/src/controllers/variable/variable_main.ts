@@ -71,7 +71,7 @@ export function createOriginVariable<T = any>(
   return originalVariable;
 }
 
-function addWatcher<T>(variable: Variable<T>, watcher: Watcher) {
+export function addWatcher<T>(variable: Variable<T>, watcher: Watcher) {
   variable.watchers.push(watcher);
 }
 

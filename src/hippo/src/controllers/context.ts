@@ -1,5 +1,5 @@
 import {Context, ContextType} from "../../types";
-import {createOriginVariable} from "./variable/variable_main";
+import {addWatcher, createOriginVariable} from "./variable/variable_main";
 import {Variable} from "../../types/variable";
 import {getNewId} from "./ids";
 import {stringToHtml} from "./template/template_main_process";
@@ -26,6 +26,7 @@ export function createContext(
 
   newContext.handlers = {};
   newContext.eventHandlers = {};
+  newContext.subscribers = {}
 
   newContext.parent = parentContext;
   newContext.childComponents = {};
@@ -38,7 +39,7 @@ export function createContext(
     variable: Variable<any>,
     onUpdate: Watcher
   ) {
-    return addWatcher(newContext, variable, onUpdate);
+    return _addWatcher(newContext, variable, onUpdate);
   };
   newContext.addChildren = function (
     children: Record<string, UserDefinedComponent>
@@ -94,12 +95,12 @@ function setTemplate(context: Context, htmlString: string) {
 }
 
 // when we set the watcher via context, it will be then passed as a third argument to the user's on-update function
-function addWatcher(
+function _addWatcher(
   context: Context,
   variable: Variable<any>,
   watcher: Watcher
 ) {
-  addWatcher(context, variable, watcher);
+  addWatcher(variable, watcher);
   return watcher;
 }
 

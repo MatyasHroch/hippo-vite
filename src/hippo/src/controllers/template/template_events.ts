@@ -60,7 +60,7 @@ export function bindEventToHandler(
   }
 
   // finally we remove the attribute
-  element.removeAttribute(attribute.name);
+  element.setAttribute(attribute.name, Keywords.eventPrefix + context.id)
 }
 
 export function findHandler(context: Context, attribute: Attr) {

@@ -33,7 +33,7 @@ export async function app(context: Context) {
     showParagraph.set(!showParagraph.value)
   }
 
-  context.addHandlers({toggleShowParagraph, clickedArticle : (index) => {
+  context.addHandlers({toggleShowParagraph, clickedArticle : (index: number) => {
     alert(`article ${index} clicked`)
     }})
 

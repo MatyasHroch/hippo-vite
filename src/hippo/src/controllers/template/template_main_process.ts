@@ -42,7 +42,7 @@ export async function processNodes(
   // HERE WE CHECK IF THE CHILD COMPONENT HAS ATTRIBUTES FROM THE PARENT
   // TODO - attributes from parents (parameters should be done by this time)
   if (attributesFromParent) {
-    // if we have the attributes and maybe we want to bind something, we need to create the temporary variables
+    // if we have the attributes, and maybe we want to bind something, we need to create the temporary variables
     context.temporaryVariables = {
       ...context.parent.properties,
       ...context.parent.variables,
@@ -51,6 +51,18 @@ export async function processNodes(
       // TODO - if the attribute already exists, we check if the value can be merged
       // if the value can be merged, we merge it like with the class attribute
       // if the value cannot be merged, we replace it with the new value -> !parent has priority!
+
+      if (attr.value.split(Keywords.eventPrefix).length > 1){
+        const parentContextId = attr.value.split(Keywords.eventPrefix)[1]
+        // debugger
+        if (context.parent.id == parseInt(parentContextId)) {
+          const eventName = attr.name.split("(")[0];
+          if (!context.subscribers[eventName]) {
+            context.subscribers[eventName] = [];
+          }
+          context.subscribers[eventName].push(context.parent)
+        }
+      }
 
       // TODO -  WE SHOULD MAKE IT CASE INSENSITIVE
       const variableNameToBind = getVariableNameToAttributeBinding(attr);

@@ -5,6 +5,7 @@ export enum Keywords{
     "in" = " in ",
     "app" = "app",
     "slot" = "h-slot",
-    "nativeEvent" = "$event"
+    "nativeEvent" = "$event",
+    "eventPrefix" = "@eventfor-",
 }
 

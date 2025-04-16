@@ -133,5 +133,4 @@ function defaultMount(element: Element, templateToMount: Element) {
   element.appendChild(templateToMount);
   // TODO - if there is some problem with the ATTRIBUTES or else
   unwrapElement(element);
-  // debugger
 }

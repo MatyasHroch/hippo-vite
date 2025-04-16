@@ -30,6 +30,9 @@ export type Context = {
   //key is the name of the EVENT and then there is an object with the handler itself
   eventHandlers: EventHandlersStructure;
 
+  // the context that should call their handlers from us
+  subscribers: Record<string, Array<Context>>
+
   // context in which this context has been created
   parent: Context | null;
 
