@@ -43,10 +43,6 @@ export async function processNodes(
   // TODO - attributes from parents (parameters should be done by this time)
   if (attributesFromParent) {
     // if we have the attributes, and maybe we want to bind something, we need to create the temporary variables
-    context.temporaryVariables = {
-      ...context.parent.properties,
-      ...context.parent.variables,
-    };
     for (const attr of attributesFromParent) {
       // TODO - if the attribute already exists, we check if the value can be merged
       // if the value can be merged, we merge it like with the class attribute
@@ -64,18 +60,19 @@ export async function processNodes(
         }
       }
 
-      // TODO -  WE SHOULD MAKE IT CASE INSENSITIVE
-      const variableNameToBind = getVariableNameToAttributeBinding(attr);
-      if (variableNameToBind) {
-        bindVariable(context, variableNameToBind, attr.name);
-        continue;
-      }
-
-      const variableNameToModel = getVariableNameToAttributeModeling(attr);
-      if (variableNameToModel) {
-        modelVariable(context, variableNameToModel, attr.name);
-        continue;
-      }
+      // // BINDING PROPERTIES
+      // // TODO -  WE SHOULD MAKE IT CASE INSENSITIVE
+      // const variableNameToBind = getVariableNameToAttributeBinding(attr);
+      // if (variableNameToBind) {
+      //   bindVariable(context, variableNameToBind, attr.name);
+      //   continue;
+      // }
+      //
+      // const variableNameToModel = getVariableNameToAttributeModeling(attr);
+      // if (variableNameToModel) {
+      //   modelVariable(context, variableNameToModel, attr.name);
+      //   continue;
+      // }
 
       const attributeName = attr.name;
       const attributeValue = attr.value;

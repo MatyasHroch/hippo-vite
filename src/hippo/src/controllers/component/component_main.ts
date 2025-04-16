@@ -5,6 +5,9 @@ import { Keywords } from "../../../enums/keywords";
 import { NewComponentStruct } from "../../../types/component";
 import { unwrapElement } from "../../helpers/template";
 import { putBeforeElement } from "../template/template_for";
+import {getVariableNameToAttributeBinding, getVariableNameToAttributeModeling} from "../template/template_attributes";
+import { bindVariable, modelVariable } from "../component/component_bindings";
+
 
 // TODO - should be renamed as process context
 export async function processComponent(
@@ -19,6 +22,30 @@ export async function processComponent(
     context: context,
     name: component.name,
   };
+
+  if (attributesFromParent){
+    // WE NEED TO HAVE THE PROPERTIES OF THE PARENT REACHABLE - WEE NEED TO REMOVE THEM,
+    // WE REMOVE THEM IN THE FIRST LEVEL OR RENDERING NOW
+    context.temporaryVariables = {
+      ...context.parent.properties,
+      ...context.parent.variables,
+    };
+
+    // WE NEED TO PROCESS THE ATTRIBUTES FROM PARENT HERE
+    for (const attr of attributesFromParent){
+      // // TODO -  WE SHOULD MAKE IT CASE INSENSITIVE
+      const variableNameToBind = getVariableNameToAttributeBinding(attr);
+      if (variableNameToBind) {
+        bindVariable(context, variableNameToBind, attr.name);
+        continue;
+      }
+
+      const variableNameToModel = getVariableNameToAttributeModeling(attr);
+      if (variableNameToModel) {
+        modelVariable(context, variableNameToModel, attr.name);
+      }
+    }
+  }
 
   // USER FUNCTION COMPONENT, !!! warning, can be async
   // TODO - what could the component function return?
@@ -111,7 +138,7 @@ export async function processTemplate(
   }
 
   // PROCESS ALL THE CHILDREN
-  // now process the child components, after the attributes and the one way and two way bindings
+  // now process the child components, after the attributes and the one way and two-way bindings
 
   for (const child of childComponents) {
     // console.log("childComponent " + child.name);

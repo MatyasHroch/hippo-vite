@@ -103,7 +103,7 @@
     <h3>Here we should have 3 articles</h3>
     <div>
       <div h-for="number, index in numbers">
-        <TestArticle testarticleclicked="clickedArticle(number)">
+        <TestArticle testarticleclicked="clickedArticle(number)" heading="{{childheading}}">
           <span>
             Article number: {{number}}
           </span>
