@@ -1,0 +1,120 @@
+/*:root {*/
+/*    --color-background: #062d38;*/
+/*    --color-accent: #99d5dd;*/
+/*    --color-light: #fafbfb;*/
+/*    --color-box-bg: #09414e;*/
+/*    --color-text: var(--color-light);*/
+/*    --color-error: #ff6b6b;*/
+/*    --color-input-bg: #0e3f4c;*/
+/*    --color-input-border: #4fa0ac;*/
+/*}*/
+
+:root {
+    --color-background:   #07212b;  /* tmavě modrozelená, hlubší než původní */
+    --color-box-bg:       #113947;  /* tmavší, ale s jemným nádechem tyrkysu */
+    --color-accent:       #5ee1e6;  /* sytá tyrkysová, září na tmavém pozadí */
+    --color-light:        #f3f9fa;  /* velmi světlá, ne čistě bílá, příjemná pro oči */
+    --color-text:         var(--color-light);
+    --color-error:        #ff5e7e;  /* sytější, moderní červená s růžovým nádechem */
+    --color-input-bg:     #163d48;  /* mírně světlejší než background, pro kontrast */
+    --color-input-border: #66bfc7;  /* svěží tyrkysová pro zvýraznění inputů */
+    --color-success:      #5ee678;  /* doplněno pro pozitivní stavy */
+    --color-warning:      #ffd166;  /* jemná žlutá pro varování */
+    --color-shadow:       rgba(20, 40, 50, 0.2); /* decentní stínování */
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 2rem;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--color-accent);
+}
+
+.box {
+    background-color: var(--color-box-bg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 0.6rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+h2 {
+    margin-top: 0;
+    color: var(--color-accent);
+}
+
+h3 {
+    color: var(--color-accent);
+}
+
+button {
+    background-color: var(--color-accent);
+    color: var(--color-background);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+button:hover {
+    background-color: #7cc3cc;
+}
+
+.text--error {
+    color: var(--color-error);
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+input[type="text"],
+input[type="number"] {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--color-input-border);
+    border-radius: 0.3rem;
+    background-color: var(--color-input-bg);
+    color: var(--color-light);
+}
+
+ul {
+    padding-left: 1.5rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+.flex {
+    display: flex;
+}
+
+.gap-1 {
+    gap: 0.5rem;
+}
+
+.m-2 {
+    margin: 1rem 0;
+}
+
+span {
+    color: var(--color-light);
+}
+
+article span {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--color-accent);
+}

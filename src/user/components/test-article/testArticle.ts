@@ -1,8 +1,5 @@
-// @ts-ignore
 import template from "./testArticle.html";
-
 import { Context } from "src/hippo";
-import {emitEvent} from "../../../hippo/src/controllers/event";
 
 export function testArticle(context: Context) {
   context.setTemplate(template);

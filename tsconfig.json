@@ -12,6 +12,7 @@
     "allowJs": true
   },
   "include": [
+    "vite-env.d.ts",
     "src/**/*" // Include all TypeScript files in the "hippo" folder
   ],
   "exclude": [

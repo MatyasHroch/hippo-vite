@@ -1,7 +1,4 @@
-// @ts-ignore
 import template from "./myArticle2.html";
-// @ts-ignore
-import styles from "./myArticle2.css";
 import { Context } from "../../../hippo";
 import { list } from "../list/list";
 
@@ -131,5 +128,4 @@ export function myArticle2(context: Context) {
     list,
   });
   context.setTemplate(template);
-  // context.setStyles(styles);
 }

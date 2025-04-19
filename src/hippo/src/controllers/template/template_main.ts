@@ -22,3 +22,12 @@ export async function renderTemplate(
 export function cloneElement<T extends Element>(element: T): T {
   return element.cloneNode(true) as T;
 }
+
+// export async function loadTemplate(path: string) {
+//   try {
+//     const templatePath = path.replace(/\.(js|ts)$/, '.html');
+//     return (await import(/* @vite-ignore */ `${templatePath}?raw`)).default;
+//   } catch {
+//     return '';
+//   }
+// }

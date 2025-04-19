@@ -1,4 +1,3 @@
-// @ts-ignore
 import template from "./myArticle.html";
 import { Context } from "../../../hippo";
 import { list } from "../list/list";
@@ -82,15 +81,12 @@ export function myArticle(context: Context) {
   });
   context.setTemplate(template);
 
-  // context.addHandler(function articleButtonClicked(event) {
-  //   console.log(" I cklicked the Article's button")
-  //   context.emitEvent("articleButtonClicked", context.id), "onclick";
-  // });
-
   // Add a click handler that will be visible
-  context.addHandler(function clicked(event: PointerEvent) {
+  function clicked(event: PointerEvent) {
     // console.log("Button clicked!");
     console.log(event);
     context.emitEvent("articleButtonCLicked", context.id, event);
-  }, "onclick");
+  }
+
+  context.addHandlers({clicked});
 }

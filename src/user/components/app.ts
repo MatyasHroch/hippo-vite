@@ -1,4 +1,3 @@
-// @ts-ignore
 // we must get the template
 import appTemplate from "./app.html";
 import { Context } from "../../hippo";
