@@ -28,8 +28,8 @@
     <p class="text--error">
       WE MUST ADD THE HANDLER WITH THE NAME OF THE EVENT FOR NOW
     </p>
-    <p h-if="showParagraph">This is a test paragraph.</p>
-    <div h-if="showParagraph">
+    <p data-if=showParagraph">This is a test paragraph.</p>
+    <div data-if=showParagraph">
       <TestArticle testArticleClicked="clickedArticle">
 
       </TestArticle>
@@ -46,7 +46,7 @@
       "items":
     </p>
     <ul>
-      <li h-for="item in items">{{item.value.name}}</li>
+      <li data-h-for="item in items">{{item.value.name}}</li>
     </ul>
     <p class="text--error">
       THE H-FOR DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
@@ -70,7 +70,7 @@
     <h3 class="m-2">Here is a test Article component with the h-slot directive and the list is rendered by h-for:</h3>
     <TestArticle>
       <ul>
-        <li h-for="item,index in items">
+        <li data-h-for="item,index in items">
           <div class="flex gap-1">
             <span>
               Item value is
@@ -100,7 +100,7 @@
     <h2>H-for at components</h2>
     <h3>Here we should have 3 articles</h3>
     <div>
-      <div h-for="number, index in numbers">
+      <div data-h-for="number, index in numbers">
         <TestArticle testarticleclicked="clickedArticle(number)" heading="{{childheading}}">
           <span>
             Article number: {{number}}

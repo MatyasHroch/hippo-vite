@@ -1,7 +1,7 @@
 export enum Keywords{
-    "if" = "h-if",
+    "if" = "data-h-if",
     "else" = "h-else",
-    "for" = "h-for",
+    "for" = "data-h-for",
     "in" = " in ",
     "app" = "app",
     "slot" = "h-slot",
