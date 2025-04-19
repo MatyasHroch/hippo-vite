@@ -16,7 +16,7 @@ export async function app(context: Context) {
   );
   context.addVariable("testInputText", "...");
   context.addVariable("testInputNumber", 0);
-  context.addVariable("disabledButton", false);
+  context.addVariable("disabledButton", true);
   const numbers = context.addVariable("numbers", [1, 2, 3]);
 
   context.addVariable("items", [
@@ -43,8 +43,6 @@ export async function app(context: Context) {
   context.addVariable("childheading", "Heading from parent");
 
   setTimeout(() => {
-    console.log(numbers.value);
     numbers.set([1, 2]);
-    console.log(numbers.value);
   }, 2 * 1000);
 }

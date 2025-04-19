@@ -31,36 +31,58 @@ export function createContext(
   newContext.parent = parentContext;
   newContext.childComponents = {};
 
-  // methods just called without the context for user
-  newContext.setTemplate = function (htmlString: string) {
-    return setTemplate(newContext, htmlString);
-  };
-  newContext.addWatcher = function (
-    variable: Variable<any>,
-    onUpdate: Watcher
-  ) {
-    return _addWatcher(newContext, variable, onUpdate);
-  };
-  newContext.addChildren = function (
-    children: Record<string, UserDefinedComponent>
-  ) {
-    return addChildren(newContext, children);
-  };
   newContext.addVariable = function (name: string, value: string) {
     return addVariable(newContext, name, value);
   };
-  newContext.addComputed = function (
-    computation: () => any,
-    name: string = null,
-    dependencies: Array<Variable<any>>
-  ) {
-    return addComputed(newContext, computation, name, dependencies);
+
+  // MAIN USER FUNCTIONS \\
+
+  // MAIN FUNCTION FOR SETTING UP COMPONENT'S TEMPLATE
+  newContext.setTemplate = function (htmlString: string) {
+    return setTemplate(newContext, htmlString);
   };
+
+  // FOR REGISTERING FUNCTIONS TO BE VISIBLE IN THE TEMPLATE
   newContext.addHandlers = function (handlers: Record<string, Function>, stopEvent?: boolean) {
     if (handlers){
       return addHandlers(newContext, handlers, stopEvent);
     }
   };
+
+  // TO REGISTER OTHER COMPONENTS TO BE VISIBLE IN THE TEMPLATE
+  newContext.addChildren = function (
+      children: Record<string, UserDefinedComponent>
+  ) {
+    return addChildren(newContext, children);
+  };
+
+  // MAIN USER FUNCTION FOR ADDING VARIABLES
+  newContext.addVariables = function (variableNameValues:Record<string, unknown>) {
+    const result :Record<string, Variable<unknown>> ={};
+    for (const variableName in variableNameValues) {
+      result[variableName] = addVariable(newContext, variableName, variableNameValues[variableName]);
+    }
+    return result;
+  };
+
+  // MAIN USER FUNCTION FOR CREATING COMPUTED(DEPENDENT) VARIABLES ONE BY ONE
+  newContext.addComputed = function (
+      computation: () => any,
+      templateName: string = null,
+      dependencies: Array<Variable<any>>
+  ) {
+    return addComputed(newContext, computation, templateName, dependencies);
+  };
+
+  // MAIN USER FUNCTION FOR CREATING WATCHER - AFTER THE VARIABLE IS CHANGED THE ON-UPDATE FUNCTION WILL TRIGGER
+  newContext.addWatcher = function (
+      variable: Variable<any>,
+      onUpdate: Watcher
+  ) {
+    return _addWatcher(newContext, variable, onUpdate);
+  };
+
+  // EMIT BUBBLE-TO-PARENTS EVENT
   newContext.emitEvent = function (eventName: string, ...args: unknown[]) {
     emitEvent(newContext, eventName, ...args);
   };
@@ -135,6 +157,7 @@ function addHandlers(
     }
 }
 
+// important function for specifying what the cloned context will have in common with the original one
 export function cloneContext(context: Context, contextType :ContextType = null) {
   const newContext = createContext(context);
 
@@ -150,7 +173,6 @@ export function cloneContext(context: Context, contextType :ContextType = null) 
 
   return newContext;
 }
-
 
 export function isFakeForContext(context :Context){
   return context.type == ContextType.for
