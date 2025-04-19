@@ -1,4 +1,4 @@
-import template from "./testArticle.html";
+import template from "./testArticle.html?raw";
 import { Context } from "src/hippo";
 
 export function testArticle(context: Context) {

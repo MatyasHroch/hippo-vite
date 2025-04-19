@@ -1,5 +1,6 @@
 // we must get the template
-import appTemplate from "./app.html";
+import appTemplate from "./app.html?raw"
+
 import { Context } from "../../hippo";
 import { testArticle } from "./test-article/testArticle";
 import { list } from "./list/list";

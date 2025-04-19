@@ -1,6 +1,5 @@
 // vite.config.mts
 import { defineConfig } from "vite";
-import string from 'vite-plugin-string';
 
 export default defineConfig({
     build: {
@@ -13,8 +12,6 @@ export default defineConfig({
     resolve: {
         extensions: ['.ts', '.js'], // Support of TS and JS
     },
-    plugins: [string({
-        include: '**/*.html',
-        exclude: ['./index.html']
-    })],
+    // assetsInclude: ['**/*.html'],
+    plugins: [],
 });
