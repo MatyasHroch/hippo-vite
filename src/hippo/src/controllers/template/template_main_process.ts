@@ -9,10 +9,10 @@ import {
 import { UserDefinedComponent } from "../../../types/component";
 import { bindTextNode } from "./template_text_nodes";
 import { Keywords } from "../../../enums/keywords";
-import { derenderIfNode, renderIfNode } from "./template_if_nodes";
+import {createIfNode, derenderIfNode, renderIfNode} from "./template_if_nodes";
 import { processFor } from "./template_for";
 import { getPlaceholderTag } from "../../helpers/template";
-import { bindEventToHandler, findHandler } from "./template_events";
+import {bindEventToHandler, findHandler, isDOMEvent} from "./template_events";
 import { bindVariable, modelVariable } from "../component/component_bindings";
 
 type ChildrenArray = Array<{
@@ -38,6 +38,8 @@ export async function processNodes(
   };
   // all components that should be rendered after all the bindings
   const childComponents: ChildrenArray = [];
+  const isComponent = !!context.childComponents[node.tagName];
+
 
   // HERE WE CHECK IF THE CHILD COMPONENT HAS ATTRIBUTES FROM THE PARENT
   // TODO - attributes from parents (parameters should be done by this time)
@@ -91,11 +93,21 @@ export async function processNodes(
         }
       } else {
         node.setAttribute(attributeName, attributeValue);
+        const newAttribute = node.getAttributeNode(attributeName)
+
+        if(attributeName === "onclick"){
+          debugger;
+        }
+
+        if (isDOMEvent(newAttribute.name)) {
+          // WE KNOW THE EVENT IS NATIVE AND IT IS FROM THE PARENT, SO WE CAN BIND IT TO THE PARENT CONTEXT
+          const handlerStructure = findHandler(context.parent, newAttribute)
+          bindEventToHandler(context, attr, node, handlerStructure, isComponent)
+        }
       }
     }
   }
 
-  const isComponent = !!context.childComponents[node.tagName];
 
   // EVENTS OF THE COMPONENTS, EASY AND QUICK
   if(isComponent && node.attributes){
@@ -103,7 +115,7 @@ export async function processNodes(
       const handlerStructure = findHandler(context, attr)
 
       if (handlerStructure) {
-        bindEventToHandler(context, attr, node, handlerStructure)
+        bindEventToHandler(context, attr, node, handlerStructure, isComponent)
       }
     }
   }
@@ -113,27 +125,7 @@ export async function processNodes(
     const ifAttribute = node.attributes.getNamedItem(Keywords.if);
     // TODO - nest this to some function please
     // TODO - here implement some syntactic sugar for the library users
-    const variableName = ifAttribute.value.trim();
-    const variable = getVariableByName(context, variableName);
-    if (!variable)
-      Error("Variable with name " + variableName + " has not found");
-
-    const ifNode = {
-      placeholderNode: getPlaceholderTag(),
-      templateNode: node,
-      context: context,
-      nodesToSlot: nodesToSlot,
-      renderedTemplateNode: node,
-      elementToRemoveOnFalse: node,
-      isComponent: isComponent
-    };
-
-    variable.ifNodes.push(ifNode);
-    derenderIfNode(ifNode);
-
-    if (variable.value) {
-      await renderIfNode(ifNode);
-    }
+    await createIfNode(context, ifAttribute, node, nodesToSlot, isComponent)
 
     return {
       textNodes,

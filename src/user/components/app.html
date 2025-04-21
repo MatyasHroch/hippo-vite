@@ -28,10 +28,11 @@
     <p class="text--error">
       WE MUST ADD THE HANDLER WITH THE NAME OF THE EVENT FOR NOW
     </p>
-    <p data-if=showParagraph">This is a test paragraph.</p>
-    <div data-if=showParagraph">
+    <p data-h-if="showParagraph">This is a test paragraph.</p>
+    <div data-h-if="showParagraph">
       <TestArticle testArticleClicked="clickedArticle">
-
+          <list/>
+        <TestArticle onclick="clickedArticle" heading="{{childheading}}" />
       </TestArticle>
     </div>
     <p class="text--error">

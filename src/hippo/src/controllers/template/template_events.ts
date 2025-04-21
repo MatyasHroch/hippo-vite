@@ -7,6 +7,7 @@ export function bindEventToHandler(
   attribute: Attr,
   element: Element,
   handlerStructure: HandlerStructure,
+  isComponent = false
 ) {
   let eventName = attribute.name;
   const handler = handlerStructure.handler;
@@ -41,7 +42,7 @@ export function bindEventToHandler(
     }
   }
 
-  if (isNativeEvent) {
+  if (isNativeEvent && !isComponent) {
     element.addEventListener(eventName, function (event) {
       if (eventObjectIndex > -1) {
         argumentsValues.splice(eventObjectIndex, 0, event);
@@ -59,8 +60,10 @@ export function bindEventToHandler(
     };
   }
 
-  // finally we remove the attribute
-  element.setAttribute(attribute.name, Keywords.eventPrefix + context.id)
+if (!isComponent){
+    // finally we remove the original attribute, if it is not a component node
+    element.setAttribute(attribute.name, Keywords.eventPrefix + context.id)
+  }
 }
 
 export function findHandler(context: Context, attribute: Attr) {
@@ -73,6 +76,6 @@ export function findHandler(context: Context, attribute: Attr) {
   return null
 }
 
-function isDOMEvent(eventName: string): boolean {
+export function isDOMEvent(eventName: string): boolean {
   return eventName in document.createElement('div');
 }
