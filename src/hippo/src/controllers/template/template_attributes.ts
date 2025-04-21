@@ -89,5 +89,17 @@ export function getVariableByName(
     return createPartialFromTemplateString(context, variableString);
   }
 
+  const allVariables = {
+    ...context.properties,
+    ...context.variables,
+    ...context.temporaryVariables
+  }
+
+  for (const variableName in allVariables){
+    if (variableName.toLowerCase() == variableString.toLowerCase()) {
+      return allVariables[variableName];
+    }
+  }
+
   return null;
 }
