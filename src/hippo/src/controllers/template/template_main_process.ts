@@ -50,7 +50,6 @@ export async function processNodes(
 
       if (isMarkedEventFromParent(attr)){
         const parentContextId = attr.value.split(Keywords.eventPrefix)[1]
-        // debugger
         if (context.parent.id == parseInt(parentContextId)) {
           const eventName = attr.name.split("(")[0];
           if (!context.subscribers[eventName]) {
@@ -79,20 +78,14 @@ export async function processNodes(
         node.setAttribute(attributeName, attributeValue);
         const newAttribute = node.getAttributeNode(attributeName)
 
-        // if (isDOMEvent(newAttribute.name)) {
-        //   // WE KNOW THE EVENT IS NATIVE AND IT IS FROM THE PARENT, SO WE CAN BIND IT TO THE PARENT CONTEXT
-        //   const handlerStructure = findHandler(context.parent, newAttribute)
-        //   bindEventToHandler(context, attr, node, handlerStructure, isComponent)
-        //   // after that we do not need the attribute anymore
-        //
-        //   debugger
-        //
-        //   node.removeAttribute(attributeName);
-        // }
-        //
-        // if (isMarkedEventFromParent(newAttribute)){
-        //   node.removeAttribute(attributeName);
-        // }
+        if (isDOMEvent(newAttribute.name)) {
+          //   // WE KNOW THE EVENT IS NATIVE AND IT IS FROM THE PARENT, SO WE CAN BIND IT TO THE PARENT CONTEXT
+          const handlerStructure = findHandler(context.parent, newAttribute)
+          if (handlerStructure) {
+            bindEventToHandler(context, attr, node, handlerStructure, isComponent)
+          }
+          node.removeAttribute(attributeName);
+        }
       }
     }
   }
@@ -108,11 +101,9 @@ export async function processNodes(
     }
   }
 
-    // TODO - if and else solve here
+  // TODO - if and else solve here
   if (node.attributes && node.attributes.getNamedItem(Keywords.if)) {
     const ifAttribute = node.attributes.getNamedItem(Keywords.if);
-    // TODO - nest this to some function please
-    // TODO - here implement some syntactic sugar for the library users
     await createIfNode(context, ifAttribute, node, nodesToSlot, isComponent)
 
     return {

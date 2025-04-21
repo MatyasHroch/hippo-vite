@@ -3,18 +3,18 @@ import { getVariableByName } from "./template_attributes";
 import {Keywords} from "../../../enums/keywords";
 
 export function bindEventToHandler(
-  context: Context,
-  attribute: Attr,
-  element: Element,
-  handlerStructure: HandlerStructure,
-  isComponent = false
+    context: Context,
+    attribute: Attr,
+    element: Element,
+    handlerStructure: HandlerStructure,
+    isComponent: boolean = false,
 ) {
   let eventName = attribute.name;
   const handler = handlerStructure.handler;
   // Convert 'onclick' to 'click' for addEventListener by removing first two chars
 
-  const isNativeEvent = isDOMEvent(eventName);
-  if (isNativeEvent) {
+  const isDomEvent = isDOMEvent(eventName);
+  if (isDomEvent) {
     eventName = eventName.slice(2);
   }
 
@@ -30,7 +30,7 @@ export function bindEventToHandler(
     if (argsMatch) {
       const args = argsMatch[1].split(",").map((arg) => arg.trim());
       for (const arg of args) {
-        if (isNativeEvent && arg === Keywords.nativeEvent) {
+        if (isDomEvent && arg === Keywords.nativeEvent) {
           eventObjectIndex = args.indexOf(arg);
           continue;
         }
@@ -42,7 +42,7 @@ export function bindEventToHandler(
     }
   }
 
-  if (isNativeEvent && !isComponent) {
+  if (isDomEvent) {
     element.addEventListener(eventName, function (event) {
       if (eventObjectIndex > -1) {
         argumentsValues.splice(eventObjectIndex, 0, event);
@@ -50,6 +50,7 @@ export function bindEventToHandler(
       handler(...argumentsValues);
     })
   }
+  // HERE WE NEED TO REMOVE THE ELEMENT AS WELL
   else {
     context.eventHandlers[eventName] = {
       handlerName: handlerStructure.handlerName,
@@ -60,10 +61,19 @@ export function bindEventToHandler(
     };
   }
 
-if (!isComponent){
-    // finally we remove the original attribute, if it is not a component node
+  // HERE WE REMOVE THE ONCLICK ATTRIBUTE WHEN IT IS NOT A CHILD COMPONENT
+  if (!isComponent) {
+    element.removeAttribute(attribute.name);
+  }
+
+  // if it is not a component, we have already removed the attribute
+  // if it is a native event, we let it be, and it will be then automatically passed to the child component
+  // otherwise we need to mark the custom event for the child:
+  if (isComponent && !isDomEvent) {
+    // finally we mark the attribute for the child component
     element.setAttribute(attribute.name, Keywords.eventPrefix + context.id)
   }
+
 }
 
 export function findHandler(context: Context, attribute: Attr) {
