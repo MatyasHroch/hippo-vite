@@ -9,11 +9,9 @@ import {
 import { UserDefinedComponent } from "../../../types/component";
 import { bindTextNode } from "./template_text_nodes";
 import { Keywords } from "../../../enums/keywords";
-import {createIfNode, derenderIfNode, renderIfNode} from "./template_if_nodes";
+import { createIfNode } from "./template_if_nodes";
 import { processFor } from "./template_for";
-import { getPlaceholderTag } from "../../helpers/template";
-import {bindEventToHandler, findHandler, isDOMEvent} from "./template_events";
-import { bindVariable, modelVariable } from "../component/component_bindings";
+import { bindEventToHandler, findHandler, isDOMEvent } from "./template_events";
 
 type ChildrenArray = Array<{
   tag: Element;
@@ -50,7 +48,7 @@ export async function processNodes(
       // if the value can be merged, we merge it like with the class attribute
       // if the value cannot be merged, we replace it with the new value -> !parent has priority!
 
-      if (attr.value.split(Keywords.eventPrefix).length > 1){
+      if (isMarkedEventFromParent(attr)){
         const parentContextId = attr.value.split(Keywords.eventPrefix)[1]
         // debugger
         if (context.parent.id == parseInt(parentContextId)) {
@@ -61,20 +59,6 @@ export async function processNodes(
           context.subscribers[eventName].push(context.parent)
         }
       }
-
-      // // BINDING PROPERTIES
-      // // TODO -  WE SHOULD MAKE IT CASE INSENSITIVE
-      // const variableNameToBind = getVariableNameToAttributeBinding(attr);
-      // if (variableNameToBind) {
-      //   bindVariable(context, variableNameToBind, attr.name);
-      //   continue;
-      // }
-      //
-      // const variableNameToModel = getVariableNameToAttributeModeling(attr);
-      // if (variableNameToModel) {
-      //   modelVariable(context, variableNameToModel, attr.name);
-      //   continue;
-      // }
 
       const attributeName = attr.name;
       const attributeValue = attr.value;
@@ -95,19 +79,23 @@ export async function processNodes(
         node.setAttribute(attributeName, attributeValue);
         const newAttribute = node.getAttributeNode(attributeName)
 
-        if(attributeName === "onclick"){
-          debugger;
-        }
-
-        if (isDOMEvent(newAttribute.name)) {
-          // WE KNOW THE EVENT IS NATIVE AND IT IS FROM THE PARENT, SO WE CAN BIND IT TO THE PARENT CONTEXT
-          const handlerStructure = findHandler(context.parent, newAttribute)
-          bindEventToHandler(context, attr, node, handlerStructure, isComponent)
-        }
+        // if (isDOMEvent(newAttribute.name)) {
+        //   // WE KNOW THE EVENT IS NATIVE AND IT IS FROM THE PARENT, SO WE CAN BIND IT TO THE PARENT CONTEXT
+        //   const handlerStructure = findHandler(context.parent, newAttribute)
+        //   bindEventToHandler(context, attr, node, handlerStructure, isComponent)
+        //   // after that we do not need the attribute anymore
+        //
+        //   debugger
+        //
+        //   node.removeAttribute(attributeName);
+        // }
+        //
+        // if (isMarkedEventFromParent(newAttribute)){
+        //   node.removeAttribute(attributeName);
+        // }
       }
     }
   }
-
 
   // EVENTS OF THE COMPONENTS, EASY AND QUICK
   if(isComponent && node.attributes){
@@ -249,4 +237,8 @@ export function variableFromTextWithBraces(
 ) {
   const slicedText = text.slice(2, -2).trim();
   return getVariableByName(context, slicedText);
+}
+
+export function isMarkedEventFromParent(attr: Attr): boolean {
+   return attr.value.split(Keywords.eventPrefix).length > 1
 }
