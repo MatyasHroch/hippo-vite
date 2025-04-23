@@ -42,10 +42,10 @@ export function createOriginVariable<T = any>(
     // TODO -add watcher
 
     addWatcher: () => {
-      console.log("This function is not initialized yet.");
+      console.warn("This function 'addWatcher' is not initialized yet.");
     },
     set: () => {
-      console.log("Setter not initialized yet");
+      console.warn("This function 'set' is not initialized yet.");
     },
   };
 

@@ -35,7 +35,7 @@ export function createComputedVariable(
 
   newComputedVariable.set = () => {
     console.warn(
-      "You cannot set a Computed variable. Use new variable and a Watcher"
+      "You cannot set a Computed variable. Use a new variable and a Watcher"
     );
   };
 

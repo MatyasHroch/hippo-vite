@@ -30,14 +30,12 @@ export async function app(context: Context) {
     }
   })
 
-  user.addWatcher(()=> {
+  user.addWatcher(() => {
+    console.log("The variable USER changed, or some of its partial changed")
     console.log(user.value.firstName);
     console.log(user.value.lastName);
     console.log(user.value.address);
-
-
   })
-
 
   context.addHandlers({
     toggleShowParagraph,
@@ -80,4 +78,8 @@ export async function app(context: Context) {
   setTimeout(() => {
     numbers.set([1, 2]);
   }, 2 * 1000);
+
+  setTimeout(() => {
+    numbers.set(undefined);
+  }, 5 * 1000);
 }

@@ -54,7 +54,7 @@ export async function processComponent(
   // PROCESS THE TEMPLATE
   // Check if there is any
   if (!context.template) {
-    console.warn("This component has no Template:" + component.name);
+    console.warn(`The component with a name ${component.name} has no template`);
     return newComponent;
   }
 

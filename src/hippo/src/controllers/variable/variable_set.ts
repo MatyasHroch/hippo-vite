@@ -124,13 +124,10 @@ export async function rerenderPartials<T>(
       }
       currentValue = currentValue[key];
     }
-    debugger
-      if (!changedPartialPath || isCurrentPathPrefix(changedPartialPath, partialVariable.pathFromOrigin)){
-        await setVariable(partialVariable.context, partialVariable, currentValue)
-      }
+    if (!changedPartialPath || isCurrentPathPrefix(changedPartialPath, partialVariable.pathFromOrigin)){
+      await setVariable(partialVariable.context, partialVariable, currentValue)
+    }
 
-    console.log("setting up this value:")
-    console.log({currentValue})
   }
   return variable;
 }

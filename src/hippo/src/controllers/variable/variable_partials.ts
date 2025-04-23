@@ -19,13 +19,13 @@ export function createPartialVariable<T>(
   // TODO - make sure it works even with the value and also without it
   const path = objectPath.split("value.")[1];
   if (!path) {
-    console.warn("Invalid path: " + objectPath);
+    console.warn(`Invalid partial variable path the variable ${originVariable.name} while creating it, the path: ${objectPath}`);
     return null;
   }
   const keys = path.split(".");
 
   let currentValue = originVariable.value;
-  let currentObjectOfValue;
+  let currentObjectOfValue: any ;
   if (!currentValue) return;
 
   for (const key of keys) {
@@ -55,7 +55,7 @@ export function createPartialVariable<T>(
 
         // we set the value to the inner object, so now we can just set the variable with its own value
         const lastKey = keys[keys.length - 1];
-        if (currentObjectOfValue[lastKey]){
+        if (currentObjectOfValue && currentObjectOfValue[lastKey]){
           currentObjectOfValue[lastKey] = value
         }
 

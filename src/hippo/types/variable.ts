@@ -35,7 +35,7 @@ export type Variable<T> = {
 
   // TODO - create addWatcher method, and the typing should be better
   watchers: Array<Watcher>; // functions that activates when the variable is changed
-  addWatcher: Function;
+  addWatcher: (watcher: Watcher) => any;
 
   inputNodes: Array<HTMLInputElement>; // two-way binding - input, select and textarea
   textNodes: Array<Text>; // one-way binding - variables rendered as a string

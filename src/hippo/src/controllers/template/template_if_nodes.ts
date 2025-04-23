@@ -51,7 +51,7 @@ export async function createIfNode(context: Context, ifAttribute: Attr, node: El
   const variable = getVariableByName(context, variableName);
 
   if (!variable){
-    console.error("Variable with name " + variableName + " has not found")
+    console.error("Variable with name " + variableName + " was not found. Did you initialized it or pass as a prop?")
     return
   }
 
