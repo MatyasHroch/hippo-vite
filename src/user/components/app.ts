@@ -17,6 +17,20 @@ export async function app(context: Context) {
   context.addVariable("testInputText", "...");
   context.addVariable("testInputNumber", 0);
   context.addVariable("disabledButton", true);
+
+  const {newHeading} = context.addVariables({
+    newHeading: "My New Heading"
+  })
+
+  context.addHandlers({
+    toggleShowParagraph,
+    clickedArticle : (index: number) => {
+      alert(`article ${index} clicked`)
+    }})
+
+  console.log(newHeading.value);
+
+
   const numbers = context.addVariable("numbers", [1, 2, 3]);
 
   context.addVariable("items", [
@@ -33,8 +47,10 @@ export async function app(context: Context) {
     showParagraph.set(!showParagraph.value)
   }
 
-  context.addHandlers({toggleShowParagraph, clickedArticle : (index: number) => {
-    alert(`article ${index} clicked`)
+  context.addHandlers({
+    toggleShowParagraph,
+    clickedArticle : (index: number) => {
+      alert(`article ${index} clicked`)
     }})
 
   // to have the children components rendered we need to add them to the context

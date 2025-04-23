@@ -1,4 +1,4 @@
-import { Variable } from "./variable";
+import {Variable, VariablesOf} from "./variable";
 import { UserDefinedComponent } from "./component";
 import { Watcher } from "./watcher";
 
@@ -46,6 +46,10 @@ export type Context = {
   // methods
   // TODO - describe the methods more, and do addVariables() and so on...
   addVariable: <T>(name: string, value: T) => Variable<T>;
+
+  // TODO - better typing for objects of the variables
+  addVariables: <T>(variables: T) => VariablesOf<T>;
+
   setTemplate: (htmlString: string) => Element | Node;
   addWatcher: (variable: Variable<any>, onUpdate: Watcher) => Function;
   addChildren: (

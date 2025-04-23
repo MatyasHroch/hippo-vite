@@ -14,6 +14,11 @@ export type IfNodeStructure = {
   // derenderIf?: Function,
 };
 
+
+export type VariablesOf<T> = {
+  [K in keyof T]: Variable<T[K]>;
+};
+
 export type Variable<T> = {
   // identifiers
   name: string;
