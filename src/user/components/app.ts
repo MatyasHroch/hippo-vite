@@ -18,9 +18,26 @@ export async function app(context: Context) {
   context.addVariable("testInputNumber", 0);
   context.addVariable("disabledButton", true);
 
-  const {newHeading} = context.addVariables({
-    newHeading: "My New Heading"
+  const {newHeading, user} = context.addVariables({
+    newHeading: "My New Heading",
+    user: {
+      firstName: "John",
+      lastName: "Doe",
+      address: {
+        city: "Ostrava",
+        postCode: 7090
+      }
+    }
   })
+
+  user.addWatcher(()=> {
+    console.log(user.value.firstName);
+    console.log(user.value.lastName);
+    console.log(user.value.address);
+
+
+  })
+
 
   context.addHandlers({
     toggleShowParagraph,
@@ -57,6 +74,8 @@ export async function app(context: Context) {
   context.addChildren({ testArticle, list });
 
   context.addVariable("childheading", "Heading from parent");
+
+
 
   setTimeout(() => {
     numbers.set([1, 2]);

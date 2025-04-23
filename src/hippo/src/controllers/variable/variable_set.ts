@@ -17,7 +17,8 @@ export function _setVariableValue<T>(
 export async function setVariable<T>(
   context: Context,
   variable: Variable<T>,
-  value: T
+  value: T,
+  partialPath: string = null
 ) {
   // here we set the variable value
   const isNotObject = !value || !Object.keys(value);
@@ -27,12 +28,16 @@ export async function setVariable<T>(
 
   _setVariableValue(context, variable, value);
 
-  // here it just triggers all the watchers
-  for (const watcher of variable.watchers) {
-    await watcher(context, variable, value);
-  }
+  await callAllWatchers(context, variable, value, partialPath);
 
   return variable;
+}
+
+export async function callAllWatchers<T>(context:Context, variable:Variable<T>, value: T, partialPath :string){
+  // here it just triggers all the watchers
+  for (const watcher of variable.watchers) {
+    await watcher(context, variable, value, partialPath);
+  }
 }
 
 export function rerenderTextNodes<T>(
@@ -65,7 +70,7 @@ export function renderAttribute(
   // we set the attribute to the value
   attributeNode.attribute.value = value as string;
 
-  // if it is a bolean attribute, we add it or remove it from the
+  // if it is a boolean attribute, we add it or remove it from the
   if (isBooleanAttribute(attributeNode.attribute)) {
     if (value) {
       attributeNode.node.attributes.setNamedItem(attributeNode.attribute);
@@ -80,7 +85,7 @@ export function rerenderDependencies<T>(
   variable: Variable<T>,
   value: T
 ) {
-  // TODO - rerender the Dependencies
+  // it is automatically done already, this function is not needed for now
   return variable;
 }
 
@@ -100,10 +105,11 @@ export async function rerenderIfNodes<T>(
   }
 }
 
-export function rerenderPartials<T>(
+export async function rerenderPartials<T>(
   context: Context,
   variable: Variable<T>,
-  value: T
+  value: T,
+  changedPartialPath: string = null
 ) {
   for (const partialName in variable.partialVariables) {
     const partialVariable = variable.partialVariables[partialName];
@@ -113,14 +119,24 @@ export function rerenderPartials<T>(
     for (const key of partialName.split(".")) {
       // if I get to some point where the key does not exist, the objectPath is invalid
       if (currentValue[key] === undefined) {
-        partialVariable.set(undefined);
+        await setVariable(partialVariable.context, partialVariable, undefined)
         new Error(`Invalid path in partial variable: ${partialName}`);
       }
       currentValue = currentValue[key];
     }
-    partialVariable.set(currentValue);
+    debugger
+      if (!changedPartialPath || isCurrentPathPrefix(changedPartialPath, partialVariable.pathFromOrigin)){
+        await setVariable(partialVariable.context, partialVariable, currentValue)
+      }
+
+    console.log("setting up this value:")
+    console.log({currentValue})
   }
   return variable;
+}
+
+function isCurrentPathPrefix(changedPartialPath :string, currentPartialPath : string){
+  return changedPartialPath.startsWith(currentPartialPath) ;
 }
 
 export async function rerenderFor(

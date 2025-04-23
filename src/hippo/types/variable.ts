@@ -53,7 +53,7 @@ export type Variable<T> = {
   partialVariables: Record<string, Variable<any>>;
 
   // TODO - better typing
-  set: Function;
+  set: (value: T, partialPath?: string, alreadySet?: boolean) => any;
 
   updating: boolean;
 };

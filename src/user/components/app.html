@@ -17,6 +17,10 @@
     <p>This is a test of the two-way binding of a text input:</p>
     <input type="text" value="[[testInputText]]" />
     <p>The value of the input is: {{testInputText}}</p>
+
+    <input type="text" value="[[user.value.firstName]]" />
+    <p>The value of the input of the partial variable: {{user.value.firstName}}</p>
+
     <p>This is a test of the two-way binding of a number input:</p>
     <input type="number" value="[[testInputNumber]]" />
     <p>The value of the input is: {{testInputNumber}}</p>

@@ -50,9 +50,9 @@ export function createOriginVariable<T = any>(
   };
 
   // USER FUNCTIONS
-  originalVariable.set = function (value: T) {
+  originalVariable.set = function (value: T, partialPath : string = null) {
     // TODO - ts ignore
-    return setVariable<T>(context, originalVariable, value);
+    return setVariable<T>(context, originalVariable, value, partialPath);
   };
 
   originalVariable.addWatcher = function (watcher: Watcher) {
