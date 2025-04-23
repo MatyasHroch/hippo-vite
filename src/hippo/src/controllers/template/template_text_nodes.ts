@@ -35,7 +35,9 @@ function renderTextNode(
     const variable = variableFromTextWithBraces(context, nodeText);
 
     if (!variable) {
-      console.error(`Variable ${nodeText} not found.`);
+      const notFoundVariableName = nodeText.slice(2, -2);
+
+      console.error(`Variable with name '${notFoundVariableName}' was not found. Did you initialized it or pass as a prop?`)
       return document.createTextNode("");
     }
 
