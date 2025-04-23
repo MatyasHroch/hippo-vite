@@ -80,6 +80,6 @@ export async function app(context: Context) {
   }, 2 * 1000);
 
   setTimeout(() => {
-    numbers.set(undefined);
+    numbers.set([]);
   }, 5 * 1000);
 }

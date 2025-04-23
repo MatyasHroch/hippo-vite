@@ -4,12 +4,11 @@ import { getVariableByName } from "./template_attributes";
 import { cloneContext } from "../context";
 import { cloneElement } from "./template_main";
 import { processTemplate } from "../component/component_main";
-import { createOriginVariable } from "../variable/variable_main";
 import { createPartialVariable } from "../variable/variable_partials";
 import { ForItemStructure, RootForData } from "../../../types/for_structure";
 import { Variable } from "../../../types/variable";
 import { createComputedVariable } from "../variable/variable_computed";
-import {getPlaceholderTag} from "../../helpers/template";
+import { getPlaceholderTag } from "../../helpers/template";
 
 export async function renderForStructures<T>(
   variableToIterateContext: Context,
@@ -208,10 +207,13 @@ export function createForItemContext(
     itemContext.variables[indexName] = createComputedVariable(
       itemContext,
       () => {
-        if (!variableToIterate) return 0;
+        if (!variableToIterate) return null;
         const dataToIterate = variableToIterate.value;
-        const index = Object.keys(dataToIterate).indexOf(itemKey);
-        return index;
+        if (!dataToIterate) {
+          debugger
+          return null
+        };
+        return Object.keys(dataToIterate).indexOf(itemKey);
       },
       indexName,
       [variableToIterate]
