@@ -1,5 +1,7 @@
 import appTemplate from "./app.html?raw"
 import {Context} from "../../../hippo";
+import {firstPage} from "../pages/firstPage/firstPage";
+import {secondPage} from "../pages/secondPage/secondPage";
 export function app(context: Context){
     // we must set the template
     context.setTemplate(appTemplate);
@@ -36,5 +38,9 @@ export function app(context: Context){
         changePageTo: (index: number) => {
             pageIndex.set(index);
         }
+    })
+
+    context.addChildren({
+        firstPage, secondPage
     })
 }

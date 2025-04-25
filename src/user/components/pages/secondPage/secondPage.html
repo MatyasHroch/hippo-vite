@@ -1,0 +1,72 @@
+<div>
+
+    <section class="box">
+        <h2>H-if directive</h2>
+        <p>This is a test of the h-if directive and primitive event handling:</p>
+        <button onclick="toggleShowParagraph">Toggle paragraph</button>
+        <p class="text--error">
+            WE MUST ADD THE HANDLER WITH THE NAME OF THE EVENT FOR NOW
+        </p>
+        <p data-h-if="showParagraph">This is a test paragraph.</p>
+        <div data-h-if="showParagraph">
+            <TestArticle testArticleClicked="clickedArticle">
+                <list/>
+                <TestArticle onclick="clickedArticle(childHeading)" heading="{{childHeading}}" />
+            </TestArticle>
+        </div>
+        <p class="text--error">
+            THE H-IF DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
+        </p>
+    </section>
+
+    <section class="box">
+        <h2>H-for directive</h2>
+        <p>
+            This is a test of the h-for directive of the iteration of the array
+            "items":
+        </p>
+        <ul>
+            <li data-h-for="item in items">{{item.value.name}}</li>
+        </ul>
+        <p class="text--error">
+            THE H-FOR DIRECTIVE CANNOT BE USED ON COMPONENT ELEMENTS FOR NOW
+        </p>
+    </section>
+
+    <section class="box">
+        <h2>H-slot directive</h2>
+
+        <h3 class="m-2">Here is a test article component without the h-slot directive:</h3>
+        <testArticle></testArticle>
+
+        <h3 class="m-2">Here is a test Article component with the h-slot directive:</h3>
+        <TestArticle testArticleClicked="clickedArticle">
+            <ul>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+            </ul>
+        </TestArticle>
+        <h3 class="m-2">Here is a test Article component with the h-slot directive and the list is rendered by h-for:</h3>
+        <TestArticle>
+            <ul>
+                <li data-h-for="item,index in items">
+                    <div class="flex gap-1">
+            <span>
+              Item value is
+            </span>
+                        <span>
+              {{item.value.name}}.
+            </span>
+                        <span>
+              And the index is
+            </span>
+                        <span>
+               {{ index}}
+            </span>
+                    </div>
+                </li>
+            </ul>
+        </TestArticle>
+    </section>
+</div>

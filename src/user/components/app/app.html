@@ -1,5 +1,4 @@
 <div>
-
     <div class="flex gap-1 m-2">
         <button onclick="changePageTo(index)" data-h-for="page,index in pages">
             {{page.value.name}}
@@ -11,7 +10,7 @@
             <span>Should be first</span>
             <span>{{activePage.value.name}}</span>
         </div>
-
+        <FirstPage/>
     </div>
 
     <div data-h-if="secondPageActive">
@@ -19,6 +18,7 @@
             <span>Should be second</span>
             <span>{{activePage.value.name}}</span>
         </div>
+        <SecondPage/>
     </div>
 
     <div data-h-if="thirdPageActive">
