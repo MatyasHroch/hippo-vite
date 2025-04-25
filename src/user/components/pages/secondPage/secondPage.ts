@@ -1,5 +1,6 @@
 import template from "./secondPage.html?raw"
 import {Context} from "../../../../hippo";
+import {testArticle} from "../../test-article/testArticle";
 
 export function secondPage(context: Context){
     context.setTemplate(template)
@@ -39,6 +40,8 @@ export function secondPage(context: Context){
         showParagraph.set(!showParagraph.value)
     }
 
-
+    context.addChildren({
+        testArticle
+    })
 }
 
