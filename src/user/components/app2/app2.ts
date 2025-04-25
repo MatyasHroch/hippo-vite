@@ -1,11 +1,11 @@
 // we must get the template
-import appTemplate from "./app.html?raw"
+import appTemplate from "./app2.html?raw"
 
-import { Context } from "../../hippo";
-import { testArticle } from "./test-article/testArticle";
-import { list } from "./list/list";
+import { Context } from "../../../hippo";
+import { testArticle } from "../test-article/testArticle";
+import { list } from "../list/list";
 
-export async function app(context: Context) {
+export async function app2(context: Context) {
   // we must set the template
   context.setTemplate(appTemplate);
 
