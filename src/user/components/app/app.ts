@@ -20,12 +20,16 @@ export function app(context: Context){
         pageIndex: 0
     })
 
-    context.addComputed(() => {
+    const firstPageActive = context.addComputed(() => {
         return pageIndex.value === 0;
     }, "firstPageActive")
-    context.addComputed(() => {
+
+    const secondPageA = context.addComputed(() => {
         return pageIndex.value === 1;
     }, "secondPageActive")
+
+    console.log(secondPageA.value)
+
     context.addComputed(() => {
         return pageIndex.value === 2;
     }, "thirdPageActive")
@@ -38,6 +42,10 @@ export function app(context: Context){
         changePageTo: (index: number) => {
             pageIndex.set(index);
         }
+    })
+
+    context.addWatcher(firstPageActive, () =>{
+        console.log("We are at the first page!")
     })
 
     context.addChildren({
