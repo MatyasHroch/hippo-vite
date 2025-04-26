@@ -1,4 +1,4 @@
 import {Context} from "./context";
-import {Variable} from "./variable";
+import {Computed, Variable} from "./variable";
 
-export type Watcher = <T>(context?: Context, variable?: Variable<T>, value?: T, partialPath? : string) => Variable<T> | any;
+export type Watcher = <T>(context?: Context, variable?: Variable<T> | Computed<T>, value?: T, partialPath? : string) => Variable<T> | any;

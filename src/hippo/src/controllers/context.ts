@@ -109,6 +109,7 @@ function addComputed<T>(
     dependencies
   );
   context.variables[newComputed.name] = newComputed;
+
   return newComputed;
 }
 

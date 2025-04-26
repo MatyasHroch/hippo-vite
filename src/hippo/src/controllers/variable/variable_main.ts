@@ -1,5 +1,5 @@
 import { Context } from "../../../types";
-import { Variable } from "../../../types/variable";
+import {Computed, Variable} from "../../../types/variable";
 import { getGlobalContext } from "../globals";
 import {
   rerenderAttributes,
@@ -44,6 +44,8 @@ export function createOriginVariable<T = any>(
     addWatcher: () => {
       console.warn("This function 'addWatcher' is not initialized yet.");
     },
+
+    //@ts-ignore
     set: () => {
       console.warn("This function 'set' is not initialized yet.");
     },
@@ -76,7 +78,7 @@ export function addWatcher<T>(variable: Variable<T>, watcher: Watcher) {
 
 export function addComputed<T>(
   variableToDepend: Variable<T>,
-  newComputedVariable: Variable<any>,
+  newComputedVariable: Computed<any>,
   computation: () => any
 ) {
   variableToDepend.addWatcher(async function () {

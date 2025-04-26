@@ -1,5 +1,5 @@
 import { Context } from "../../../types";
-import { Variable } from "../../../types/variable";
+import {Computed, Variable} from "../../../types/variable";
 import { derenderIfNode, renderIfNode } from "../template/template_if_nodes";
 import { isPrimitive } from "../../helpers/objects";
 import { renderForStructures } from "../template/template_for";
@@ -7,7 +7,7 @@ import { renderForStructures } from "../template/template_for";
 // this function actually sets the variable's value
 export function _setVariableValue<T>(
   context: Context,
-  variable: Variable<T>,
+  variable: Variable<T> | Computed<T>,
   value: T
 ) {
   variable.previousValue = variable.value;
@@ -16,7 +16,7 @@ export function _setVariableValue<T>(
 
 export async function setVariable<T>(
   context: Context,
-  variable: Variable<T>,
+  variable: Variable<T> | Computed<T>,
   value: T,
   partialPath: string = null
 ) {
@@ -33,7 +33,7 @@ export async function setVariable<T>(
   return variable;
 }
 
-export async function callAllWatchers<T>(context:Context, variable:Variable<T>, value: T, partialPath :string){
+export async function callAllWatchers<T>(context:Context, variable:Variable<T> | Computed<T>, value: T, partialPath :string){
   // here it just triggers all the watchers
   for (const watcher of variable.watchers) {
     await watcher(context, variable, value, partialPath);

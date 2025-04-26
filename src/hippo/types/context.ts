@@ -64,6 +64,7 @@ export type Context = {
     name?: string,
     dependencies?: Array<Variable<any>>
   ) => Variable<T>;
+
   addHandlers: (
     handlers: Record<string, Function>,
     stopEvent?: boolean

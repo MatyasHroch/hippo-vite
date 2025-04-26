@@ -1,4 +1,4 @@
-import {Variable} from "../../../types/variable";
+import {Computed, Variable} from "../../../types/variable";
 import { Context } from "../../../types";
 import { addComputed, createOriginVariable } from "./variable_main";
 import { getNewId } from "../ids";
@@ -8,7 +8,7 @@ export function createComputedVariable<T>(
   computation: () => T,
   name: string = null,
   dependencies: Array<Variable<any>>
-) : Variable<T> {
+) : Computed<T> {
   if (!dependencies) {
     dependencies = [];
 
@@ -31,18 +31,25 @@ export function createComputedVariable<T>(
 
   name ??= getNewId() + "-computed";
   const value = computation();
-  const newComputedVariable = createOriginVariable<T>(name, value, context);
+  const temporaryComputedVariable = createOriginVariable<T>(name, value, context);
+  const newComputedVariable = toComputed(temporaryComputedVariable)
 
   // @ts-ignore
-  newComputedVariable.set = () => {
-    console.warn(
-      "You cannot set a Computed variable. Use a new variable and a Watcher"
-    );
-  };
+  // newComputedVariable.set = () => {
+  //   console.warn(
+  //     "You cannot set a Computed variable. Use a new variable and a Watcher"
+  //   );
+  // };
 
   for (const variable of dependencies) {
     addComputed(variable, newComputedVariable, computation);
   }
 
   return newComputedVariable;
+}
+
+function toComputed<T>(variable: Variable<T>): Computed<T> {
+  // Remove the 'set' property and cast as Computed
+  const { set, ...rest } = variable;
+  return rest as Computed<T>;
 }
