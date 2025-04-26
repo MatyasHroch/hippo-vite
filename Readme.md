@@ -11,11 +11,12 @@ Before you begin, ensure you have the following installed:
 
 ## Getting Started
 
-### 1. Clone the Repository
+### 1. Clone the Repository and checkout to the right branch
 
 ```bash
 git clone <repository_url>
 cd hippo-vite
+git checkout without_h-if
 ```
 
 ### 2. Install Dependencies
