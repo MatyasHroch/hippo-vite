@@ -3,12 +3,12 @@ import { Context } from "../../../types";
 import { addComputed, createOriginVariable } from "./variable_main";
 import { getNewId } from "../ids";
 
-export function createComputedVariable(
+export function createComputedVariable<T>(
   context: Context,
-  computation: () => any,
+  computation: () => T,
   name: string = null,
   dependencies: Array<Variable<any>>
-) {
+) : Variable<T> {
   if (!dependencies) {
     dependencies = [];
 
@@ -31,7 +31,7 @@ export function createComputedVariable(
 
   name ??= getNewId() + "-computed";
   const value = computation();
-  const newComputedVariable = createOriginVariable(name, value, context);
+  const newComputedVariable = createOriginVariable<T>(name, value, context);
 
   newComputedVariable.set = () => {
     console.warn(

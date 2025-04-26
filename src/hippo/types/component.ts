@@ -1,6 +1,6 @@
 import { Context } from "./context";
 
-export type UserDefinedComponent = Function;
+export type UserDefinedComponent = (context: Context) => any;
 
 export type NewComponentStruct = {
   template?: Element;

@@ -41,6 +41,7 @@ export type Context = {
 
   // template
   template?: Element;
+
   templateString?: string;
 
   // methods
@@ -51,18 +52,22 @@ export type Context = {
   addVariables: <T>(variables: T) => VariablesOf<T>;
 
   setTemplate: (htmlString: string) => Element | Node;
-  addWatcher: (variable: Variable<any>, onUpdate: Watcher) => Function;
+
+  addWatcher: (variable: Variable<any>, watcher: Watcher) => Function;
+
   addChildren: (
     children: Record<string, UserDefinedComponent>
   ) => Record<string, UserDefinedComponent>;
-  addComputed: (
-    computation: () => any,
+
+  addComputed: <T>(
+    computation: () => T,
     name?: string,
     dependencies?: Array<Variable<any>>
-  ) => any;
+  ) => Variable<T>;
   addHandlers: (
     handlers: Record<string, Function>,
     stopEvent?: boolean
   ) => Record<string, Function>;
+
   emitEvent: (eventName: string, ...args: unknown[]) => unknown;
 };
