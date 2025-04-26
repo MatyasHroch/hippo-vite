@@ -44,7 +44,8 @@ export function createOriginVariable<T = any>(
     addWatcher: () => {
       console.warn("This function 'addWatcher' is not initialized yet.");
     },
-    set: () => {
+
+    set: async (value: T, partialPath : string = null) => {
       console.warn("This function 'set' is not initialized yet.");
     },
   };
