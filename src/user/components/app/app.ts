@@ -24,11 +24,9 @@ export function app(context: Context){
         return pageIndex.value === 0;
     }, "firstPageActive")
 
-    const secondPageA = context.addComputed(() => {
+    context.addComputed(() => {
         return pageIndex.value === 1;
     }, "secondPageActive")
-
-    console.log(secondPageA.value)
 
     context.addComputed(() => {
         return pageIndex.value === 2;
