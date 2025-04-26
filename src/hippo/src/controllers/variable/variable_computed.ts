@@ -1,4 +1,4 @@
-import { Variable } from "../../../types/variable";
+import {Variable} from "../../../types/variable";
 import { Context } from "../../../types";
 import { addComputed, createOriginVariable } from "./variable_main";
 import { getNewId } from "../ids";
@@ -33,6 +33,7 @@ export function createComputedVariable<T>(
   const value = computation();
   const newComputedVariable = createOriginVariable<T>(name, value, context);
 
+  // @ts-ignore
   newComputedVariable.set = () => {
     console.warn(
       "You cannot set a Computed variable. Use a new variable and a Watcher"

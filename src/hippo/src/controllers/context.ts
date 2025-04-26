@@ -96,11 +96,11 @@ function addVariable(context: Context, key: string, value: any) {
   return context.variables[key];
 }
 
-function addComputed(
+function addComputed<T>(
   context: Context,
-  computation: () => any,
+  computation: () => T,
   name: string = null,
-  dependencies: Array<Variable<any>>
+  dependencies?: Array<Variable<any>>
 ) {
   const newComputed = createComputedVariable(
     context,
@@ -109,6 +109,7 @@ function addComputed(
     dependencies
   );
   context.variables[newComputed.name] = newComputed;
+  return newComputed;
 }
 
 // when we set the template, it will be rendered

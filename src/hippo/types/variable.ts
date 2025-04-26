@@ -57,3 +57,7 @@ export type Variable<T> = {
 
   updating: boolean;
 };
+
+export type Computed<T> = Omit<Variable<T>, 'set'> & {
+  set?: () => void ; // Prevent user mutation
+};
